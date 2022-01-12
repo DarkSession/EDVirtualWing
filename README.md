@@ -14,6 +14,7 @@
   - Coordinates if around or landed on a planet
   - Current activity / status: Hardpoints deployed, under attack, on foot, in srv, in supercruise etc...
   - Travel destination
+  - Target information
   - Game: Horizon or Odyssey
   - Mode: Open, Private, Solo
   - If in vehicle: Basic information (Type, Hull, Shields)

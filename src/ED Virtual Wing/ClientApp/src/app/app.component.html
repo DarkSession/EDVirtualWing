@@ -1,6 +1,33 @@
-<body>
-  <app-nav-menu></app-nav-menu>
-  <div class="container">
-    <router-outlet></router-outlet>
+<mat-toolbar>
+  <button mat-icon-button aria-label="Menu">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span>Elite Dangerous Virtual Wing</span>
+  <span class="toolbar-spacer"></span>
+  <button mat-icon-button class="toolbar-icon favorite-icon" aria-label="Example icon-button with heart icon">
+    <mat-icon>favorite</mat-icon>
+  </button>
+  <button mat-icon-button aria-label="Example icon-button with share icon">
+    <mat-icon>share</mat-icon>
+  </button>
+</mat-toolbar>
+
+<div class="container">
+  <div [ngSwitch]="websocketServiceService.connectionStatus">
+    <div *ngSwitchCase="ConnectionStatus.Connecting">Connecting</div>
+    <div *ngSwitchCase="ConnectionStatus.NoConnection">NoConnection</div>
+    <div *ngSwitchCase="ConnectionStatus.NotAuthenticated">
+      <app-login-registration></app-login-registration>
+    </div>
+    <div *ngSwitchCase="ConnectionStatus.Authenticated">Authenticated
+      <div *ngIf="!journalWorkerService.isBrowserSupported">
+        We are sorry, but your browser doesn't support the required functionality for this website.<br>
+        Currently, mainly Chromium based browsers (such as Chromium, Google Chrome, Edge) support the required
+        functions.
+      </div>
+      <button *ngIf="journalWorkerService.isBrowserSupported" (click)="journalWorkerService.startJournalWorker()">Start
+        journal worker</button>
+      <!--<router-outlet></router-outlet>-->
+    </div>
   </div>
-</body>
+</div>

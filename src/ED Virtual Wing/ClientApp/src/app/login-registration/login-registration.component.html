@@ -1,0 +1,34 @@
+<div class="content-large-box" *ngIf="formMode == FormMode.Login">
+    <h2>Login</h2>
+    <mat-form-field>
+        <mat-label>Username</mat-label>
+        <input matInput required>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Password</mat-label>
+        <input matInput type="password" required>
+    </mat-form-field>
+    <button mat-raised-button [disabled]="loading" color="primary" (click)="login()">Login</button>
+    <br>
+    <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+    <span *ngIf="!loading" class="clickable" (click)="toggleMode()">No account yet? Register here.</span>
+</div>
+<div class="content-large-box" *ngIf="formMode == FormMode.Registration">
+    <h2>Registration</h2>
+    <mat-form-field>
+        <mat-label>Username</mat-label>
+        <input matInput required>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>E-Mail Address</mat-label>
+        <input matInput required>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Password</mat-label>
+        <input matInput type="password" required>
+    </mat-form-field>
+    <button mat-raised-button color="primary" [disabled]="loading" (click)="register()">Register</button>
+    <br>
+    <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+    <span *ngIf="!loading" class="clickable" (click)="toggleMode()">Already have an account? Login here.</span>
+</div>

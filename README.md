@@ -22,3 +22,12 @@ This targets squadrons and other groups which regularly exceed the 4 player limi
   - Game: Horizon or Odyssey
   - Mode: Open, Private, Solo
   - If in vehicle: Basic information (Type, Hull, Shields)
+
+
+## Development
+Run a local MariaDB instance using Docker, e.g.
+`docker run --detach --name edvw-mariadb --env MARIADB_USER=dev --env MARIADB_PASSWORD=1234 --env MARIADB_ROOT_PASSWORD=1234 -p 3306:3306 mariadb:latest`
+
+## Configuration
+EDVW_MARIADB_CONNECTIONSTRING: MariaDB instance connection string
+EDVW_HTTP_ORIGIN=https://localhost:44440

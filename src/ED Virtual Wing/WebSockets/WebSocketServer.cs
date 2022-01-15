@@ -1,12 +1,36 @@
-﻿using System.Net.WebSockets;
+﻿using ED_Virtual_Wing.Models;
+using Microsoft.AspNetCore.Identity;
+using System.Net.WebSockets;
 
 namespace ED_Virtual_Wing.WebSockets
 {
     public static class WebSocketServer
     {
-        public static async Task ProcessRequest(HttpContext httpContext)
+        public class AuthenticationStatus
+        {
+            public bool IsAuthenticated { get; set; }
+
+            public AuthenticationStatus(bool isAuthenticated)
+            {
+                IsAuthenticated = isAuthenticated;
+            }
+        }
+
+        public static async Task ProcessRequest(HttpContext httpContext, UserManager<ApplicationUser> userManager)
         {
             WebSocket ws = await httpContext.WebSockets.AcceptWebSocketAsync();
+            if (ws.State != WebSocketState.Open)
+            {
+                return;
+            }
+            bool isAuthenticated = false;
+            WebSocketMessage authenticationMessage = new("Authentication", new AuthenticationStatus(isAuthenticated));
+            await authenticationMessage.Send(ws);
+            if (!isAuthenticated)
+            {
+                await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
+                return;
+            }
             ArraySegment<byte> buffer = new(new byte[4096]);
             bool disconnect = false;
             while (ws.State == WebSocketState.Open && !disconnect)

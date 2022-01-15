@@ -1,16 +1,37 @@
-/* You can add global styles to this file, and also import other style files */
-
-/* Provide sufficient contrast against white background */
-a {
-  color: #0366d6;
+/*
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+*/
+body {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  margin: 0;
+  padding: 30px;
 }
 
-code {
-  color: #e01a76;
+html, body {
+  height: 100%;
 }
 
-.btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+.content-small-box, .content-large-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin: 16px;
+  padding: 16px;
+  border-radius: 8px;
+  background-color: rgb(173, 173, 173);
+}
+
+.content-small-box {
+  min-height: 100px;
+  width: 100px;
+}
+
+.content-large-box {
+  min-height: 300px;
+  width: 300px;
+}
+
+.clickable {
+  cursor: pointer;
 }

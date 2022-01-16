@@ -1,35 +1,44 @@
-﻿using ED_Virtual_Wing.Models;
-using Microsoft.AspNetCore.Identity;
+﻿using ED_Virtual_Wing.Data;
+using ED_Virtual_Wing.Models;
+using Newtonsoft.Json;
 using System.Net.WebSockets;
+using System.Text;
 
 namespace ED_Virtual_Wing.WebSockets
 {
-    public static class WebSocketServer
+    public class WebSocketServer
     {
-        public class AuthenticationStatus
+        private List<WebSocketSession> WebSocketSessions { get; } = new();
+        private Dictionary<string, Type> WebSocketHandlers { get; } = new();
+        public WebSocketServer()
         {
-            public bool IsAuthenticated { get; set; }
-
-            public AuthenticationStatus(bool isAuthenticated)
+            IEnumerable<Type> webSocketHandlerTypes = GetType().Assembly.GetTypes()
+                .Where(t => !t.IsAbstract && t.IsClass && t.IsSubclassOf(typeof(WebSocketHandler)));
+            foreach (Type type in webSocketHandlerTypes)
             {
-                IsAuthenticated = isAuthenticated;
+                WebSocketHandlers[type.Name] = type;
             }
         }
 
-        public static async Task ProcessRequest(HttpContext httpContext, UserManager<ApplicationUser> userManager)
+        public async Task ProcessRequest(HttpContext httpContext, ApplicationUser? applicationUser, IServiceScopeFactory serviceScopeFactory)
         {
-            WebSocket ws = await httpContext.WebSockets.AcceptWebSocketAsync();
+            using WebSocket ws = await httpContext.WebSockets.AcceptWebSocketAsync();
             if (ws.State != WebSocketState.Open)
             {
                 return;
             }
-            bool isAuthenticated = false;
+            bool isAuthenticated = (applicationUser != null);
             WebSocketMessage authenticationMessage = new("Authentication", new AuthenticationStatus(isAuthenticated));
             await authenticationMessage.Send(ws);
-            if (!isAuthenticated)
+            if (!isAuthenticated || applicationUser == null)
             {
                 await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
                 return;
+            }
+            WebSocketSession webSocketSession = new(ws, applicationUser);
+            lock (WebSocketSessions)
+            {
+                WebSocketSessions.Add(webSocketSession);
             }
             ArraySegment<byte> buffer = new(new byte[4096]);
             bool disconnect = false;
@@ -51,6 +60,7 @@ namespace ED_Virtual_Wing.WebSockets
                 {
                     case WebSocketMessageType.Text:
                         {
+                            await ProcessMessage(webSocketSession, message, serviceScopeFactory);
                             break;
                         }
                     case WebSocketMessageType.Binary:
@@ -64,9 +74,40 @@ namespace ED_Virtual_Wing.WebSockets
                         }
                 }
             }
+            lock (WebSocketSessions)
+            {
+                WebSocketSessions.Remove(webSocketSession);
+            }
             if (ws.State == WebSocketState.Open)
             {
                 await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
+            }
+        }
+
+        private async Task ProcessMessage(WebSocketSession webSocketSession, MemoryStream messageStream, IServiceScopeFactory serviceScopeFactory)
+        {
+            using IServiceScope serviceScope = serviceScopeFactory.CreateScope();
+            string message = Encoding.UTF8.GetString(messageStream.ToArray());
+            WebSocketMessage? webSocketMessage = JsonConvert.DeserializeObject<WebSocketMessage>(message);
+            if (webSocketMessage?.Name != null && (WebSocketHandlers?.TryGetValue(webSocketMessage.Name, out Type? messageHandler) ?? false))
+            {
+                ApplicationDbContext applicationDbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                ApplicationUser? user = await applicationDbContext.Users.FindAsync(webSocketSession.User.Id);
+                if (user != null)
+                {
+                    WebSocketHandler webSocketHandler = (WebSocketHandler)ActivatorUtilities.CreateInstance(serviceScope.ServiceProvider, messageHandler);
+                    var result = await webSocketHandler.ProcessMessage(webSocketMessage, webSocketSession, user, applicationDbContext);
+                    await applicationDbContext.SaveChangesAsync();
+                }
+            }
+        }
+
+        class AuthenticationStatus
+        {
+            public bool IsAuthenticated { get; set; }
+            public AuthenticationStatus(bool isAuthenticated)
+            {
+                IsAuthenticated = isAuthenticated;
             }
         }
     }

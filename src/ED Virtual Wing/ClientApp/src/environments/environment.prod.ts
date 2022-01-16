@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  webSocketPort: 443
+  backendPort: 443,
 };

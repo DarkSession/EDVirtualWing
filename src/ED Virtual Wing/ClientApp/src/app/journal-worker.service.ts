@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { openDB, IDBPDatabase } from 'idb';
+import { WebsocketService } from './websocket.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,14 +17,13 @@ export class JournalWorkerService {
   // Music
   // Location
 
-  public constructor() {
+  public constructor(private readonly webSocketService: WebsocketService) {
     this.initialize();
   }
 
   private async initialize(): Promise<void> {
     if (!environment.production) {
       console.log("JournalWorkerService.initialize");
-      console.log("window.isSecureContext =", window.isSecureContext);
     }
     if (!window.indexedDB) {
       console.log("This browser doesn't support IndexedDB.");
@@ -59,6 +59,7 @@ export class JournalWorkerService {
     });
   }
 
+  // This is the entry point if the user wants to start sending their journal to the server.
   public async startJournalWorker(): Promise<void> {
     if (this.edVirtualWingDb === null) {
       return;
@@ -67,7 +68,7 @@ export class JournalWorkerService {
     const journalDirectoryStore = transaction.objectStore("JournalDirectory");
     const directoryHandle: FileSystemDirectoryHandle = await journalDirectoryStore.get(1);
     try {
-      if (directoryHandle !== null) {
+      if (directoryHandle !== null && directoryHandle !== undefined) {
         // Let's first check if we already have permission to read the directory
         let directoryReadPermission = await directoryHandle.queryPermission({
           mode: "read",
@@ -255,9 +256,12 @@ export class JournalWorkerService {
     }
     if (lines.length > 0) {
       console.log(lines);
+      this.webSocketService.sendMessage("SendJournal", { "hello": "world" });
+      /*
       for (const line of lines) {
 
       }
+      */
     }
   }
 }

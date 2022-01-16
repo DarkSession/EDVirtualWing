@@ -8,17 +8,20 @@ namespace ED_Virtual_Wing.WebSockets
     public class WebSocketMessage
     {
         [Required]
-        public string? Name { get; set; }
-        public object? Data { get; set; } = null;
+        public string Name { get; set; } = string.Empty;
+        public object? Data { get; set; }
+        [Required]
+        public string? MessageId { get; set; }
 
         public WebSocketMessage()
         {
         }
 
-        public WebSocketMessage(string name, object? data = null)
+        public WebSocketMessage(string name, object? data = null, string? messageId = null)
         {
             Name = name;
             Data = data;
+            MessageId = messageId ?? Guid.NewGuid().ToString();
         }
 
         public ValueTask Send(WebSocket ws)

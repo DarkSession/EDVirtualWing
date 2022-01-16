@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  webSocketPort: 7122,
+  backendPort: 7122,
 };
 
 /*

@@ -1,28 +1,31 @@
 using ED_Virtual_Wing.Data;
 using ED_Virtual_Wing.Models;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using ED_Virtual_Wing.PlayerJournal;
+using ED_Virtual_Wing.WebSockets;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddDbContext<ApplicationDbContext>();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
+{
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 8;
+})
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-})
-.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
-{
-    options.Cookie.Name = "edvwuser";
-    options.SlidingExpiration = true;
-});
+builder.Services.AddAuthentication();
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddNewtonsoftJson(options =>
+    {
+        options.UseMemberCasing();
+    });
 builder.Services.AddRazorPages();
+builder.Services.AddSingleton<WebSocketServer>();
+builder.Services.AddSingleton<JournalProcessor>();
 
 string httpOrigin = Environment.GetEnvironmentVariable("EDVW_HTTP_ORIGIN") ?? string.Empty;
 
@@ -69,7 +72,7 @@ app.UseAuthorization();
 
 app.Use((ctx, next) =>
 {
-    ctx.Response.Headers.Add("Content-Security-Policy", string.Empty);
+    // ctx.Response.Headers.Add("Content-Security-Policy", string.Empty);
     ctx.Response.Headers.Add("X-Frame-Options", "deny");
     ctx.Response.Headers.Add("X-XSS-Protection", "1; mode=block");
     ctx.Response.Headers.Add("Referrer-Policy", "strict-origin");
@@ -78,10 +81,11 @@ app.Use((ctx, next) =>
     ctx.Response.Headers.Add("Pragma", "no-cache");
     return next();
 });
-app.UseEndpoints(endpoints => {
+app.UseEndpoints(endpoints =>
+{
     endpoints.MapControllers();
 });
 
-app.MapFallbackToFile("index.html"); ;
+app.MapFallbackToFile("index.html");
 
 app.Run();

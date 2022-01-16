@@ -1,33 +1,35 @@
-<div class="content-large-box" *ngIf="formMode == FormMode.Login">
+<div class="content-large-box" *ngIf="formMode == FormMode.Login" [formGroup]="loginForm">
     <h2>Login</h2>
+    <span *ngFor="let error of errors" class="error-msg">{{ error }}</span>
     <mat-form-field>
         <mat-label>Username</mat-label>
-        <input matInput required>
+        <input matInput id="userName" formControlName="userName" minlength="1" required>
     </mat-form-field>
     <mat-form-field>
         <mat-label>Password</mat-label>
-        <input matInput type="password" required>
+        <input matInput id="password" formControlName="password" type="password" required>
     </mat-form-field>
-    <button mat-raised-button [disabled]="loading" color="primary" (click)="login()">Login</button>
+    <button mat-raised-button [disabled]="loading || !loginForm.valid" color="primary" (click)="login()">Login</button>
     <br>
     <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
     <span *ngIf="!loading" class="clickable" (click)="toggleMode()">No account yet? Register here.</span>
 </div>
-<div class="content-large-box" *ngIf="formMode == FormMode.Registration">
+<div class="content-large-box" *ngIf="formMode == FormMode.Registration" [formGroup]="registrationForm">
     <h2>Registration</h2>
+    <span *ngFor="let error of errors" class="error-msg">{{ error }}</span>
     <mat-form-field>
         <mat-label>Username</mat-label>
-        <input matInput required>
+        <input matInput id="userName" formControlName="userName" required>
     </mat-form-field>
     <mat-form-field>
         <mat-label>E-Mail Address</mat-label>
-        <input matInput required>
+        <input matInput id="emailAddress" formControlName="emailAddress" type="email" required>
     </mat-form-field>
     <mat-form-field>
         <mat-label>Password</mat-label>
-        <input matInput type="password" required>
+        <input matInput id="password" formControlName="password" type="password" required>
     </mat-form-field>
-    <button mat-raised-button color="primary" [disabled]="loading" (click)="register()">Register</button>
+    <button mat-raised-button color="primary" [disabled]="loading || !registrationForm.valid" (click)="register()">Register</button>
     <br>
     <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
     <span *ngIf="!loading" class="clickable" (click)="toggleMode()">Already have an account? Login here.</span>

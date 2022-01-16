@@ -29,10 +29,12 @@ namespace ED_Virtual_Wing.Controllers
             }
         }
 
+        private UserManager<ApplicationUser> UserManager { get; }
         private SignInManager<ApplicationUser> SignInManager { get; }
 
-        public UserController(SignInManager<ApplicationUser> signInManager, ApplicationDbContext applicationDbContext)
+        public UserController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ApplicationDbContext applicationDbContext)
         {
+            UserManager = userManager;
             SignInManager = signInManager;
         }
 
@@ -45,6 +47,53 @@ namespace ED_Virtual_Wing.Controllers
             }
             Microsoft.AspNetCore.Identity.SignInResult signInResult = await SignInManager.PasswordSignInAsync(loginRequest.UserName, loginRequest.Password, true, false);
             return new LoginResponse(signInResult.Succeeded);
+        }
+
+        public class RegistrationRequest
+        {
+            [Required]
+            public string? UserName { get; set; }
+            [Required]
+            public string? Password { get; set; }
+            [Required]
+            [EmailAddress]
+            public string? Email { get; set; }
+        }
+
+        public class RegistrationResponse
+        {
+            public bool Success { get; }
+            public List<string>? Error { get; }
+            public RegistrationResponse(bool success)
+            {
+                Success = success;
+            }
+
+            public RegistrationResponse(List<string> errors) : this(false)
+            {
+                Error = errors;
+            }
+        }
+
+        [HttpPost("register")]
+        public async Task<ActionResult<RegistrationResponse>> Register(RegistrationRequest registrationRequest)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+            ApplicationUser user = new()
+            {
+                UserName = registrationRequest.UserName,
+                Email = registrationRequest.Email,
+            };
+            IdentityResult result = await UserManager.CreateAsync(user, registrationRequest.Password);
+            if (result.Succeeded)
+            {
+                await SignInManager.SignInAsync(user, true);
+                return new RegistrationResponse(true);
+            }
+            return new RegistrationResponse(result.Errors.Select(e => e.Description).ToList());
         }
     }
 }

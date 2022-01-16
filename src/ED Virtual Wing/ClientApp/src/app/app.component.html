@@ -13,13 +13,16 @@
 </mat-toolbar>
 
 <div class="container">
-  <div [ngSwitch]="websocketServiceService.connectionStatus">
-    <div *ngSwitchCase="ConnectionStatus.Connecting">Connecting</div>
-    <div *ngSwitchCase="ConnectionStatus.NoConnection">NoConnection</div>
+  <div [ngSwitch]="websocketService.connectionStatus">
+    <div *ngSwitchCase="ConnectionStatus.Connecting">Connecting to server...</div>
+    <div *ngSwitchCase="ConnectionStatus.NoConnection">Error! Connection to server failed!</div>
     <div *ngSwitchCase="ConnectionStatus.NotAuthenticated">
       <app-login-registration></app-login-registration>
     </div>
-    <div *ngSwitchCase="ConnectionStatus.Authenticated">Authenticated
+    <div *ngSwitchCase="ConnectionStatus.Authenticated">
+      <div>
+        You are authenticated.
+      </div>
       <div *ngIf="!journalWorkerService.isBrowserSupported">
         We are sorry, but your browser doesn't support the required functionality for this website.<br>
         Currently, mainly Chromium based browsers (such as Chromium, Google Chrome, Edge) support the required

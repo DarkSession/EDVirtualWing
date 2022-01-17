@@ -10,7 +10,9 @@ namespace ED_Virtual_Wing.Models
 
         public async Task<Commander> GetCommander(ApplicationDbContext applicationDbContext)
         {
-            Commander? commander = await applicationDbContext.Commanders.FirstOrDefaultAsync(c => c.User == this);
+            Commander? commander = await applicationDbContext.Commanders
+                .Include(c => c.CurrentStarSystem)
+                .FirstOrDefaultAsync(c => c.User == this);
             if (commander == null)
             {
                 commander = new()

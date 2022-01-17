@@ -7,11 +7,13 @@ namespace ED_Virtual_Wing.PlayerJournal
 {
     public class JournalProcessor
     {
+        private ILogger Logger { get; }
         private Dictionary<string, Type> JournalEntryProcessors { get; } = new();
         public List<string> RelevantJournalEvents { get; }
 
-        public JournalProcessor()
+        public JournalProcessor(ILogger<JournalProcessor> logger)
         {
+            Logger = logger;
             IEnumerable<Type> webSocketHandlerTypes = GetType().Assembly.GetTypes()
                 .Where(t => !t.IsAbstract && t.IsClass && t.IsSubclassOf(typeof(JournalEventHandler)));
             foreach (Type type in webSocketHandlerTypes)
@@ -26,7 +28,7 @@ namespace ED_Virtual_Wing.PlayerJournal
             JournalEntryBase? journalEntry = userJournalEntry.ToObject<JournalEntryBase>();
             if (journalEntry != null && journalEntry.Timestamp >= commander.JournalLastEventDate)
             {
-                journalEntry.Timestamp = commander.JournalLastEventDate;
+                commander.JournalLastEventDate = journalEntry.Timestamp;
                 if (JournalEntryProcessors.TryGetValue(journalEntry.Event, out Type? eventHandlerType))
                 {
                     JournalEventHandler? journalEventHandler = (JournalEventHandler?)userJournalEntry.ToObject(eventHandlerType);
@@ -34,10 +36,10 @@ namespace ED_Virtual_Wing.PlayerJournal
                     {
                         await journalEventHandler.ProcessEntry(commander, applicationDbContext);
                     }
+
+                    Logger.Log( LogLevel.Debug, $"Processed {journalEntry.Event} event");
                 }
             }
         }
     }
-
-
 }

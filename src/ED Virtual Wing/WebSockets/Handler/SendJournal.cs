@@ -12,6 +12,16 @@ namespace ED_Virtual_Wing.WebSockets.Handler
             public List<JObject>? Entries { get; set; }
         }
 
+        class SendJournalResponse
+        {
+            public Commander Commander { get; set; }
+            public SendJournalResponse(Commander commander)
+            {
+                Commander = commander;
+            }
+        }
+
+        protected override Type? MessageDataType { get; } = typeof(SendJournalRequestData);
         private JournalProcessor JournalProcessor { get; }
         public SendJournal(JournalProcessor journalProcessor)
         {
@@ -28,7 +38,7 @@ namespace ED_Virtual_Wing.WebSockets.Handler
                 {
                     await JournalProcessor.ProcessUserJournalEntry(userJournalEntry, commander, applicationDbContext);
                 }
-                return new WebSocketHandlerResultSuccess();
+                return new WebSocketHandlerResultSuccess(new SendJournalResponse(commander));
             }
             return new WebSocketHandlerResultError();
         }

@@ -16,8 +16,8 @@ namespace ED_Virtual_Wing.WebSockets.Handler
                 JournalLastEventDate = commander.JournalLastEventDate;
             }
         }
-
-        private JournalProcessor JournalProcessor { get; } 
+        protected override Type? MessageDataType { get; } = null;
+        private JournalProcessor JournalProcessor { get; }
         public GetJournalSettings(JournalProcessor journalProcessor)
         {
             JournalProcessor = journalProcessor;

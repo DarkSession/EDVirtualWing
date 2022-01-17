@@ -1,16 +1,30 @@
 ﻿using ED_Virtual_Wing.Data;
 using ED_Virtual_Wing.Models;
+using Newtonsoft.Json.Linq;
+using NJsonSchema;
+using NJsonSchema.Validation;
+
 namespace ED_Virtual_Wing.WebSockets
 {
     public abstract class WebSocketHandler
     {
-        // protected abstract Type? MessageDataType { get; }
+        protected abstract Type? MessageDataType { get; }
 
         public abstract ValueTask<WebSocketHandlerResult> ProcessMessage(WebSocketMessageReceived message, WebSocketSession webSocketSession, ApplicationUser user, ApplicationDbContext applicationDbContext);
 
-        public bool ValidateMessageData(object? data)
+        public bool ValidateMessageData(JObject? data)
         {
-            return true;
+            if (data == null)
+            {
+                return (MessageDataType == null);
+            }
+            else if (MessageDataType == null)
+            {
+                return true;
+            }
+            JsonSchema schema = JsonSchema.FromType(MessageDataType);
+            ICollection<ValidationError> errors = schema.Validate(data);
+            return errors.Count == 0;
         }
     }
 

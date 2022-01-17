@@ -23,7 +23,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference> 
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" /> 
+    <PackageReference Include="NJsonSchema" Version="10.6.6" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.0" />
   </ItemGroup>
 
@@ -36,6 +37,15 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
+    <Folder Include="PlayerJournal\Events\Combat\" />
+    <Folder Include="PlayerJournal\Events\Exploration\" />
+    <Folder Include="PlayerJournal\Events\FleetCarriers\" />
+    <Folder Include="PlayerJournal\Events\Odyssey\" />
+    <Folder Include="PlayerJournal\Events\Powerplay\" />
+    <Folder Include="PlayerJournal\Events\Squadrons\" />
+    <Folder Include="PlayerJournal\Events\Startup\" />
+    <Folder Include="PlayerJournal\Events\StationServices\" />
+    <Folder Include="PlayerJournal\Events\Trade\" />
   </ItemGroup>
 
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

@@ -3,6 +3,7 @@ import { environment } from 'src/environments/environment';
 import { openDB, IDBPDatabase } from 'idb';
 import { WebsocketService } from './websocket.service';
 import * as dayjs from 'dayjs';
+import { Commander } from './interfaces/commander';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,8 @@ export class JournalWorkerService {
   private relevantEvents: string[] = [];
   private journalLastDate: dayjs.Dayjs = dayjs();
   public serverSettingsReceived: boolean = false;
+  public journalWorkerActive: boolean = false;
+  public commander: Commander | null = null;
 
   // relevant events:
   // Fileheader
@@ -213,6 +216,7 @@ export class JournalWorkerService {
         journalWorkerRunning = false;
       }
     }, 1000);
+    this.journalWorkerActive = true;
   }
 
   private async journalWorker(journalFile: JournalFileChangeTracker, statusFile: FileChangeTracker): Promise<void> {
@@ -274,9 +278,12 @@ export class JournalWorkerService {
         if (!environment.production) {
           console.log(`${relevantEntries.length} relevant entries`);
         }
-        await this.webSocketService.sendMessageAndWaitForResponse("SendJournal", {
+        const response = await this.webSocketService.sendMessageAndWaitForResponse<SendJournalResponse>("SendJournal", {
           Entries: relevantEntries,
         });
+        if (response?.Data.Commander) {
+          this.commander = response?.Data.Commander;
+        }
       }
     }
     // After everything is done, we save the last modified timestamp and the last position of the current gamejournal file.
@@ -314,4 +321,8 @@ interface JournalEntry {
 interface GetJournalSettingsResponse {
   Events: string[];
   JournalLastEventDate: string;
+}
+
+interface SendJournalResponse {
+  Commander: Commander;
 }

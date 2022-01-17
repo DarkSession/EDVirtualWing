@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { GameActivity } from './interfaces/commander';
 import { JournalWorkerService } from './journal-worker.service';
 import { ConnectionStatus, WebsocketService } from './websocket.service';
 
@@ -9,6 +10,7 @@ import { ConnectionStatus, WebsocketService } from './websocket.service';
 })
 export class AppComponent implements OnInit, OnDestroy {
   public readonly ConnectionStatus = ConnectionStatus;
+  public readonly GameActivity = GameActivity;
 
   public constructor(
     public readonly websocketService: WebsocketService,

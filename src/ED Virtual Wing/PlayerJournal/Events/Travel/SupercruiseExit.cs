@@ -1,12 +1,13 @@
 ﻿using ED_Virtual_Wing.Data;
 using ED_Virtual_Wing.Models;
 
-namespace ED_Virtual_Wing.PlayerJournal.Events
+namespace ED_Virtual_Wing.PlayerJournal.Events.Travel
 {
-    public class Music : JournalEventHandler
+    class SupercruiseExit : JournalEventHandler
     {
         public override ValueTask ProcessEntry(Commander commander, ApplicationDbContext applicationDbContext)
         {
+            commander.GameActivity = GameActivity.None;
             return ValueTask.CompletedTask;
         }
     }

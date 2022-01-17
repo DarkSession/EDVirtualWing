@@ -1,6 +1,8 @@
 ﻿using ED_Virtual_Wing.Data;
 using ED_Virtual_Wing.Models;
-using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using NJsonSchema;
+using NJsonSchema.Validation;
 using System.Net.WebSockets;
 using System.Text;
 
@@ -8,9 +10,10 @@ namespace ED_Virtual_Wing.WebSockets
 {
     public class WebSocketServer
     {
-        private readonly ILogger Logger;
+        private ILogger Logger { get; }
         private List<WebSocketSession> WebSocketSessions { get; } = new();
         private Dictionary<string, Type> WebSocketHandlers { get; } = new();
+        private JsonSchema WebSocketMessageReceivedSchema { get; } = JsonSchema.FromType<WebSocketMessageReceived>();
         public WebSocketServer(ILogger<WebSocketServer> logger)
         {
             Logger = logger;
@@ -90,40 +93,45 @@ namespace ED_Virtual_Wing.WebSockets
         {
             using IServiceScope serviceScope = serviceScopeFactory.CreateScope();
             string message = Encoding.UTF8.GetString(messageStream.ToArray());
-            WebSocketMessageReceived? webSocketMessage = JsonConvert.DeserializeObject<WebSocketMessageReceived>(message);
-            if (webSocketMessage?.Name != null && (WebSocketHandlers?.TryGetValue(webSocketMessage.Name, out Type? messageHandler) ?? false))
+            JObject messageObject = JObject.Parse(message);
+            ICollection<ValidationError> validationErrors = WebSocketMessageReceivedSchema.Validate(messageObject);
+            if (validationErrors.Count == 0)
             {
-                ApplicationDbContext applicationDbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                ApplicationUser? user = await applicationDbContext.Users.FindAsync(webSocketSession.User.Id);
-                if (user != null)
+                WebSocketMessageReceived? webSocketMessage = messageObject.ToObject<WebSocketMessageReceived>();
+                if (webSocketMessage?.Name != null && (WebSocketHandlers?.TryGetValue(webSocketMessage.Name, out Type? messageHandler) ?? false))
                 {
-                    try
+                    ApplicationDbContext applicationDbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                    ApplicationUser? user = await applicationDbContext.Users.FindAsync(webSocketSession.User.Id);
+                    if (user != null)
                     {
-                        WebSocketHandler webSocketHandler = (WebSocketHandler)ActivatorUtilities.CreateInstance(serviceScope.ServiceProvider, messageHandler);
-                        if (webSocketHandler.ValidateMessageData(webSocketMessage.Data))
+                        try
                         {
-                            WebSocketHandlerResult result = await webSocketHandler.ProcessMessage(webSocketMessage, webSocketSession, user, applicationDbContext);
-                            if (result is WebSocketHandlerResultSuccess webSocketHandlerResultSuccess)
+                            WebSocketHandler webSocketHandler = (WebSocketHandler)ActivatorUtilities.CreateInstance(serviceScope.ServiceProvider, messageHandler);
+                            if (webSocketHandler.ValidateMessageData(webSocketMessage.Data))
                             {
-                                WebSocketMessage responseMessage = new(webSocketMessage.Name, webSocketHandlerResultSuccess.ResponseData, webSocketMessage.MessageId);
-                                await responseMessage.Send(webSocketSession.WebSocket);
+                                WebSocketHandlerResult result = await webSocketHandler.ProcessMessage(webSocketMessage, webSocketSession, user, applicationDbContext);
+                                if (result is WebSocketHandlerResultSuccess webSocketHandlerResultSuccess)
+                                {
+                                    WebSocketMessage responseMessage = new(webSocketMessage.Name, webSocketHandlerResultSuccess.ResponseData, webSocketMessage.MessageId);
+                                    await responseMessage.Send(webSocketSession.WebSocket);
+                                }
+                                else if (result is WebSocketHandlerResultError webSocketHandlerResultError)
+                                {
+                                    WebSocketErrorMessage webSocketErrorMessage = new(webSocketMessage.Name, webSocketHandlerResultError.Errors, webSocketMessage.MessageId);
+                                    await webSocketErrorMessage.Send(webSocketSession.WebSocket);
+                                }
+                                await applicationDbContext.SaveChangesAsync();
                             }
-                            else if (result is WebSocketHandlerResultError webSocketHandlerResultError)
+                            else
                             {
-                                WebSocketErrorMessage webSocketErrorMessage = new(webSocketMessage.Name, webSocketHandlerResultError.Errors, webSocketMessage.MessageId);
+                                WebSocketErrorMessage webSocketErrorMessage = new(webSocketMessage.Name, new List<string>() { "The message data received is not in the expected format." });
                                 await webSocketErrorMessage.Send(webSocketSession.WebSocket);
                             }
-                            await applicationDbContext.SaveChangesAsync();
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            WebSocketErrorMessage webSocketErrorMessage = new(webSocketMessage.Name, new List<string>() { "The message data received is not in the expected format." });
-                            await webSocketErrorMessage.Send(webSocketSession.WebSocket);
+                            Logger.LogError(ex, "Error processing WebSocket Message");
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.LogError(ex, "Error processing WebSocket Message");
                     }
                 }
             }

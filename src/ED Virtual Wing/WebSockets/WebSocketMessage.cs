@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.ComponentModel.DataAnnotations;
 using System.Net.WebSockets;
 using System.Text;
@@ -7,10 +8,8 @@ namespace ED_Virtual_Wing.WebSockets
 {
     public class WebSocketMessage
     {
-        [Required]
         public string Name { get; set; } = string.Empty;
         public object? Data { get; set; }
-        [Required]
         public string? MessageId { get; set; }
 
         public WebSocketMessage()
@@ -30,5 +29,23 @@ namespace ED_Virtual_Wing.WebSockets
             ReadOnlyMemory<byte> message = new(Encoding.UTF8.GetBytes(msg));
             return ws.SendAsync(message, WebSocketMessageType.Text, true, CancellationToken.None);
         }
+    }
+
+    public class WebSocketErrorMessage : WebSocketMessage
+    {
+        public List<string> Errors { get; }
+        public WebSocketErrorMessage(string name, List<string> errors, string? messageId = null) : base(name, null, messageId)
+        {
+            Errors = errors;
+        }
+    }
+
+    public class WebSocketMessageReceived
+    {
+        [Required]
+        public string Name { get; set; } = string.Empty;
+        public JObject? Data { get; set; }
+        [Required]
+        public string? MessageId { get; set; }
     }
 }

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { openDB, IDBPDatabase } from 'idb';
 import { WebsocketService } from './websocket.service';
+import * as dayjs from 'dayjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,9 @@ export class JournalWorkerService {
   private journalWorkerInterval: any;
   public isBrowserSupported = true;
   public requiredUserPermissionsGranted = true;
+  private relevantEvents: string[] = [];
+  private journalLastDate: dayjs.Dayjs = dayjs();
+  public serverSettingsReceived: boolean = false;
 
   // relevant events:
   // Fileheader
@@ -57,6 +61,14 @@ export class JournalWorkerService {
         }
       },
     });
+    // We want to get some information from the server.
+    // Depending on the authentication status, this can take a while. Therefore, we shouldn't place any other essential operations further below.
+    const relevantEvents = await this.webSocketService.sendMessageAndWaitForResponse<GetJournalSettingsResponse>("GetJournalSettings", {});
+    if (relevantEvents !== null) {
+      this.serverSettingsReceived = true;
+      this.relevantEvents = relevantEvents.Data.Events;
+      this.journalLastDate = dayjs(relevantEvents.Data.JournalLastEventDate);
+    }
   }
 
   // This is the entry point if the user wants to start sending their journal to the server.
@@ -214,10 +226,10 @@ export class JournalWorkerService {
     }
     // We request the metadata of the journal file
     const journal: File = await journalFile.handle.getFile();
+    let lastPosition = journalFile.lastPosition;
     // Then we check if it has been modified since we last checked
     if (journal.lastModified > journalFile.lastModified) {
       // We only read the new data
-      let lastPosition = journalFile.lastPosition;
       const newJournalDataBlob: Blob = journal.slice(lastPosition);
       const newJournalDataStream = newJournalDataBlob.stream();
       const newJournalDataStreamReader = newJournalDataStream.getReader();
@@ -245,23 +257,37 @@ export class JournalWorkerService {
           break;
         }
       }
-      journalFile.lastModified = journal.lastModified;
-      journalFile.lastPosition = lastPosition;
-      if (this.edVirtualWingDb !== null) {
-        const transaction = this.edVirtualWingDb.transaction("JournalDirectory", "readwrite");
-        const journalDirectoryStore = transaction.objectStore("JournalDirectory");
-        journalDirectoryStore.put(lastPosition, journalFile.handle.name);
-        transaction.commit();
+    }
+    let journalLastDate = this.journalLastDate;
+    if (lines.length > 0) {
+      const relevantEntries: JournalEntry[] = [];
+      for (const journalEntry of lines) {
+        if (this.relevantEvents.includes(journalEntry.event)) {
+          const entryTime = dayjs(journalEntry.timestamp);
+          if (entryTime >= journalLastDate) {
+            relevantEntries.push(journalEntry);
+            journalLastDate = entryTime;
+          }
+        }
+      }
+      if (relevantEntries.length > 0) {
+        if (!environment.production) {
+          console.log(`${relevantEntries.length} relevant entries`);
+        }
+        await this.webSocketService.sendMessageAndWaitForResponse("SendJournal", {
+          Entries: relevantEntries,
+        });
       }
     }
-    if (lines.length > 0) {
-      console.log(lines);
-      this.webSocketService.sendMessage("SendJournal", { "hello": "world" });
-      /*
-      for (const line of lines) {
-
-      }
-      */
+    // After everything is done, we save the last modified timestamp and the last position of the current gamejournal file.
+    journalFile.lastModified = journal.lastModified;
+    journalFile.lastPosition = lastPosition;
+    this.journalLastDate = journalLastDate;
+    if (this.edVirtualWingDb !== null) {
+      const transaction = this.edVirtualWingDb.transaction("JournalDirectory", "readwrite");
+      const journalDirectoryStore = transaction.objectStore("JournalDirectory");
+      journalDirectoryStore.put(lastPosition, journalFile.handle.name);
+      transaction.commit();
     }
   }
 }
@@ -283,4 +309,9 @@ interface JournalFileChangeTracker extends FileChangeTracker {
 interface JournalEntry {
   timestamp: string;
   event: string;
+}
+
+interface GetJournalSettingsResponse {
+  Events: string[];
+  JournalLastEventDate: string;
 }

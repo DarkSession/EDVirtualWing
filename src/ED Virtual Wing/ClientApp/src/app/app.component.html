@@ -28,8 +28,16 @@
         Currently, mainly Chromium based browsers (such as Chromium, Google Chrome, Edge) support the required
         functions.
       </div>
-      <button *ngIf="journalWorkerService.isBrowserSupported" (click)="journalWorkerService.startJournalWorker()">Start
-        journal worker</button>
+      <div *ngIf="journalWorkerService.isBrowserSupported">
+        <div *ngIf="!journalWorkerService.serverSettingsReceived; else journalWorkerBtn">
+          Waiting to receive settings from server...
+        </div>
+        <ng-template #journalWorkerBtn>
+          <button (click)="journalWorkerService.startJournalWorker()">Start
+            journal worker</button>
+        </ng-template>
+      </div>
+
       <!--<router-outlet></router-outlet>-->
     </div>
   </div>

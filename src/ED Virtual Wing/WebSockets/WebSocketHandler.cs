@@ -4,21 +4,18 @@ namespace ED_Virtual_Wing.WebSockets
 {
     public abstract class WebSocketHandler
     {
-        public abstract ValueTask<WebSocketHandlerResult> ProcessMessage(WebSocketMessage message, WebSocketSession webSocketSession, ApplicationUser user, ApplicationDbContext applicationDbContext);
+        // protected abstract Type? MessageDataType { get; }
 
-        protected WebSocketHandlerResultSuccess CreateResponseFromMessage(WebSocketMessage message, object data)
+        public abstract ValueTask<WebSocketHandlerResult> ProcessMessage(WebSocketMessageReceived message, WebSocketSession webSocketSession, ApplicationUser user, ApplicationDbContext applicationDbContext);
+
+        public bool ValidateMessageData(object? data)
         {
-            return new WebSocketHandlerResultSuccess(new WebSocketMessage(message.Name, data, message.MessageId));
+            return true;
         }
     }
 
     public abstract class WebSocketHandlerResult
     {
-        public WebSocketMessage? Response { get; }
-        protected WebSocketHandlerResult(WebSocketMessage response)
-        {
-            Response = response;
-        }
     }
 
     /// <summary>
@@ -26,8 +23,18 @@ namespace ED_Virtual_Wing.WebSockets
     /// </summary>
     public class WebSocketHandlerResultSuccess : WebSocketHandlerResult
     {
-        public WebSocketHandlerResultSuccess(WebSocketMessage response) : base(response)
+        public object ResponseData { get; }
+        public WebSocketHandlerResultSuccess(object responseData)
         {
+            ResponseData = responseData;
+        }
+
+        public WebSocketHandlerResultSuccess()
+        {
+            ResponseData = new WebSocketHandlerResultSuccessData()
+            {
+                Success = true,
+            };
         }
     }
 
@@ -36,7 +43,7 @@ namespace ED_Virtual_Wing.WebSockets
     /// </summary>
     public class WebSocketHandlerResultVoid : WebSocketHandlerResult
     {
-        public WebSocketHandlerResultVoid() : base(null)
+        public WebSocketHandlerResultVoid()
         {
         }
     }
@@ -47,9 +54,14 @@ namespace ED_Virtual_Wing.WebSockets
     public class WebSocketHandlerResultError : WebSocketHandlerResult
     {
         public List<string> Errors { get; }
-        public WebSocketHandlerResultError(List<string>? errors = null) : base(null)
+        public WebSocketHandlerResultError(List<string>? errors = null)
         {
             Errors = errors ?? new List<string>();
         }
+    }
+
+    public class WebSocketHandlerResultSuccessData
+    {
+        public bool Success { get; set; }
     }
 }

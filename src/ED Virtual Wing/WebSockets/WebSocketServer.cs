@@ -8,10 +8,12 @@ namespace ED_Virtual_Wing.WebSockets
 {
     public class WebSocketServer
     {
+        private readonly ILogger Logger;
         private List<WebSocketSession> WebSocketSessions { get; } = new();
         private Dictionary<string, Type> WebSocketHandlers { get; } = new();
-        public WebSocketServer()
+        public WebSocketServer(ILogger<WebSocketServer> logger)
         {
+            Logger = logger;
             IEnumerable<Type> webSocketHandlerTypes = GetType().Assembly.GetTypes()
                 .Where(t => !t.IsAbstract && t.IsClass && t.IsSubclassOf(typeof(WebSocketHandler)));
             foreach (Type type in webSocketHandlerTypes)
@@ -51,7 +53,7 @@ namespace ED_Virtual_Wing.WebSockets
                     webSocketReceiveResult = await ws.ReceiveAsync(buffer, CancellationToken.None);
                     if (buffer.Array != null)
                     {
-                        message.Write(buffer.Array, buffer.Offset, buffer.Count);
+                        message.Write(buffer.Array, buffer.Offset, webSocketReceiveResult.Count);
                     }
                 }
                 while (!webSocketReceiveResult.EndOfMessage);
@@ -88,16 +90,41 @@ namespace ED_Virtual_Wing.WebSockets
         {
             using IServiceScope serviceScope = serviceScopeFactory.CreateScope();
             string message = Encoding.UTF8.GetString(messageStream.ToArray());
-            WebSocketMessage? webSocketMessage = JsonConvert.DeserializeObject<WebSocketMessage>(message);
+            WebSocketMessageReceived? webSocketMessage = JsonConvert.DeserializeObject<WebSocketMessageReceived>(message);
             if (webSocketMessage?.Name != null && (WebSocketHandlers?.TryGetValue(webSocketMessage.Name, out Type? messageHandler) ?? false))
             {
                 ApplicationDbContext applicationDbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                 ApplicationUser? user = await applicationDbContext.Users.FindAsync(webSocketSession.User.Id);
                 if (user != null)
                 {
-                    WebSocketHandler webSocketHandler = (WebSocketHandler)ActivatorUtilities.CreateInstance(serviceScope.ServiceProvider, messageHandler);
-                    var result = await webSocketHandler.ProcessMessage(webSocketMessage, webSocketSession, user, applicationDbContext);
-                    await applicationDbContext.SaveChangesAsync();
+                    try
+                    {
+                        WebSocketHandler webSocketHandler = (WebSocketHandler)ActivatorUtilities.CreateInstance(serviceScope.ServiceProvider, messageHandler);
+                        if (webSocketHandler.ValidateMessageData(webSocketMessage.Data))
+                        {
+                            WebSocketHandlerResult result = await webSocketHandler.ProcessMessage(webSocketMessage, webSocketSession, user, applicationDbContext);
+                            if (result is WebSocketHandlerResultSuccess webSocketHandlerResultSuccess)
+                            {
+                                WebSocketMessage responseMessage = new(webSocketMessage.Name, webSocketHandlerResultSuccess.ResponseData, webSocketMessage.MessageId);
+                                await responseMessage.Send(webSocketSession.WebSocket);
+                            }
+                            else if (result is WebSocketHandlerResultError webSocketHandlerResultError)
+                            {
+                                WebSocketErrorMessage webSocketErrorMessage = new(webSocketMessage.Name, webSocketHandlerResultError.Errors, webSocketMessage.MessageId);
+                                await webSocketErrorMessage.Send(webSocketSession.WebSocket);
+                            }
+                            await applicationDbContext.SaveChangesAsync();
+                        }
+                        else
+                        {
+                            WebSocketErrorMessage webSocketErrorMessage = new(webSocketMessage.Name, new List<string>() { "The message data received is not in the expected format." });
+                            await webSocketErrorMessage.Send(webSocketSession.WebSocket);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError(ex, "Error processing WebSocket Message");
+                    }
                 }
             }
         }

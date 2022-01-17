@@ -9,6 +9,10 @@ export class WebsocketService {
   public connectionStatus: ConnectionStatus = ConnectionStatus.Connecting;
   private initalizeTimeout: any | null = null;
   private webSocket: WebSocket | null = null;
+  private messageQueue: WebSocketMessageQueueItem[] = [];
+  private responseCallbacks: {
+    [key: string]: (response: WebSocketMessage | null) => void;
+  } = {};
 
   public constructor() {
     this.initalize();
@@ -23,6 +27,7 @@ export class WebsocketService {
   }
 
   private initalize(): void {
+    this.failCallbacks();
     this.connectionStatus = ConnectionStatus.Connecting;
     this.webSocket = new WebSocket(((window.location.protocol == "http:") ? "ws://" : "wss://") + window.location.hostname + ":" + environment.backendPort + "/ws");
     this.webSocket.onopen = () => {
@@ -47,6 +52,7 @@ export class WebsocketService {
       }
       if (this.connectionStatus != ConnectionStatus.NotAuthenticated) {
         this.connectionStatus = ConnectionStatus.NoConnection;
+        this.failCallbacks();
       }
     };
     this.webSocket.onerror = (event: Event) => {
@@ -63,10 +69,17 @@ export class WebsocketService {
     };
   }
 
+  private failCallbacks(): void {
+    for (const key in this.responseCallbacks) {
+      this.responseCallbacks[key](null);
+    }
+    this.responseCallbacks= {};
+  }
+
   private async processMessage(message: WebSocketMessage): Promise<void> {
     switch (message.Name) {
       case "Authentication": {
-        const authenticationData: WebSocketMessageAuthenticationData = message.Data;
+        const authenticationData: WebSocketMessageAuthenticationData = message.Data as any;
         if (authenticationData.IsAuthenticated) {
           this.connectionStatus = ConnectionStatus.Authenticated;
           for (const queueItem of this.messageQueue) {
@@ -100,19 +113,19 @@ export class WebsocketService {
     this.sendMessageInternal(message);
   }
 
-  public sendMessageAndWaitForResponse(name: string, data: any): Promise<WebSocketMessage> {
+  public sendMessageAndWaitForResponse<T>(name: string, data: any): Promise<WebSocketMessage<T> | null> {
     const message: WebSocketMessage = {
       Name: name,
       Data: data,
       MessageId: Guid.create().toString(),
     };
     let messageResolve;
-    const result: Promise<WebSocketMessage> = new Promise((resolve) => { messageResolve = resolve; });
+    const result: Promise<WebSocketMessage<T> | null> = new Promise((resolve) => { messageResolve = resolve; });
     this.sendMessageInternal(message, messageResolve);
     return result;
   }
 
-  private sendMessageInternal(message: WebSocketMessage, callback?: (response: WebSocketMessage) => void): void {
+  private sendMessageInternal(message: WebSocketMessage, callback?: (response: WebSocketMessage | null) => void): void {
     if (this.connectionStatus == ConnectionStatus.Authenticated && this.webSocket != null) {
       if (callback && message.MessageId) {
         this.responseCallbacks[message.MessageId] = callback;
@@ -126,11 +139,6 @@ export class WebsocketService {
       });
     }
   }
-
-  private messageQueue: WebSocketMessageQueueItem[] = [];
-  private responseCallbacks: {
-    [key: string]: (response: WebSocketMessage) => void;
-  } = {};
 }
 
 export enum ConnectionStatus {
@@ -140,15 +148,15 @@ export enum ConnectionStatus {
   NoConnection,
 }
 
-export interface WebSocketMessage {
+export interface WebSocketMessage<T = unknown> {
   Name: string;
-  Data: any;
+  Data: T;
   MessageId?: string;
 }
 
 interface WebSocketMessageQueueItem {
   message: WebSocketMessage;
-  callback?: (response: WebSocketMessage) => void;
+  callback?: (response: WebSocketMessage | null) => void;
 }
 
 interface WebSocketMessageAuthenticationData {

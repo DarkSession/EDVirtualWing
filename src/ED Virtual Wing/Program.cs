@@ -4,6 +4,8 @@ using ED_Virtual_Wing.PlayerJournal;
 using ED_Virtual_Wing.WebSockets;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 
 // Add services to the container.
 builder.Services.AddDbContext<ApplicationDbContext>();
@@ -77,8 +79,8 @@ app.Use((ctx, next) =>
     ctx.Response.Headers.Add("X-XSS-Protection", "1; mode=block");
     ctx.Response.Headers.Add("Referrer-Policy", "strict-origin");
     ctx.Response.Headers.Add("X-Content-Type-Options", "nosniff");
-    ctx.Response.Headers.Add("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0");
-    ctx.Response.Headers.Add("Pragma", "no-cache");
+    // ctx.Response.Headers.Add("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0");
+    // ctx.Response.Headers.Add("Pragma", "no-cache");
     return next();
 });
 app.UseEndpoints(endpoints =>

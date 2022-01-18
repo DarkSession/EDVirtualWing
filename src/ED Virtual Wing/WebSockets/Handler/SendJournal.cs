@@ -38,6 +38,7 @@ namespace ED_Virtual_Wing.WebSockets.Handler
                 {
                     await JournalProcessor.ProcessUserJournalEntry(userJournalEntry, commander, applicationDbContext);
                 }
+                await applicationDbContext.SaveChangesAsync();
                 return new WebSocketHandlerResultSuccess(new SendJournalResponse(commander));
             }
             return new WebSocketHandlerResultError();

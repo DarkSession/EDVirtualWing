@@ -37,7 +37,7 @@ namespace ED_Virtual_Wing.PlayerJournal
                         await journalEventHandler.ProcessEntry(commander, applicationDbContext);
                     }
 
-                    Logger.Log( LogLevel.Debug, $"Processed {journalEntry.Event} event");
+                    Logger.Log(LogLevel.Debug, $"Processed {journalEntry.Event} event");
                 }
             }
         }

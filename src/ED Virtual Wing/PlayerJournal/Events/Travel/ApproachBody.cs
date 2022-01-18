@@ -3,12 +3,13 @@ using ED_Virtual_Wing.Models;
 
 namespace ED_Virtual_Wing.PlayerJournal.Events.Travel
 {
-    class SupercruiseEntry : JournalEventHandler
+    public class ApproachBody : JournalEventHandler
     {
+        public long SystemAddress { get; set; }
+        public int BodyID { get; set; }
         public override ValueTask ProcessEntry(Commander commander, ApplicationDbContext applicationDbContext)
         {
-            commander.GameActivity = GameActivity.Supercruise;
-            commander.CurrentStation = null;
+            // We are missing an API / database where we can query the body.
             return ValueTask.CompletedTask;
         }
     }

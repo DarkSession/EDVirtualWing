@@ -12,12 +12,16 @@ import { LoginRegistrationComponent } from './components/login-registration/logi
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { CommanderComponent } from './components/commander/commander.component';
+import { JournalWorkerComponent } from './components/journal-worker/journal-worker.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginRegistrationComponent,
+    CommanderComponent,
+    JournalWorkerComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

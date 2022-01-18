@@ -159,6 +159,7 @@ export class JournalWorkerService {
     if (journalFile !== null && statusFile !== null) {
       if (!environment.production) {
         console.log("Required files found.");
+        console.log("Journal file:", journalFile.file.name);
       }
       if (this.edVirtualWingDb !== null) {
         const transaction = this.edVirtualWingDb.transaction("JournalDirectory", "readwrite");
@@ -221,13 +222,6 @@ export class JournalWorkerService {
 
   private async journalWorker(journalFile: JournalFileChangeTracker, statusFile: FileChangeTracker): Promise<void> {
     const lines: JournalEntry[] = [];
-    // We request the metadata of the status file
-    const status: File = await statusFile.handle.getFile();
-    if (status.lastModified > statusFile.lastModified) {
-      statusFile.lastModified = status.lastModified;
-      const statusEntry = new TextDecoder().decode(await status.arrayBuffer());
-      lines.push(JSON.parse(statusEntry));
-    }
     // We request the metadata of the journal file
     const journal: File = await journalFile.handle.getFile();
     let lastPosition = journalFile.lastPosition;
@@ -262,6 +256,13 @@ export class JournalWorkerService {
         }
       }
     }
+    // We request the metadata of the status file
+    const status: File = await statusFile.handle.getFile();
+    if (status.lastModified > statusFile.lastModified) {
+      statusFile.lastModified = status.lastModified;
+      const statusEntry = new TextDecoder().decode(await status.arrayBuffer());
+      lines.push(JSON.parse(statusEntry));
+    }
     let journalLastDate = this.journalLastDate;
     if (lines.length > 0) {
       const relevantEntries: JournalEntry[] = [];
@@ -272,11 +273,17 @@ export class JournalWorkerService {
             relevantEntries.push(journalEntry);
             journalLastDate = entryTime;
           }
+          else if (!environment.production) {
+            console.log(`Removed event '${journalEntry.event}' since it older than the last journal date. The event is from ${entryTime} while the most recent journal entry was from ${journalLastDate}`);
+          }
+        }
+        else if (!environment.production) {
+          console.log(`Removed event '${journalEntry.event}' since it is not relevant.`);
         }
       }
       if (relevantEntries.length > 0) {
         if (!environment.production) {
-          console.log(`${relevantEntries.length} relevant entries`);
+          console.log(`${relevantEntries.length} relevant events`);
         }
         const response = await this.webSocketService.sendMessageAndWaitForResponse<SendJournalResponse>("SendJournal", {
           Entries: relevantEntries,
@@ -284,7 +291,17 @@ export class JournalWorkerService {
         if (response?.Data.Commander) {
           this.commander = response?.Data.Commander;
         }
+        else {
+          // It probably failed, so...
+          return;
+        }
       }
+    }
+    if (!environment.production) {
+      console.log("journalWorker completed. Updating metadata");
+      console.log("journalFile.lastModified: ", journal.lastModified);
+      console.log("journalFile.lastPosition: ", lastPosition);
+      console.log("journalLastDate: ", journalLastDate.toISOString());
     }
     // After everything is done, we save the last modified timestamp and the last position of the current gamejournal file.
     journalFile.lastModified = journal.lastModified;

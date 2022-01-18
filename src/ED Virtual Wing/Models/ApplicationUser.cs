@@ -12,6 +12,7 @@ namespace ED_Virtual_Wing.Models
         {
             Commander? commander = await applicationDbContext.Commanders
                 .Include(c => c.CurrentStarSystem)
+                .Include(c => c.CurrentStation)
                 .FirstOrDefaultAsync(c => c.User == this);
             if (commander == null)
             {

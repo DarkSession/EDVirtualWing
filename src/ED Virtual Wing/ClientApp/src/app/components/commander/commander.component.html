@@ -1,0 +1,30 @@
+<div *ngIf="commander">
+    <div>
+        CMDR {{ commander.Name }}
+    </div>
+    <hr>
+    <div [ngSwitch]="commander.GameActivity">
+        <span *ngSwitchCase="GameActivity.None">None</span>
+        <span *ngSwitchCase="GameActivity.Supercruise">Supercruise</span>
+        <span *ngSwitchCase="GameActivity.Hyperspace">Hyperspace</span>
+        <span *ngSwitchCase="GameActivity.Combat">Combat</span>
+        <span *ngSwitchCase="GameActivity.Docked">Docked</span>
+        <span *ngSwitchCase="GameActivity.Landed">Landed</span>
+    </div>
+    <hr>
+    <div>
+        {{ commander.CurrentStarSystem?.Name }} <span *ngIf="commander.CurrentStation">- {{
+            commander.CurrentStation.Name
+            }} </span>
+    </div>
+    <hr>
+    <div *ngIf="shieldsUp">
+        Shields up
+    </div>
+    <div *ngIf="hardpointsDeployed">
+        Hardpoints deployed
+    </div>
+    <div *ngIf="silentRunning">
+        Silent running
+    </div>
+</div>

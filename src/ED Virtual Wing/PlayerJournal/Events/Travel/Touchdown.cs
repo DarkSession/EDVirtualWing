@@ -3,12 +3,11 @@ using ED_Virtual_Wing.Models;
 
 namespace ED_Virtual_Wing.PlayerJournal.Events.Travel
 {
-    class SupercruiseEntry : JournalEventHandler
+    public class Touchdown : JournalEventHandler
     {
         public override ValueTask ProcessEntry(Commander commander, ApplicationDbContext applicationDbContext)
         {
-            commander.GameActivity = GameActivity.Supercruise;
-            commander.CurrentStation = null;
+            commander.GameActivity = GameActivity.Landed;
             return ValueTask.CompletedTask;
         }
     }

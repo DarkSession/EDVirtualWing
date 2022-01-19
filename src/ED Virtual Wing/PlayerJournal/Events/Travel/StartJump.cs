@@ -14,7 +14,8 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Travel
                 "Supercruise" => GameActivity.Supercruise,
                 _ => commander.GameActivity,
             };
-            commander.CurrentStation = null;
+            commander.Location.Station = null;
+            commander.Target.ResetShipTarget();
             return ValueTask.CompletedTask;
         }
     }

@@ -19,11 +19,6 @@ export class JournalWorkerService {
   public journalWorkerActive: boolean = false;
   public commander: Commander | null = null;
 
-  // relevant events:
-  // Fileheader
-  // Music
-  // Location
-
   public constructor(private readonly webSocketService: WebsocketService) {
     this.initialize();
   }
@@ -41,7 +36,6 @@ export class JournalWorkerService {
     if (typeof window.showDirectoryPicker !== "function") {
       this.isBrowserSupported = false;
       console.log("window.showDirectoryPicker is not available.");
-      console.log(window, Window);
       return;
     }
     // Let us open our IndexedDB database

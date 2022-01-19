@@ -5,17 +5,17 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Other
 {
     class Music : JournalEventHandler
     {
-        public string? MusicTrack { get; set; }
+        public string MusicTrack { get; set; } = string.Empty;
 
         public override ValueTask ProcessEntry(Commander commander, ApplicationDbContext applicationDbContext)
         {
             if (!string.IsNullOrEmpty(MusicTrack) && MusicTrack.StartsWith("Combat_"))
             {
-                commander.GameActivity = GameActivity.Combat;
+                commander.ExtraFlags |= GameExtraFlags.InCombat;
             }
-            else if (commander.GameActivity == GameActivity.Combat)
+            else
             {
-                commander.GameActivity = GameActivity.None;
+                commander.ExtraFlags ^= GameExtraFlags.InCombat;
             }
             return ValueTask.CompletedTask;
         }

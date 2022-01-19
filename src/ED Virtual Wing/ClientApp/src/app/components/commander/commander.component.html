@@ -7,24 +7,37 @@
         <span *ngSwitchCase="GameActivity.None">None</span>
         <span *ngSwitchCase="GameActivity.Supercruise">Supercruise</span>
         <span *ngSwitchCase="GameActivity.Hyperspace">Hyperspace</span>
-        <span *ngSwitchCase="GameActivity.Combat">Combat</span>
         <span *ngSwitchCase="GameActivity.Docked">Docked</span>
         <span *ngSwitchCase="GameActivity.Landed">Landed</span>
+        <span *ngSwitchCase="GameActivity.InSrv">In Srv</span>
+        <span *ngSwitchCase="GameActivity.OnFoot">On Foot</span>
     </div>
     <hr>
     <div>
-        {{ commander.CurrentStarSystem?.Name }} <span *ngIf="commander.CurrentStation">- {{
-            commander.CurrentStation.Name
-            }} </span>
+        {{ commander.Location.StarSystem?.Name }}
+        <span *ngIf="commander.Location.Station">- {{ commander.Location.Station.Name }} </span>
     </div>
     <hr>
-    <div *ngIf="shieldsUp">
-        Shields up
-    </div>
     <div *ngIf="hardpointsDeployed">
         Hardpoints deployed
     </div>
     <div *ngIf="silentRunning">
         Silent running
+    </div>
+    <div *ngIf="commander.Ship" style="position: relative;">
+        <div [ngClass]="{'shield-circle': shieldsUp}" style="width: 230px; height: 230px;">
+            <div [ngClass]="{'shield-circle': shieldsUp}" style="width: 220px; height: 220px;">
+                <div [ngClass]="{'shield-circle': shieldsUp}" style="width: 210px; height: 210px;">
+                    <img src="assets/images/ships/{{commander.Ship}}.png" style="width: 200px; height: 200px;" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="commander.Target.ShipTarget">
+        <img src="assets/images/target.png" style="width: 24px; height: 24px; background-color: gray;">
+        {{ commander.Target.ShipTarget }} - {{ commander.Target.ShipTargetName }}
+    </div>
+    <div *ngIf="!commander.Target.ShipTarget && commander.Target.StarSystem">
+        {{ commander.Target.StarSystem.Name }} - {{ commander.Target.Name }}
     </div>
 </div>

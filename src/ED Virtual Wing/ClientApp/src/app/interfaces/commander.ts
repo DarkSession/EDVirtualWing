@@ -1,24 +1,50 @@
+import { StarSystemBody } from "./star-system-body";
 import { StarSystem } from "./star-system";
 import { Station } from "./station";
 
 export interface Commander {
     Name: string;
     GameActivity: GameActivity;
-    CurrentStarSystem: StarSystem;
-    CurrentStation: Station;
+    ExtraFlags: GameExtraFlags;
     GameVersion: GameVersion;
     GameMode: GameMode;
     GameModeGroupName: string;
     VehicleStatusFlags: VehicleStatusFlags;
+    Ship: Ship | null;
+    Location: CommanderLocation;
+    Target: CommanderTarget;
+}
+
+export interface CommanderTarget {
+    StarSystem: StarSystem;
+    Body: StarSystemBody;
+    Name: string;
+    ShipTarget: Ship | null;
+    ShipTargetName: string;
+}
+
+export interface CommanderLocation {
+    StarSystem: StarSystem | null;
+    Station: Station;
+    SystemBody: StarSystemBody;
+    Latitude: number;
+    Altitude: number;
+    Longitude: number;
 }
 
 export enum GameActivity {
     None = 0,
     Supercruise,
     Hyperspace,
-    Combat,
     Docked,
     Landed,
+    InSrv,
+    OnFoot,
+}
+
+export enum GameExtraFlags {
+    None = 0,
+    InCombat = 1,
 }
 
 export enum GameVersion {
@@ -77,4 +103,72 @@ export enum VehicleStatusFlags {
     AltitudeFromAverageRadius = 536870912,
     FsdJump = 1073741824,
     SrvHighBeam = 2147483648,
+}
+
+export enum OnFootStatusFlags {
+    None = 0,
+    OnFoot = 1,
+    /// <summary>
+    /// In taxi (or dropship/shuttle)
+    /// </summary>
+    InTaxi = 2,
+    /// <summary>
+    /// In multicrew (ie in someone else's ship)
+    /// </summary>
+    InMulticrew = 4,
+    OnFootInStation = 8,
+    OnFootOnPlanet = 16,
+    AimDownSight = 32,
+    LowOxygen = 64,
+    LowHealth = 128,
+    Cold = 256,
+    Hot = 512,
+    VeryCold = 1024,
+    VeryHot = 2048,
+    GlideMode = 4096,
+    OnFootInHangar = 8192,
+    OnFootSocialSpace = 16384,
+    OnFootExterior = 32768,
+    BreathableAtmosphere = 65536,
+}
+
+export enum Ship {
+    SideWinder = 128049249,
+    Eagle = 128049255,
+    Hauler = 128049261,
+    Adder = 128049267,
+    ViperMkIII = 128049273,
+    CobraMkIII = 128049279,
+    Type6 = 128049285,
+    Dolphin = 128049291,
+    Type7 = 128049297,
+    AspExplorer = 128049303,
+    Vulture = 128049309,
+    ImperialClipper = 128049315,
+    FederalDropship = 128049321,
+    Orca = 128049327,
+    Type9 = 128049333,
+    Python = 128049339,
+    BelugaLiner = 128049345,
+    FerDeLance = 128049351,
+    Anaconda = 128049363,
+    FederalCorvette = 128049369,
+    ImperialCutter = 128049375,
+    DiamondbackScout = 128671217,
+    ImperialCourier = 128671223,
+    DiamondbackExplorer = 128671831,
+    ImperialEagle = 128672138,
+    FederalAssaultShip = 128672145,
+    FederalGunship = 128672152,
+    ViperMkIV = 128672255,
+    CobraMkIV = 128672262,
+    Keelback = 128672269,
+    AspScout = 128672276,
+    Type10 = 128785619,
+    KraitMkII = 128816567,
+    AllianceChieftain = 128816574,
+    AllianceCrusader = 128816581,
+    AllianceChallenger = 128816588,
+    KraitPhantom = 128839281,
+    Mamba = 128915979,
 }

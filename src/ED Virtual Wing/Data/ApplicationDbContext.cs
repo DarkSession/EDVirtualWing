@@ -10,6 +10,7 @@ namespace ED_Virtual_Wing.Data
     {
         public DbSet<Commander> Commanders { get; set; }
         public DbSet<StarSystem> StarSystems { get; set; }
+        public DbSet<StarSystemBody> StarSystemBodies { get; set; }
         public DbSet<Station> Stations { get; set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -34,5 +35,11 @@ namespace ED_Virtual_Wing.Data
 #endif
                 ;
         }
+        /*
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+        }
+        */
     }
 }

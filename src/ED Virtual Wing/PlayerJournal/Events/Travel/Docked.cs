@@ -34,11 +34,11 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Travel
                     applicationDbContext.Stations.Add(station);
                     await applicationDbContext.SaveChangesAsync();
                 }
-                commander.CurrentStation = station;
+                commander.Location.Station = station;
                 commander.GameActivity = GameActivity.Docked;
                 return;
             }
-            commander.CurrentStation = null;
+            commander.Location.Station = null;
         }
     }
 }

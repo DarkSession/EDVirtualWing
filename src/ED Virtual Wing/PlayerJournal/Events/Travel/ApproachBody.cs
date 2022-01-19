@@ -1,5 +1,6 @@
 ﻿using ED_Virtual_Wing.Data;
 using ED_Virtual_Wing.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ED_Virtual_Wing.PlayerJournal.Events.Travel
 {
@@ -7,10 +8,26 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Travel
     {
         public long SystemAddress { get; set; }
         public int BodyID { get; set; }
-        public override ValueTask ProcessEntry(Commander commander, ApplicationDbContext applicationDbContext)
+        public string Body { get; set; } = string.Empty;
+        public override async ValueTask ProcessEntry(Commander commander, ApplicationDbContext applicationDbContext)
         {
-            // We are missing an API / database where we can query the body.
-            return ValueTask.CompletedTask;
+            StarSystem? starSystem = await applicationDbContext.StarSystems.FirstOrDefaultAsync(s => s.SystemAddress == SystemAddress);
+            if (starSystem != null)
+            {
+                commander.Location.StarSystem = starSystem;
+                StarSystemBody? starSystemBody = await applicationDbContext.StarSystemBodies.FirstOrDefaultAsync(s => s.StarSystem == starSystem && s.BodyId == BodyID);
+                if (starSystemBody == null)
+                {
+                    starSystemBody = new()
+                    {
+                        StarSystem = starSystem,
+                        Name = Body,
+                    };
+                    applicationDbContext.StarSystemBodies.Add(starSystemBody);
+                    await applicationDbContext.SaveChangesAsync();
+                }
+                commander.Location.SystemBody = starSystemBody;
+            }
         }
     }
 }

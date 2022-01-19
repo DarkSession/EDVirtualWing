@@ -1,6 +1,7 @@
 ﻿using ED_Virtual_Wing.Data;
 using ED_Virtual_Wing.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace ED_Virtual_Wing.PlayerJournal.Events.Startup
 {
@@ -13,6 +14,8 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Startup
         public string? Commander { get; set; }
         public string? GameMode { get; set; }
         public string? Group { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public Ship? Ship { get; set; }
 
         public override ValueTask ProcessEntry(Commander commander, ApplicationDbContext applicationDbContext)
         {
@@ -40,6 +43,7 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Startup
                 _ => Models.GameMode.Unknown,
             };
             commander.GameModeGroupName = (commander.GameMode == Models.GameMode.Group) ? Group : null;
+            commander.Ship = Ship;
             return ValueTask.CompletedTask;
         }
     }

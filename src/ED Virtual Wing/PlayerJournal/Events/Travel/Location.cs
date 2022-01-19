@@ -35,7 +35,7 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Travel
                 applicationDbContext.StarSystems.Add(starSystem);
                 await applicationDbContext.SaveChangesAsync();
             }
-            commander.CurrentStarSystem = starSystem;
+            commander.Location.StarSystem = starSystem;
             if (Docked == true)
             {
                 Station? station = await applicationDbContext.Stations.FirstOrDefaultAsync(s => s.MarketId == MarketID);
@@ -52,7 +52,7 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Travel
                     applicationDbContext.Stations.Add(station);
                     await applicationDbContext.SaveChangesAsync();
                 }
-                commander.CurrentStation = station;
+                commander.Location.Station = station;
                 commander.GameActivity = GameActivity.Docked;
             }
         }

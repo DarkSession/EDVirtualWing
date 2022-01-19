@@ -1,0 +1,10 @@
+.shield-circle {
+    display: flex;
+    border-radius: 50%;
+    border-style: solid;
+    border-width: 2px;
+    border-color: rgb(0, 110, 255);
+    background-color: rgba(0, 0, 0, 0);
+    justify-content: center;
+    align-items: center;
+  }

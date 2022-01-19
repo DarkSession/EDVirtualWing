@@ -8,7 +8,7 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Travel
         public override ValueTask ProcessEntry(Commander commander, ApplicationDbContext applicationDbContext)
         {
             commander.GameActivity = GameActivity.Supercruise;
-            commander.CurrentStation = null;
+            commander.Location.Station = null;
             return ValueTask.CompletedTask;
         }
     }

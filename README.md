@@ -37,3 +37,5 @@ EDVW_HTTP_ORIGIN=https://localhost:44440
   - Mode: Open, Private, Solo
   - If in vehicle: Basic information (Type, Hull, Shields)
 
+## Credits
+Assets used: [edassets.org](https://edassets.org/)

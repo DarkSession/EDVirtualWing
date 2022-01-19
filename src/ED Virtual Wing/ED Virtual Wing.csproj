@@ -36,12 +36,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="PlayerJournal\Events\Combat\" />
+    <Folder Include="Migrations\" />
     <Folder Include="PlayerJournal\Events\FleetCarriers\" />
-    <Folder Include="PlayerJournal\Events\Odyssey\" />
     <Folder Include="PlayerJournal\Events\Powerplay\" />
     <Folder Include="PlayerJournal\Events\Squadrons\" />
-    <Folder Include="PlayerJournal\Events\StationServices\" />
     <Folder Include="PlayerJournal\Events\Trade\" />
   </ItemGroup>
 

@@ -8,3 +8,13 @@
     justify-content: center;
     align-items: center;
   }
+
+  .target {
+    display: flex;
+    align-items: center;
+  }
+
+  .location {
+    display: flex;
+    align-items: center;
+  }

@@ -74,6 +74,10 @@ namespace ED_Virtual_Wing.Models
         [ForeignKey("BodyId")]
         public StarSystemBody? Body { get; set; }
 
+        [JsonIgnore]
+        [Column]
+        public int FallbackBodyId { get; set; }
+
         [Column(TypeName = "varchar(256)")]
         public string Name { get; set; } = string.Empty;
 
@@ -123,6 +127,8 @@ namespace ED_Virtual_Wing.Models
         [ForeignKey("SystemBodyId")]
         public StarSystemBody? SystemBody { get; set; }
 
+        [Column(TypeName = "varchar(256)")]
+        public string? Name { get; set; }
 
         [Column(TypeName = "decimal(14,6)")]
         public decimal Latitude { get; set; }
@@ -132,11 +138,54 @@ namespace ED_Virtual_Wing.Models
 
         [Column(TypeName = "decimal(14,6)")]
         public decimal Longitude { get; set; }
+
+        public void SetLocationSystem(StarSystem starSystem)
+        {
+            StarSystem = starSystem;
+            SystemBody = null;
+            Station = null;
+            Name = null;
+        }
+
+        public void SetLocationBody(StarSystem starSystem, StarSystemBody starSystemBody)
+        {
+            StarSystem = starSystem;
+            SystemBody = starSystemBody;
+            Station = null;
+            Name = null;
+        }
+
+        public void SetLocationBody(StarSystemBody? starSystemBody)
+        {
+            SystemBody = starSystemBody;
+            Station = null;
+            Name = null;
+        }
+
+        public void SetLocationStation(StarSystem starSystem, Station station)
+        {
+            StarSystem = starSystem;
+            Station = station;
+            Name = null;
+        }
+
+        public void SetLocationStation(Station? station)
+        {
+            Station = station;
+            Name = null;
+        }
+
+        public void SetLocationName(string name)
+        {
+            Station = null;
+            Name = name;
+        }
     }
 
     public enum GameActivity
     {
         None = 0,
+        Dead,
         Supercruise,
         Hyperspace,
         Docked,

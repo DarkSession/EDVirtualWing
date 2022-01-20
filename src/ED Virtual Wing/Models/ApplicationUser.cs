@@ -12,6 +12,7 @@ namespace ED_Virtual_Wing.Models
 
         public async Task<Commander> GetCommander(ApplicationDbContext applicationDbContext)
         {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             Commander? commander = await applicationDbContext.Commanders
                 .Include(c => c.Location)
                 .Include(c => c.Location.StarSystem)
@@ -21,6 +22,7 @@ namespace ED_Virtual_Wing.Models
                 .Include(c => c.Target.StarSystem)
                 .Include(c => c.Target.Body)
                 .FirstOrDefaultAsync(c => c.User == this);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             if (commander == null)
             {
                 commander = new()

@@ -17,6 +17,10 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Travel
 
         public override async ValueTask ProcessEntry(Commander commander, ApplicationDbContext applicationDbContext)
         {
+            if (commander.Location == null)
+            {
+                return;
+            }
             StarSystem? starSystem = await applicationDbContext.StarSystems.FirstOrDefaultAsync(s => s.SystemAddress == SystemAddress);
             if (starSystem != null)
             {
@@ -34,11 +38,11 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Travel
                     applicationDbContext.Stations.Add(station);
                     await applicationDbContext.SaveChangesAsync();
                 }
-                commander.Location.Station = station;
+                commander.Location.SetLocationStation(starSystem, station);
                 commander.GameActivity = GameActivity.Docked;
                 return;
             }
-            commander.Location.Station = null;
+            commander.Location.SetLocationStation(null);
         }
     }
 }

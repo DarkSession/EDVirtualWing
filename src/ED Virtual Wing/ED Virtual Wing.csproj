@@ -36,7 +36,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
     <Folder Include="PlayerJournal\Events\FleetCarriers\" />
     <Folder Include="PlayerJournal\Events\Powerplay\" />
     <Folder Include="PlayerJournal\Events\Squadrons\" />

@@ -12,9 +12,8 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Travel
         public override async ValueTask ProcessEntry(Commander commander, ApplicationDbContext applicationDbContext)
         {
             StarSystem? starSystem = await applicationDbContext.StarSystems.FirstOrDefaultAsync(s => s.SystemAddress == SystemAddress);
-            if (starSystem != null)
+            if (starSystem != null && commander.Location != null)
             {
-                commander.Location.StarSystem = starSystem;
                 StarSystemBody? starSystemBody = await applicationDbContext.StarSystemBodies.FirstOrDefaultAsync(s => s.StarSystem == starSystem && s.BodyId == BodyID);
                 if (starSystemBody == null)
                 {
@@ -26,7 +25,7 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Travel
                     applicationDbContext.StarSystemBodies.Add(starSystemBody);
                     await applicationDbContext.SaveChangesAsync();
                 }
-                commander.Location.SystemBody = starSystemBody;
+                commander.Location.SetLocationBody(starSystem, starSystemBody);
             }
         }
     }

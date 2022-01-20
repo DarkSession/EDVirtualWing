@@ -12,7 +12,6 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Travel
         public long SystemAddress { get; set; }
         public List<decimal>? StarPos { get; set; }
         public bool? Docked { get; set; }
-
         public long MarketID { get; set; }
         [JsonConverter(typeof(StringEnumConverter))]
         public StationType StationType { get; set; }
@@ -21,6 +20,7 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Travel
 
         public override async ValueTask ProcessEntry(Commander commander, ApplicationDbContext applicationDbContext)
         {
+            commander.GameActivity = GameActivity.None;
             StarSystem? starSystem = await applicationDbContext.StarSystems.FirstOrDefaultAsync(s => s.SystemAddress == SystemAddress);
             if (starSystem == null && StarPos != null && StarPos.Count == 3)
             {
@@ -35,7 +35,10 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Travel
                 applicationDbContext.StarSystems.Add(starSystem);
                 await applicationDbContext.SaveChangesAsync();
             }
-            commander.Location.StarSystem = starSystem;
+            if (commander.Location != null && starSystem != null)
+            {
+                commander.Location.SetLocationSystem(starSystem);
+            }
             if (Docked == true)
             {
                 Station? station = await applicationDbContext.Stations.FirstOrDefaultAsync(s => s.MarketId == MarketID);
@@ -52,7 +55,10 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Travel
                     applicationDbContext.Stations.Add(station);
                     await applicationDbContext.SaveChangesAsync();
                 }
-                commander.Location.Station = station;
+                if (commander.Location != null)
+                {
+                    commander.Location.SetLocationStation(station);
+                }
                 commander.GameActivity = GameActivity.Docked;
             }
         }

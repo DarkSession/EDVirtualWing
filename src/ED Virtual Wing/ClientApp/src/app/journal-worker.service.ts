@@ -253,9 +253,17 @@ export class JournalWorkerService {
     // We request the metadata of the status file
     const status: File = await statusFile.handle.getFile();
     if (status.lastModified > statusFile.lastModified) {
-      statusFile.lastModified = status.lastModified;
       const statusEntry = new TextDecoder().decode(await status.arrayBuffer());
-      lines.push(JSON.parse(statusEntry));
+      try {
+        // If the file is written just as we read it, the Json parse might fail.
+        lines.push(JSON.parse(statusEntry));
+        statusFile.lastModified = status.lastModified;
+      }
+      catch (e) {
+        if (!environment.production) {
+          console.log(e);
+        }
+      }
     }
     let journalLastDate = this.journalLastDate;
     if (lines.length > 0) {

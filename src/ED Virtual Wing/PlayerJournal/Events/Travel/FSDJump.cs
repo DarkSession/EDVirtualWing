@@ -26,9 +26,10 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Travel
                 applicationDbContext.StarSystems.Add(starSystem);
                 await applicationDbContext.SaveChangesAsync();
             }
-            commander.Location.StarSystem = starSystem;
-            commander.Location.Station = null;
-            commander.Location.SystemBody = null;
+            if (commander.Location != null && starSystem != null)
+            {
+                commander.Location.SetLocationSystem(starSystem);
+            }
         }
     }
 }

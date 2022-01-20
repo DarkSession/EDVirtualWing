@@ -3,26 +3,25 @@
         CMDR {{ commander.Name }}
     </div>
     <hr>
-    <div [ngSwitch]="commander.GameActivity">
-        <span *ngSwitchCase="GameActivity.None">None</span>
-        <span *ngSwitchCase="GameActivity.Supercruise">Supercruise</span>
-        <span *ngSwitchCase="GameActivity.Hyperspace">Hyperspace</span>
-        <span *ngSwitchCase="GameActivity.Docked">Docked</span>
-        <span *ngSwitchCase="GameActivity.Landed">Landed</span>
-        <span *ngSwitchCase="GameActivity.InSrv">In Srv</span>
-        <span *ngSwitchCase="GameActivity.OnFoot">On Foot</span>
+    <div class="location">
+        <mat-icon>location_on</mat-icon>
+        <span>{{ location }}</span>
+        <span *ngIf="commander.GameActivity != GameActivity.None">
+            -
+        </span>
+        <span [ngSwitch]="commander.GameActivity">
+            <span *ngSwitchCase="GameActivity.Dead">Dead</span>
+            <span *ngSwitchCase="GameActivity.Supercruise">Supercruise</span>
+            <span *ngSwitchCase="GameActivity.Hyperspace">Hyperspace</span>
+            <span *ngSwitchCase="GameActivity.Docked">Docked</span>
+            <span *ngSwitchCase="GameActivity.Landed">Landed</span>
+            <span *ngSwitchCase="GameActivity.InSrv">In Srv</span>
+            <span *ngSwitchCase="GameActivity.OnFoot">On Foot</span>
+        </span>
     </div>
     <hr>
     <div>
-        {{ commander.Location.StarSystem?.Name }}
-        <span *ngIf="commander.Location.Station">- {{ commander.Location.Station.Name }} </span>
-    </div>
-    <hr>
-    <div *ngIf="hardpointsDeployed">
-        Hardpoints deployed
-    </div>
-    <div *ngIf="silentRunning">
-        Silent running
+        <span *ngFor="let state of states">{{ state }} | </span> {{ commander.VehicleStatusFlags }}
     </div>
     <div *ngIf="commander.Ship" style="position: relative;">
         <div [ngClass]="{'shield-circle': shieldsUp}" style="width: 230px; height: 230px;">
@@ -33,11 +32,18 @@
             </div>
         </div>
     </div>
-    <div *ngIf="commander.Target.ShipTarget">
-        <img src="assets/images/target.png" style="width: 24px; height: 24px; background-color: gray;">
-        {{ commander.Target.ShipTarget }} - {{ commander.Target.ShipTargetName }}
+    <hr *ngIf="targetShip">
+    <div *ngIf="targetShip" class="target">
+        <mat-icon>gps_fixed</mat-icon>
+        {{ targetShip }}
     </div>
-    <div *ngIf="!commander.Target.ShipTarget && commander.Target.StarSystem">
-        {{ commander.Target.StarSystem.Name }} - {{ commander.Target.Name }}
+    <hr *ngIf="targetSystem">
+    <div *ngIf="targetSystem" class="target">
+        <mat-icon>fullscreen_exit</mat-icon>
+        <span *ngIf="fsdCharging"><img src="assets/images/EDLoader1.svg" style="width: 20px; height: 20px;"></span>
+        <span *ngIf="fsdCooldown">
+            <mat-icon>ac_unit</mat-icon>
+        </span>
+        {{ targetSystem }}
     </div>
 </div>

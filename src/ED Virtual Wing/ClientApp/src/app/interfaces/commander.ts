@@ -27,6 +27,7 @@ export interface CommanderLocation {
     StarSystem: StarSystem | null;
     Station: Station;
     SystemBody: StarSystemBody;
+    Name: string;
     Latitude: number;
     Altitude: number;
     Longitude: number;
@@ -34,6 +35,7 @@ export interface CommanderLocation {
 
 export enum GameActivity {
     None = 0,
+    Dead,
     Supercruise,
     Hyperspace,
     Docked,

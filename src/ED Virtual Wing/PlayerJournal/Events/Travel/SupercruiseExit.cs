@@ -28,7 +28,7 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Travel
                     }
                 }
                 else if (commander.Target?.StarSystem?.SystemAddress == SystemAddress &&
-                    (commander.Target?.Body?.BodyId ?? commander.Target?.FallbackBodyId ?? 0) == BodyID && 
+                    (commander.Target?.Body?.BodyId ?? commander.Target?.FallbackBodyId ?? 0) == BodyID &&
                     !string.IsNullOrEmpty(commander.Target?.Name))
                 {
                     commander.Location.Name = commander.Target.Name;

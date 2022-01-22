@@ -1,20 +1,126 @@
 .shield-circle {
-    display: flex;
-    border-radius: 50%;
-    border-style: solid;
-    border-width: 2px;
-    border-color: rgb(0, 110, 255);
-    background-color: rgba(0, 0, 0, 0);
-    justify-content: center;
-    align-items: center;
-  }
+  display: flex;
+  border-radius: 50%;
+  border-style: solid;
+  border-width: 2px;
+  border-color: rgba(0, 0, 0, 0);
+  justify-content: center;
+  align-items: center;
+}
 
-  .target {
-    display: flex;
-    align-items: center;
-  }
+.shield-up {
+  border-color: rgb(0, 110, 255);
+}
 
-  .location {
-    display: flex;
-    align-items: center;
-  }
+.shield-circle1 {
+  width: 160px;
+  height: 160px;
+}
+
+.shield-circle2 {
+  width: 170px;
+  height: 170px;
+}
+
+.shield-circle3 {
+  width: 180px;
+  height: 180px;
+}
+
+.ship-data-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-top: 1px solid black;
+  min-height: 50px;
+}
+
+.ship-data-row-icon {
+  font-size: 300%;
+  padding: 4px;
+}
+
+.ship-data-row-value {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+}
+
+.flex-baseline {
+  display: flex;
+  align-items: baseline;
+}
+
+.cmdr {
+  border-radius: 20px;
+  border: 2px solid #ff7100;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  width: 350px;
+  height: 550px;
+  overflow: hidden;
+}
+
+.mt-icon, .svg-icon {
+  padding-right: 6px;
+  padding-left: 6px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+.svg-icon, .mt-icon {
+  width: 34px;
+  height: 32px;
+}
+
+.img-large {
+  width: 150px;
+  height: 150px;
+}
+
+.cmdr-basic-info {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+}
+
+.cmdr-title {
+  font-size: 150%;
+  font-weight: bold;
+}
+
+.cmdr-status-picture {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-top: 1px solid black;
+  padding-top: 8px;
+  height: fit-content;
+  min-height: 230px;
+}
+
+.cmdr-live {
+  color: lime;
+}
+
+.cmdr-online {}
+
+.cmdr-offline {}
+
+.badge {
+  margin-left: 4px;
+  margin-right: 4px;
+  padding: 4px;
+  background-color: #cccccc;
+  border-radius: 5px;
+  font-size: 70%;
+  white-space: nowrap;
+  background-color: #000066;
+  color: #cccccc;
+}

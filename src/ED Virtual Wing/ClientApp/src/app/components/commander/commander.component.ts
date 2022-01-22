@@ -1,5 +1,6 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
-import { Commander, GameActivity, Ship, VehicleStatusFlags } from 'src/app/interfaces/commander';
+import { Commander, GameActivity, GameMode, GameVersion, Ship, VehicleStatusFlags } from 'src/app/interfaces/commander';
+import { StationType } from 'src/app/interfaces/station';
 
 @Component({
   selector: 'app-commander',
@@ -9,13 +10,17 @@ import { Commander, GameActivity, Ship, VehicleStatusFlags } from 'src/app/inter
 export class CommanderComponent implements OnInit, OnChanges {
   @Input() commander!: Commander | null;
   public readonly GameActivity = GameActivity;
+  public readonly StationType = StationType;
   public shieldsUp: boolean = false;
   public fsdCharging: boolean = false;
   public fsdCooldown: boolean = false;
-  public location: string = "";
+  public isBeingInterdicted: boolean = false;
+  public showLatLong: boolean = false;
   public targetShip: string = "";
   public targetSystem: string = "";
   public states: string[] = [];
+  public gameMode: string = "";
+  public gameVersion: string = "";
 
   public constructor() { }
 
@@ -24,29 +29,12 @@ export class CommanderComponent implements OnInit, OnChanges {
 
   public ngOnChanges(): void {
     if (this.commander) {
-      const location: string[] = [];
-      if (this.commander.Location.StarSystem?.Name) {
-        location.push(this.commander.Location.StarSystem.Name);
-        if (this.commander.Location.SystemBody) {
-          location.push(this.commander.Location.SystemBody.Name)
-        }
-        if (this.commander.Location.Station) {
-          if (this.commander.Location.Station.NameAddon) {
-            location.push(`${this.commander.Location.Station.NameAddon} [${this.commander.Location.Station.Name}]`);
-          }
-          else {
-            location.push(this.commander.Location.Station.Name);
-          }
-        }
-        if (this.commander.Location.Name) {
-          location.push(this.commander.Location.Name);
-        }
-      }
-      this.location = location.join(" - ");
       this.states = [];
       this.shieldsUp = this.hasFlag(VehicleStatusFlags.ShieldsUp);
       this.fsdCharging = this.hasFlag(VehicleStatusFlags.FsdCharging);
       this.fsdCooldown = this.hasFlag(VehicleStatusFlags.FsdCooldown);
+      this.isBeingInterdicted = this.hasFlag(VehicleStatusFlags.BeingInterdicted);
+      this.showLatLong = this.hasFlag(VehicleStatusFlags.HasLatLong);
       if (this.hasFlag(VehicleStatusFlags.HardpointsDeployed)) {
         this.states.push("Hardpoint deployed");
       }
@@ -244,6 +232,42 @@ export class CommanderComponent implements OnInit, OnChanges {
         targetSystem += this.commander.Target.Name;
       }
       this.targetSystem = targetSystem;
+      switch (this.commander.GameMode) {
+        case GameMode.Open: {
+          this.gameMode = "Open";
+          break;
+        }
+        case GameMode.Solo: {
+          this.gameMode = "Solo";
+          break;
+        }
+        case GameMode.Group: {
+          this.gameMode = "Group: " + this.commander.GameModeGroupName;
+          break;
+        }
+        default: {
+          this.gameMode = "Unknown";
+          break;
+        }
+      }
+      switch (this.commander.GameVersion) {
+        case GameVersion.Base: {
+          this.gameVersion = "Base Game";
+          break;
+        }
+        case GameVersion.Horizons: {
+          this.gameVersion = "Horizons";
+          break;
+        }
+        case GameVersion.Odyssey: {
+          this.gameVersion = "Odyssey";
+          break;
+        }
+        default: {
+          this.gameVersion = "Unknown";
+          break;
+        }
+      }
     }
   }
 

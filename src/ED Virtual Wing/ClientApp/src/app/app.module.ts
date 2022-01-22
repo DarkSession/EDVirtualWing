@@ -14,7 +14,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { CommanderComponent } from './components/commander/commander.component';
 import { JournalWorkerComponent } from './components/journal-worker/journal-worker.component';
-
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { CmdrTestComponent } from './components/cmdr-test/cmdr-test.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { JournalWorkerComponent } from './components/journal-worker/journal-work
     LoginRegistrationComponent,
     CommanderComponent,
     JournalWorkerComponent,
+    CmdrTestComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -34,22 +36,20 @@ import { JournalWorkerComponent } from './components/journal-worker/journal-work
     MatFormFieldModule,
     MatInputModule,
     MatProgressBarModule,
+    MatTooltipModule,
     RouterModule.forRoot(
       [
         {
+          path: 'test',
+          component: CmdrTestComponent,
+        },
+        {
           path: '',
-          component: AppComponent,
+          component: JournalWorkerComponent,
         }
       ]
     ),
     BrowserAnimationsModule
-    /*
-    RouterModule.forRoot([
-      { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'counter', component: CounterComponent },
-      { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthorizeGuard] },
-    ])
-    */
   ],
   bootstrap: [AppComponent]
 })

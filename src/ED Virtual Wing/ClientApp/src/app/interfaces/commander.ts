@@ -16,18 +16,18 @@ export interface Commander {
 }
 
 export interface CommanderTarget {
-    StarSystem: StarSystem;
-    Body: StarSystemBody;
-    Name: string;
+    StarSystem: StarSystem | null;
+    Body: StarSystemBody | null;
+    Name: string | null;
     ShipTarget: Ship | null;
-    ShipTargetName: string;
+    ShipTargetName: string | null;
 }
 
 export interface CommanderLocation {
     StarSystem: StarSystem | null;
-    Station: Station;
-    SystemBody: StarSystemBody;
-    Name: string;
+    Station: Station | null;
+    SystemBody: StarSystemBody | null;
+    Name: string | null;
     Latitude: number;
     Altitude: number;
     Longitude: number;

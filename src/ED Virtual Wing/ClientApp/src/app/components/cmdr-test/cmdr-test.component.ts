@@ -9,6 +9,7 @@ import { StationType } from 'src/app/interfaces/station';
 })
 export class CmdrTestComponent implements OnInit {
   public commander1: Commander = {
+    CommanderId: "1",
     Name: "Test1",
     GameActivity: GameActivity.Dead,
     ExtraFlags: GameExtraFlags.InCombat,
@@ -65,8 +66,10 @@ export class CmdrTestComponent implements OnInit {
       ShipTarget: Ship.ImperialCutter,
       ShipTargetName: "Target name",
     },
+    ShipHullHealth: 0.3456,
   };
   public commander2: Commander = {
+    CommanderId: "2",
     Name: "Test2",
     GameActivity: GameActivity.Hyperspace,
     ExtraFlags: GameExtraFlags.None,
@@ -104,16 +107,18 @@ export class CmdrTestComponent implements OnInit {
       ShipTarget: null,
       ShipTargetName: null,
     },
+    ShipHullHealth: 1,
   };
   public commander3: Commander = {
+    CommanderId: "3",
     Name: "Test3",
     GameActivity: GameActivity.Supercruise,
-    ExtraFlags: GameExtraFlags.None,
+    ExtraFlags: GameExtraFlags.InCombat,
     GameVersion: GameVersion.Horizons,
     GameMode: GameMode.Solo,
     GameModeGroupName: "",
-    VehicleStatusFlags: VehicleStatusFlags.None,
-    Ship: Ship.AspScout,
+    VehicleStatusFlags: VehicleStatusFlags.HardpointsDeployed | VehicleStatusFlags.InFighter | VehicleStatusFlags.IsInDanger,
+    Ship: Ship.FederalCorvette,
     Location: {
       StarSystem: {
         Name: "Alioth",
@@ -135,15 +140,17 @@ export class CmdrTestComponent implements OnInit {
       ShipTarget: Ship.CobraMkIII,
       ShipTargetName: "System Defence Force",
     },
+    ShipHullHealth: 0.91,
   };
   public commander4: Commander = {
+    CommanderId: "4",
     Name: "Test4",
     GameActivity: GameActivity.Docked,
     ExtraFlags: GameExtraFlags.None,
     GameVersion: GameVersion.Odyssey,
     GameMode: GameMode.Open,
     GameModeGroupName: "",
-    VehicleStatusFlags: VehicleStatusFlags.ShieldsUp | VehicleStatusFlags.Docked,
+    VehicleStatusFlags: VehicleStatusFlags.ShieldsUp | VehicleStatusFlags.Docked | VehicleStatusFlags.InWing,
     Ship: Ship.Eagle,
     Location: {
       StarSystem: {
@@ -177,15 +184,17 @@ export class CmdrTestComponent implements OnInit {
       ShipTarget: Ship.FederalAssaultShip,
       ShipTargetName: "Random Dude",
     },
+    ShipHullHealth: 1,
   };
   public commander5: Commander = {
+    CommanderId: "5",
     Name: "Test5",
     GameActivity: GameActivity.OnFoot,
     ExtraFlags: GameExtraFlags.None,
     GameVersion: GameVersion.Odyssey,
     GameMode: GameMode.Open,
     GameModeGroupName: "",
-    VehicleStatusFlags: VehicleStatusFlags.HasLatLong,
+    VehicleStatusFlags: VehicleStatusFlags.HasLatLong | VehicleStatusFlags.InWing,
     Ship: Ship.ImperialCutter,
     Location: {
       StarSystem: {
@@ -222,15 +231,17 @@ export class CmdrTestComponent implements OnInit {
       ShipTarget: null,
       ShipTargetName: null,
     },
+    ShipHullHealth: 1,
   };
   public commander6: Commander = {
+    CommanderId: "6",
     Name: "Test6",
     GameActivity: GameActivity.Supercruise,
     ExtraFlags: GameExtraFlags.None,
     GameVersion: GameVersion.Odyssey,
     GameMode: GameMode.Open,
     GameModeGroupName: "",
-    VehicleStatusFlags: VehicleStatusFlags.FsdCooldown | VehicleStatusFlags.ShieldsUp,
+    VehicleStatusFlags: VehicleStatusFlags.FsdCooldown | VehicleStatusFlags.ShieldsUp | VehicleStatusFlags.InWing,
     Ship: Ship.Type9,
     Location: {
       StarSystem: {
@@ -253,8 +264,10 @@ export class CmdrTestComponent implements OnInit {
       ShipTarget: null,
       ShipTargetName: null,
     },
+    ShipHullHealth: 0.75,
   };
   public commander7: Commander = {
+    CommanderId: "7",
     Name: "Test7",
     GameActivity: GameActivity.Docked,
     ExtraFlags: GameExtraFlags.None,
@@ -295,8 +308,10 @@ export class CmdrTestComponent implements OnInit {
       ShipTarget: Ship.AllianceChieftain,
       ShipTargetName: "Random Ganker #123",
     },
+    ShipHullHealth: 0.123,
   };
   public commander8: Commander = {
+    CommanderId: "8",
     Name: "Test8",
     GameActivity: GameActivity.None,
     ExtraFlags: GameExtraFlags.None,
@@ -342,8 +357,10 @@ export class CmdrTestComponent implements OnInit {
       ShipTarget: null,
       ShipTargetName: null,
     },
+    ShipHullHealth: 0.87,
   };
   public commander9: Commander = {
+    CommanderId: "9",
     Name: "Test9",
     GameActivity: GameActivity.Supercruise,
     ExtraFlags: GameExtraFlags.None,
@@ -373,6 +390,43 @@ export class CmdrTestComponent implements OnInit {
       ShipTarget: Ship.FerDeLance,
       ShipTargetName: "CMDR Test99",
     },
+    ShipHullHealth: 0.4444,
+  };
+  public commander10: Commander = {
+    CommanderId: "10",
+    Name: "Test10",
+    GameActivity: GameActivity.InSrv,
+    ExtraFlags: GameExtraFlags.None,
+    GameVersion: GameVersion.Horizons,
+    GameMode: GameMode.Open,
+    GameModeGroupName: "",
+    VehicleStatusFlags: VehicleStatusFlags.ShieldsUp | VehicleStatusFlags.HasLatLong,
+    Ship: Ship.Anaconda,
+    Location: {
+      StarSystem: {
+        Name: "Sol",
+        LocationX: 1,
+        LocationY: 2,
+        LocationZ: 3,
+      },
+      Station: null,
+      SystemBody: {
+        Name: "Europa",
+        BodyId: 0,
+      },
+      Name: null,
+      Latitude: 422,
+      Altitude: 224,
+      Longitude: 3.4,
+    },
+    Target: {
+      StarSystem: null,
+      Body: null,
+      Name: null,
+      ShipTarget: null,
+      ShipTargetName: null,
+    },
+    ShipHullHealth: 0.234,
   };
 
   public constructor() { }

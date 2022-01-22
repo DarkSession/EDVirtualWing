@@ -3,5 +3,40 @@
 }
 
 .edvw-container {
-    margin-top: 25px;
+    margin: 8px;
+}
+
+.edvw-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+.container-content {
+    position: absolute;
+    top: 60px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.edvw-sidenav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 200px;
+    padding: 6px;
+}
+
+.menu-open {
+    transition-property: transform;
+    transition-duration: 0.5s;
+    transform: rotate(90deg);
+}
+
+.menu-closed {
+    transition-property: transform;
+    transition-duration: 0.5s;
+    transform: rotate(0deg);
 }

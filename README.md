@@ -1,5 +1,5 @@
 # Elite Dangerous Virtual Wing
-Elite Dangerous has an in-game wing limit of 4 players on the same platform, version and same game mode.  
+Elite Dangerous has an in-game wing limit of 4 players on the same platform, version and same game mode.   
 A virtual wing allows players to see a live status of more players which are not part of their in-game wing.  
 This targets squadrons and other groups which regularly exceed the 4 player limit but still want to participate in activities together.
 
@@ -11,12 +11,12 @@ We will also provide a public instance of this application for everyone to parti
 
 ### MariaDB
 The application is built to use a MariaDB instance to store its data.
-For development and testing purposes, run a local MariaDB instance using Docker, e.g.
+For development and testing purposes, run a local MariaDB instance using Docker, e.g.  
 `docker run --detach --name edvw-mariadb --env MARIADB_USER=dev --env MARIADB_PASSWORD=1234 --env MARIADB_ROOT_PASSWORD=1234 -p 3306:3306 mariadb:latest`
 
 ### Configuration
-EDVW_MARIADB_CONNECTIONSTRING: MariaDB instance connection string
-EDVW_HTTP_ORIGIN=https://localhost:44440
+`EDVW_MARIADB_CONNECTIONSTRING`: MariaDB instance connection string.  
+`EDVW_HTTP_ORIGIN`: Allowed origin for CORS and the WebSocket client.  
 
 ## Idea
 - Web based application. Unfortunately only possible for PC based users. Everything will be updated live.
@@ -38,4 +38,6 @@ EDVW_HTTP_ORIGIN=https://localhost:44440
   - If in vehicle: Basic information (Type, Hull, Shields)
 
 ## Credits
-Assets used: [edassets.org](https://edassets.org/)
+### Assets
+[edassets.org](https://edassets.org/): Ships, icons  
+CMDR Arithon [elite-dangerous-blog.co.uk](https://www.elite-dangerous-blog.co.uk/post/2017/10/26/Vehicle-icons): SRV image

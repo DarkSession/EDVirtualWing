@@ -10,19 +10,19 @@ namespace ED_Virtual_Wing.Models
     {
         public Commander? Commander { get; set; }
 
+        public List<WingMember>? WingMemberships { get; set; }
+
         public async Task<Commander> GetCommander(ApplicationDbContext applicationDbContext)
         {
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
             Commander? commander = await applicationDbContext.Commanders
                 .Include(c => c.Location)
-                .Include(c => c.Location.StarSystem)
-                .Include(c => c.Location.Station)
-                .Include(c => c.Location.SystemBody)
+                .Include(c => c.Location!.StarSystem)
+                .Include(c => c.Location!.Station)
+                .Include(c => c.Location!.SystemBody)
                 .Include(c => c.Target)
-                .Include(c => c.Target.StarSystem)
-                .Include(c => c.Target.Body)
+                .Include(c => c.Target!.StarSystem)
+                .Include(c => c.Target!.Body)
                 .FirstOrDefaultAsync(c => c.User == this);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
             if (commander == null)
             {
                 commander = new()
@@ -49,6 +49,13 @@ namespace ED_Virtual_Wing.Models
                 };
             }
             return commander;
+        }
+
+        public Task<List<Wing>> GetWings(ApplicationDbContext applicationDbContext)
+        {
+            return applicationDbContext.Wings
+                .Where(w => w.Members!.Any(m => m.User == this && m.Status == WingMembershipStatus.Joined))
+                .ToListAsync();
         }
     }
 }

@@ -1,6 +1,3 @@
-/*
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
-*/
 body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
   margin: 0;
@@ -20,6 +17,10 @@ html, body {
   padding: 16px;
   border-radius: 8px;
   background-color: rgb(173, 173, 173);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .content-small-box {
@@ -34,4 +35,14 @@ html, body {
 
 .clickable {
   cursor: pointer;
+}
+
+.container {
+  flex: 0 1 auto;
+  display: flex;
+  flex-flow: column;
+}
+
+*:focus {
+  outline: 0;
 }

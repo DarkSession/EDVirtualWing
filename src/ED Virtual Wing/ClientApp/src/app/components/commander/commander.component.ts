@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
-import { Commander, GameActivity, GameMode, GameVersion, Ship, VehicleStatusFlags } from 'src/app/interfaces/commander';
+import { Commander, GameActivity, GameExtraFlags, GameMode, GameVersion, Ship, VehicleStatusFlags } from 'src/app/interfaces/commander';
 import { StationType } from 'src/app/interfaces/station';
 
 @Component({
@@ -15,12 +15,16 @@ export class CommanderComponent implements OnInit, OnChanges {
   public fsdCharging: boolean = false;
   public fsdCooldown: boolean = false;
   public isBeingInterdicted: boolean = false;
+  public inTeam: boolean = false;
+  public inCombat: boolean = false;
+  public inFighter: boolean = false;
+  public weaponsDeployed: boolean = false;
   public showLatLong: boolean = false;
   public targetShip: string = "";
   public targetSystem: string = "";
-  public states: string[] = [];
   public gameMode: string = "";
   public gameVersion: string = "";
+  public shipHealthSVG: number = 100;
 
   public constructor() { }
 
@@ -29,38 +33,33 @@ export class CommanderComponent implements OnInit, OnChanges {
 
   public ngOnChanges(): void {
     if (this.commander) {
-      this.states = [];
       this.shieldsUp = this.hasFlag(VehicleStatusFlags.ShieldsUp);
       this.fsdCharging = this.hasFlag(VehicleStatusFlags.FsdCharging);
       this.fsdCooldown = this.hasFlag(VehicleStatusFlags.FsdCooldown);
       this.isBeingInterdicted = this.hasFlag(VehicleStatusFlags.BeingInterdicted);
       this.showLatLong = this.hasFlag(VehicleStatusFlags.HasLatLong);
-      if (this.hasFlag(VehicleStatusFlags.HardpointsDeployed)) {
-        this.states.push("Hardpoint deployed");
+      this.inTeam = this.hasFlag(VehicleStatusFlags.InWing);
+      this.inFighter = this.hasFlag(VehicleStatusFlags.InFighter);
+      this.weaponsDeployed = this.hasFlag(VehicleStatusFlags.HardpointsDeployed);
+      this.inCombat = this.hasExtraFlag(GameExtraFlags.InCombat);
+      const shieldHullPercentage = (this.commander.ShipHullHealth * 100);
+      if (shieldHullPercentage > 90) {
+        this.shipHealthSVG = 100;
       }
-      if (this.hasFlag(VehicleStatusFlags.SilentRunning)) {
-        this.states.push("Silent running");
+      else if (shieldHullPercentage > 70) {
+        this.shipHealthSVG = 80;
       }
-      if (this.hasFlag(VehicleStatusFlags.InWing)) {
-        this.states.push("In Wing");
+      else if (shieldHullPercentage > 50) {
+        this.shipHealthSVG = 60;
       }
-      if (this.hasFlag(VehicleStatusFlags.FsdMassLocked)) {
-        this.states.push("Fsd Mass Locked");
+      else if (shieldHullPercentage > 30) {
+        this.shipHealthSVG = 40;
       }
-      if (this.hasFlag(VehicleStatusFlags.FsdCharging)) {
-        this.states.push("Fsd Charging");
+      else if (shieldHullPercentage > 10) {
+        this.shipHealthSVG = 20;
       }
-      if (this.hasFlag(VehicleStatusFlags.FsdCooldown)) {
-        this.states.push("FsdCooldown");
-      }
-      if (this.hasFlag(VehicleStatusFlags.IsInDanger)) {
-        this.states.push("Is In Danger");
-      }
-      if (this.hasFlag(VehicleStatusFlags.BeingInterdicted)) {
-        this.states.push("Is being interdicted");
-      }
-      if (this.hasFlag(VehicleStatusFlags.FsdJump)) {
-        this.states.push("Fsd Jump");
+      else {
+        this.shipHealthSVG = 0;
       }
       let targetShip = "";
       if (this.commander.Target.ShipTargetName) {
@@ -273,5 +272,9 @@ export class CommanderComponent implements OnInit, OnChanges {
 
   private hasFlag(flag: VehicleStatusFlags): boolean {
     return ((this.commander?.VehicleStatusFlags ?? 0) & flag) == flag;
+  }
+
+  private hasExtraFlag(flag: GameExtraFlags): boolean {
+    return ((this.commander?.ExtraFlags ?? 0) & flag) == flag;
   }
 }

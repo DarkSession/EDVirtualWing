@@ -11,6 +11,9 @@ namespace ED_Virtual_Wing.Models
         [Column]
         public int Id { get; set; }
 
+        [Column]
+        public Guid CommanderId { get; set; } = Guid.NewGuid();
+
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         [JsonIgnore]
         [ForeignKey("UserId")]
@@ -50,6 +53,12 @@ namespace ED_Virtual_Wing.Models
 
         [ForeignKey("TargetId")]
         public CommanderTarget? Target { get; set; }
+
+        [Column(TypeName = "decimal(14,8)")]
+        public decimal ShipHullHealth { get; set; }
+
+        [Column]
+        public Suit Suit { get; set; }
     }
 
     public class CommanderTarget
@@ -353,5 +362,13 @@ namespace ED_Virtual_Wing.Models
         [EnumMember(Value = "Krait_Light")]
         KraitPhantom = 128839281,
         Mamba = 128915979,
+    }
+
+    public enum Suit : short
+    {
+        Flight = 0,
+        Maverick,
+        Dominator,
+        Artemis,
     }
 }

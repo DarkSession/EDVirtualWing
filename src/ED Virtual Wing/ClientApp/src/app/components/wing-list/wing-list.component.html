@@ -1,0 +1,4 @@
+<h2>My Virtual Wings/Teams</h2>
+<div *ngFor="let wing of wings">
+    <span [routerLink]="['/wing', wing.WingId]">{{ wing.Name }}</span>
+</div>

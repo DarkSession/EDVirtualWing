@@ -17,7 +17,6 @@ export class JournalWorkerService {
   private journalLastDate: dayjs.Dayjs = dayjs();
   public serverSettingsReceived: boolean = false;
   public journalWorkerActive: boolean = false;
-  public commander: Commander | null = null;
 
   public constructor(private readonly webSocketService: WebsocketService) {
     this.initialize();
@@ -290,10 +289,8 @@ export class JournalWorkerService {
         const response = await this.webSocketService.sendMessageAndWaitForResponse<SendJournalResponse>("SendJournal", {
           Entries: relevantEntries,
         });
-        if (response?.Data.Commander) {
-          this.commander = response?.Data.Commander;
-        }
-        else {
+        if (!response?.Data) {
+          console.error("SendJournal failed");
           // It probably failed, so...
           return;
         }
@@ -343,5 +340,4 @@ interface GetJournalSettingsResponse {
 }
 
 interface SendJournalResponse {
-  Commander: Commander;
 }

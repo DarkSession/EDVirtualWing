@@ -23,11 +23,20 @@ namespace ED_Virtual_Wing.WebSockets
             MessageId = messageId ?? Guid.NewGuid().ToString();
         }
 
+        public ValueTask Send(WebSocketSession webSocketSession)
+        {
+            return Send(webSocketSession.WebSocket);
+        }
+
         public ValueTask Send(WebSocket ws)
         {
-            string msg = JsonConvert.SerializeObject(this);
-            ReadOnlyMemory<byte> message = new(Encoding.UTF8.GetBytes(msg));
-            return ws.SendAsync(message, WebSocketMessageType.Text, true, CancellationToken.None);
+            if (ws.State == WebSocketState.Open)
+            {
+                string msg = JsonConvert.SerializeObject(this);
+                ReadOnlyMemory<byte> message = new(Encoding.UTF8.GetBytes(msg));
+                return ws.SendAsync(message, WebSocketMessageType.Text, true, CancellationToken.None);
+            }
+            return ValueTask.CompletedTask;
         }
     }
 

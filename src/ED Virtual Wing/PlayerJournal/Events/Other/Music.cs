@@ -15,7 +15,7 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Other
             }
             else
             {
-                commander.ExtraFlags ^= GameExtraFlags.InCombat;
+                commander.ExtraFlags ^= ~GameExtraFlags.InCombat;
             }
             return ValueTask.CompletedTask;
         }

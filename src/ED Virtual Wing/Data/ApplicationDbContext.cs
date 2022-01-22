@@ -13,6 +13,8 @@ namespace ED_Virtual_Wing.Data
         public DbSet<StarSystemBody> StarSystemBodies { get; set; }
         public DbSet<Station> Stations { get; set; }
         public DbSet<TranslationsPending> TranslationsPendings { get; set; }
+        public DbSet<Wing> Wings { get; set; }
+        public DbSet<WingMember> WingMembers { get; set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public ApplicationDbContext(DbContextOptions options, IOptions<OperationalStoreOptions> operationalStoreOptions)

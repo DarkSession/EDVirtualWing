@@ -1,0 +1,16 @@
+<div>
+    <h2>Create Virtual Wing/Team</h2>
+    <div [formGroup]="createWingForm">
+        <div>
+            <mat-form-field>
+                <mat-label>Wing Name</mat-label>
+                <input matInput id="wingName" formControlName="wingName" minlength="6" maxlength="64" required>
+            </mat-form-field>
+        </div>
+        <div>
+            <button mat-raised-button color="primary" [disabled]="loading || !createWingForm.valid"
+                (click)="create()">Create</button>
+            <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+        </div>
+    </div>
+</div>

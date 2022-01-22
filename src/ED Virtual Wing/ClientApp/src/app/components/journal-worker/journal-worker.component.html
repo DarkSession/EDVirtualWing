@@ -9,13 +9,10 @@
     </div>
     <ng-template #journalWorkerBtn>
         <div *ngIf="journalWorkerService.journalWorkerActive">
-            Journal worker is active...
-            <br>
-            <app-commander [commander]="journalWorkerService.commander"></app-commander>
+            You are sharing.
         </div>
         <div *ngIf="!journalWorkerService.journalWorkerActive">
-            <button (click)="journalWorkerService.startJournalWorker()">Start
-                journal worker</button>
+            <button (click)="journalWorkerService.startJournalWorker()">Start Wing Share</button>
         </div>
     </ng-template>
 </div>

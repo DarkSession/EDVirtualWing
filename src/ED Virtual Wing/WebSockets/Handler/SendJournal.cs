@@ -12,20 +12,24 @@ namespace ED_Virtual_Wing.WebSockets.Handler
             public List<JObject>? Entries { get; set; }
         }
 
-        class SendJournalResponse
+        class CommanderUpdatedMessage
         {
             public Commander Commander { get; set; }
-            public SendJournalResponse(Commander commander)
+            public Wing Wing { get; set; }
+            public CommanderUpdatedMessage(Commander commander, Wing wing)
             {
                 Commander = commander;
+                Wing = wing;
             }
         }
 
         protected override Type? MessageDataType { get; } = typeof(SendJournalRequestData);
         private JournalProcessor JournalProcessor { get; }
-        public SendJournal(JournalProcessor journalProcessor)
+        private WebSocketServer WebSocketServer { get; }
+        public SendJournal(JournalProcessor journalProcessor, WebSocketServer webSocketServer)
         {
             JournalProcessor = journalProcessor;
+            WebSocketServer = webSocketServer;
         }
 
         public override async ValueTask<WebSocketHandlerResult> ProcessMessage(WebSocketMessageReceived message, WebSocketSession webSocketSession, ApplicationUser user, ApplicationDbContext applicationDbContext)
@@ -39,7 +43,17 @@ namespace ED_Virtual_Wing.WebSockets.Handler
                     await JournalProcessor.ProcessUserJournalEntry(userJournalEntry, commander, applicationDbContext);
                 }
                 await applicationDbContext.SaveChangesAsync();
-                return new WebSocketHandlerResultSuccess(new SendJournalResponse(commander));
+                {
+                    List<Wing> wings = await user.GetWings(applicationDbContext);
+                    IEnumerable<WebSocketSession> sessions = WebSocketServer.ActiveSessions
+                        .Where(a => wings.Any(w => w.Id == a.ActiveWing?.Id));
+                    foreach (WebSocketSession session in sessions)
+                    {
+                        WebSocketMessage updateMessage = new("CommanderUpdated", new CommanderUpdatedMessage(commander, session.ActiveWing!));
+                        await updateMessage.Send(session);
+                    }
+                }
+                return new WebSocketHandlerResultSuccess();
             }
             return new WebSocketHandlerResultError();
         }

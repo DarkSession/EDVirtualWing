@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Guid } from "guid-typescript";
 
@@ -13,8 +13,17 @@ export class WebsocketService {
   private responseCallbacks: {
     [key: string]: (response: WebSocketMessage | null) => void;
   } = {};
+  public authenticationResolved: Promise<ConnectionStatus>;
+  private authenticationResolve: ((connectionStatus: ConnectionStatus) => void) | null = null;
+  public onConnectionStatusChanged: EventEmitter<ConnectionStatus> = new EventEmitter<ConnectionStatus>();
+  private eventSubscribers: {
+    [key: string]: EventEmitter<WebSocketMessage<any>>;
+  } = {};
 
   public constructor() {
+    this.authenticationResolved = new Promise((resolve) => {
+      this.authenticationResolve = resolve;
+    });
     this.initalize();
   }
 
@@ -26,9 +35,14 @@ export class WebsocketService {
     this.initalize();
   }
 
+  private setConnectionStatus(connectionStatus: ConnectionStatus): void {
+    this.connectionStatus = connectionStatus;
+    this.onConnectionStatusChanged.emit(connectionStatus);
+  }
+
   private initalize(): void {
     this.failCallbacks();
-    this.connectionStatus = ConnectionStatus.Connecting;
+    this.setConnectionStatus(ConnectionStatus.Connecting);
     this.webSocket = new WebSocket(((window.location.protocol == "http:") ? "ws://" : "wss://") + window.location.hostname + ":" + environment.backendPort + "/ws");
     this.webSocket.onopen = () => {
       if (!environment.production) {
@@ -51,7 +65,7 @@ export class WebsocketService {
         }
       }
       if (this.connectionStatus != ConnectionStatus.NotAuthenticated) {
-        this.connectionStatus = ConnectionStatus.NoConnection;
+        this.setConnectionStatus(ConnectionStatus.NoConnection);
         this.failCallbacks();
       }
     };
@@ -73,7 +87,7 @@ export class WebsocketService {
     for (const key in this.responseCallbacks) {
       this.responseCallbacks[key](null);
     }
-    this.responseCallbacks= {};
+    this.responseCallbacks = {};
   }
 
   private async processMessage(message: WebSocketMessage): Promise<void> {
@@ -81,14 +95,17 @@ export class WebsocketService {
       case "Authentication": {
         const authenticationData: WebSocketMessageAuthenticationData = message.Data as any;
         if (authenticationData.IsAuthenticated) {
-          this.connectionStatus = ConnectionStatus.Authenticated;
+          this.setConnectionStatus(ConnectionStatus.Authenticated);
           for (const queueItem of this.messageQueue) {
             this.sendMessageInternal(queueItem.message, queueItem.callback);
           }
           this.messageQueue = [];
         }
         else {
-          this.connectionStatus = ConnectionStatus.NotAuthenticated;
+          this.setConnectionStatus(ConnectionStatus.NotAuthenticated);
+        }
+        if (this.authenticationResolve) {
+          this.authenticationResolve(this.connectionStatus);
         }
         break;
       }
@@ -97,6 +114,9 @@ export class WebsocketService {
           const callback = this.responseCallbacks[message.MessageId];
           delete this.responseCallbacks[message.MessageId];
           callback(message);
+        }
+        else if (typeof this.eventSubscribers[message.Name] !== undefined) {
+          this.eventSubscribers[message.Name].emit(message);
         }
         else {
           console.info("Unprocessed message", message);
@@ -139,6 +159,13 @@ export class WebsocketService {
       });
     }
   }
+
+  public on<T>(name: string): EventEmitter<WebSocketMessage<T>> {
+    if (typeof this.eventSubscribers[name] === 'undefined') {
+      this.eventSubscribers[name] = new EventEmitter<WebSocketMessage<any>>();
+    }
+    return this.eventSubscribers[name];
+  }
 }
 
 export enum ConnectionStatus {
@@ -151,6 +178,7 @@ export enum ConnectionStatus {
 export interface WebSocketMessage<T = unknown> {
   Name: string;
   Data: T;
+  Errors?: string[];
   MessageId?: string;
 }
 

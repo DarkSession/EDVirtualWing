@@ -72,6 +72,10 @@ namespace ED_Virtual_Wing.WebSockets
         {
             Errors = errors ?? new List<string>();
         }
+
+        public WebSocketHandlerResultError(string error) : this(new List<string>() { error })
+        {
+        }
     }
 
     public class WebSocketHandlerResultSuccessData

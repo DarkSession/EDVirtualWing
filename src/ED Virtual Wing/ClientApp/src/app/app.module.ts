@@ -16,6 +16,15 @@ import { CommanderComponent } from './components/commander/commander.component';
 import { JournalWorkerComponent } from './components/journal-worker/journal-worker.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CmdrTestComponent } from './components/cmdr-test/cmdr-test.component';
+import { WingCreateComponent } from './components/wing-create/wing-create.component';
+import { WingJoinComponent } from './components/wing-join/wing-join.component';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { AboutComponent } from './components/about/about.component';
+import { AuthenticationGuard } from './authentication.guard';
+import { NotAuthenticatedGuard } from './not-authenticated.guard';
+import { environment } from 'src/environments/environment';
+import { WingListComponent } from './components/wing-list/wing-list.component';
+import { WingComponent } from './components/wing/wing.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +33,11 @@ import { CmdrTestComponent } from './components/cmdr-test/cmdr-test.component';
     CommanderComponent,
     JournalWorkerComponent,
     CmdrTestComponent,
+    WingCreateComponent,
+    WingJoinComponent,
+    AboutComponent,
+    WingListComponent,
+    WingComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -37,6 +51,7 @@ import { CmdrTestComponent } from './components/cmdr-test/cmdr-test.component';
     MatInputModule,
     MatProgressBarModule,
     MatTooltipModule,
+    MatSidenavModule,
     RouterModule.forRoot(
       [
         {
@@ -44,10 +59,42 @@ import { CmdrTestComponent } from './components/cmdr-test/cmdr-test.component';
           component: CmdrTestComponent,
         },
         {
-          path: '',
+          path: 'wing',
+          canActivateChild: [AuthenticationGuard],
+          canActivate: [AuthenticationGuard],
+          children: [
+            {
+              path: 'create',
+              component: WingCreateComponent,
+            },
+            {
+              path: 'list',
+              component: WingListComponent,
+            },
+            {
+              path: ':id',
+              component: WingComponent,
+            },
+          ],
+        },
+        {
+          path: 'about',
+          component: AboutComponent,
+        },
+        {
+          path: 'login',
+          component: LoginRegistrationComponent,
+          canActivate: [NotAuthenticatedGuard],
+        },
+        {
+          path: '**',
           component: JournalWorkerComponent,
+          canActivate: [AuthenticationGuard],
         }
-      ]
+      ],
+      {
+        enableTracing: !environment.production,
+      },
     ),
     BrowserAnimationsModule
   ],

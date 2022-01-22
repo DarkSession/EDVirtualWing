@@ -89,6 +89,17 @@ namespace ED_Virtual_Wing.WebSockets
             }
         }
 
+        public List<WebSocketSession> ActiveSessions
+        {
+            get
+            {
+                lock (WebSocketSessions)
+                {
+                    return new(WebSocketSessions);
+                }
+            }
+        }
+
         private async Task ProcessMessage(WebSocketSession webSocketSession, MemoryStream messageStream, IServiceScopeFactory serviceScopeFactory)
         {
             using IServiceScope serviceScope = serviceScopeFactory.CreateScope();

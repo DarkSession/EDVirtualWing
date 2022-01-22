@@ -3,6 +3,7 @@ import { StarSystem } from "./star-system";
 import { Station } from "./station";
 
 export interface Commander {
+    CommanderId: string;
     Name: string;
     GameActivity: GameActivity;
     ExtraFlags: GameExtraFlags;
@@ -13,6 +14,7 @@ export interface Commander {
     Ship: Ship | null;
     Location: CommanderLocation;
     Target: CommanderTarget;
+    ShipHullHealth: number;
 }
 
 export interface CommanderTarget {

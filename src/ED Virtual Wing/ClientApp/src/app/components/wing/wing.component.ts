@@ -39,9 +39,9 @@ export class WingComponent implements OnInit {
       if (!environment.production) {
         console.log("CommanderUpdated", message);
       }
-      if (message.Data.Wing.WingId == this.wing?.WingId) {
+      if (message.Data.Wing.WingId === this.wing?.WingId) {
         const commanderData = message.Data.Commander;
-        const i = this.commanders.findIndex(c => c.CommanderId == commanderData.CommanderId);
+        const i = this.commanders.findIndex(c => c.CommanderId === commanderData.CommanderId);
         if (i === -1) {
           this.commanders.push(commanderData);
         }
@@ -63,7 +63,15 @@ export class WingComponent implements OnInit {
       });
       if (response !== null && response.Success) {
         this.wing = response.Data.Wing;
-        this.commanders = response.Data.Commanders;
+        this.commanders = response.Data.Commanders.sort((a, b) => {
+          if (a.IsStreaming == b.IsStreaming) {
+            return 0;
+          }
+          if (a.IsStreaming > b.IsStreaming) {
+            return 1;
+          }
+          return -1;
+        });
         this.canManage = response.Data.CanManage;
         return;
       }

@@ -116,14 +116,6 @@
   min-height: 230px;
 }
 
-.cmdr-live {
-  color: rgb(0, 163, 0);
-}
-
-.cmdr-online {}
-
-.cmdr-offline {}
-
 .badge {
   margin-left: 4px;
   margin-right: 4px;

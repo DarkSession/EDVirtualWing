@@ -79,6 +79,7 @@ namespace ED_Virtual_Wing.WebSockets
                         }
                 }
             }
+            await OneUserDisconnected(webSocketSession, serviceScopeFactory);
             lock (WebSocketSessions)
             {
                 WebSocketSessions.Remove(webSocketSession);
@@ -96,6 +97,23 @@ namespace ED_Virtual_Wing.WebSockets
                 lock (WebSocketSessions)
                 {
                     return new(WebSocketSessions);
+                }
+            }
+        }
+
+        private async Task OneUserDisconnected(WebSocketSession webSocketSession, IServiceScopeFactory serviceScopeFactory)
+        {
+            if (webSocketSession.StreamingJournal)
+            {
+                using IServiceScope serviceScope = serviceScopeFactory.CreateScope();
+                ApplicationDbContext applicationDbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                ApplicationUser? user = await applicationDbContext.Users.FindAsync(webSocketSession.User.Id);
+                if (user != null)
+                {
+                    Commander commander = await user.GetCommander(applicationDbContext);
+                    commander.LastEventDate = null;
+                    await commander.OtherCommanderWsInstancesNotifyStreaming(this, false);
+                    await commander.DistributeCommanderData(this, applicationDbContext);
                 }
             }
         }

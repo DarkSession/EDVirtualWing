@@ -12,17 +12,6 @@ namespace ED_Virtual_Wing.WebSockets.Handler
             public List<JObject>? Entries { get; set; }
         }
 
-        class CommanderUpdatedMessage
-        {
-            public Commander Commander { get; set; }
-            public Wing Wing { get; set; }
-            public CommanderUpdatedMessage(Commander commander, Wing wing)
-            {
-                Commander = commander;
-                Wing = wing;
-            }
-        }
-
         protected override Type? MessageDataType { get; } = typeof(JournalSendRequestData);
         private JournalProcessor JournalProcessor { get; }
         private WebSocketServer WebSocketServer { get; }
@@ -38,21 +27,18 @@ namespace ED_Virtual_Wing.WebSockets.Handler
             if (data?.Entries != null)
             {
                 Commander commander = await user.GetCommander(applicationDbContext);
+                webSocketSession.StreamingJournal = true;
+                if (!commander.IsStreaming)
+                {
+                    await commander.OtherCommanderWsInstancesNotifyStreaming(WebSocketServer, true);
+                }
                 foreach (JObject userJournalEntry in data.Entries)
                 {
                     await JournalProcessor.ProcessUserJournalEntry(userJournalEntry, commander, applicationDbContext);
                 }
+                commander.LastEventDate = DateTimeOffset.Now;
                 await applicationDbContext.SaveChangesAsync();
-                {
-                    List<Wing> wings = await user.GetWings(applicationDbContext);
-                    IEnumerable<WebSocketSession> sessions = WebSocketServer.ActiveSessions
-                        .Where(a => wings.Any(w => w.Id == a.ActiveWing?.Id));
-                    foreach (WebSocketSession session in sessions)
-                    {
-                        WebSocketMessage updateMessage = new("CommanderUpdated", new CommanderUpdatedMessage(commander, session.ActiveWing!));
-                        await updateMessage.Send(session);
-                    }
-                }
+                await commander.DistributeCommanderData(WebSocketServer, applicationDbContext);
                 return new WebSocketHandlerResultSuccess();
             }
             return new WebSocketHandlerResultError();

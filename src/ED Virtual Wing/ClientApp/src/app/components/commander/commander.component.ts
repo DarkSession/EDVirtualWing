@@ -62,10 +62,10 @@ export class CommanderComponent implements OnInit, OnChanges {
         this.shipHealthSVG = 0;
       }
       let targetShip = "";
-      if (this.commander.Target.ShipTargetName) {
+      if (this.commander.Target?.ShipTargetName) {
         targetShip += this.commander.Target.ShipTargetName + " - ";
       }
-      switch (this.commander.Target.ShipTarget) {
+      switch (this.commander.Target?.ShipTarget) {
         case Ship.SideWinder: {
           targetShip += "Sidewinder";
           break;
@@ -221,14 +221,16 @@ export class CommanderComponent implements OnInit, OnChanges {
       }
       this.targetShip = targetShip;
       let targetSystem: string = "";
-      if (this.commander.Target.StarSystem && this.commander.Target.StarSystem.Name != this.commander.Location.StarSystem?.Name) {
-        targetSystem = this.commander.Target.StarSystem.Name;
-      }
-      if (this.commander.Target.Name && this.commander.Target.Name != targetSystem) {
-        if (targetSystem) {
-          targetSystem += " - ";
+      if (this.commander.Target) {
+        if (this.commander.Target.StarSystem && this.commander.Target.StarSystem.Name !== this.commander.Location.StarSystem?.Name) {
+          targetSystem = this.commander.Target.StarSystem.Name;
         }
-        targetSystem += this.commander.Target.Name;
+        if (this.commander.Target.Name && this.commander.Target.Name !== targetSystem) {
+          if (targetSystem) {
+            targetSystem += " - ";
+          }
+          targetSystem += this.commander.Target.Name;
+        }
       }
       this.targetSystem = targetSystem;
       switch (this.commander.GameMode) {
@@ -271,10 +273,10 @@ export class CommanderComponent implements OnInit, OnChanges {
   }
 
   private hasFlag(flag: VehicleStatusFlags): boolean {
-    return ((this.commander?.VehicleStatusFlags ?? 0) & flag) == flag;
+    return ((this.commander?.VehicleStatusFlags ?? 0) & flag) === flag;
   }
 
   private hasExtraFlag(flag: GameExtraFlags): boolean {
-    return ((this.commander?.ExtraFlags ?? 0) & flag) == flag;
+    return ((this.commander?.ExtraFlags ?? 0) & flag) === flag;
   }
 }

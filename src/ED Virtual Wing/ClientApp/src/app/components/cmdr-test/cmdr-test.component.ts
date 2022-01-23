@@ -67,6 +67,7 @@ export class CmdrTestComponent implements OnInit {
       ShipTargetName: "Target name",
     },
     ShipHullHealth: 0.3456,
+    IsStreaming: true,
   };
   public commander2: Commander = {
     CommanderId: "2",
@@ -108,6 +109,7 @@ export class CmdrTestComponent implements OnInit {
       ShipTargetName: null,
     },
     ShipHullHealth: 1,
+    IsStreaming: true,
   };
   public commander3: Commander = {
     CommanderId: "3",
@@ -141,6 +143,7 @@ export class CmdrTestComponent implements OnInit {
       ShipTargetName: "System Defence Force",
     },
     ShipHullHealth: 0.91,
+    IsStreaming: true,
   };
   public commander4: Commander = {
     CommanderId: "4",
@@ -185,6 +188,7 @@ export class CmdrTestComponent implements OnInit {
       ShipTargetName: "Random Dude",
     },
     ShipHullHealth: 1,
+    IsStreaming: true,
   };
   public commander5: Commander = {
     CommanderId: "5",
@@ -232,6 +236,7 @@ export class CmdrTestComponent implements OnInit {
       ShipTargetName: null,
     },
     ShipHullHealth: 1,
+    IsStreaming: true,
   };
   public commander6: Commander = {
     CommanderId: "6",
@@ -265,6 +270,7 @@ export class CmdrTestComponent implements OnInit {
       ShipTargetName: null,
     },
     ShipHullHealth: 0.75,
+    IsStreaming: true,
   };
   public commander7: Commander = {
     CommanderId: "7",
@@ -309,6 +315,7 @@ export class CmdrTestComponent implements OnInit {
       ShipTargetName: "Random Ganker #123",
     },
     ShipHullHealth: 0.123,
+    IsStreaming: true,
   };
   public commander8: Commander = {
     CommanderId: "8",
@@ -358,6 +365,7 @@ export class CmdrTestComponent implements OnInit {
       ShipTargetName: null,
     },
     ShipHullHealth: 0.87,
+    IsStreaming: true,
   };
   public commander9: Commander = {
     CommanderId: "9",
@@ -391,6 +399,7 @@ export class CmdrTestComponent implements OnInit {
       ShipTargetName: "CMDR Test99",
     },
     ShipHullHealth: 0.4444,
+    IsStreaming: true,
   };
   public commander10: Commander = {
     CommanderId: "10",
@@ -427,6 +436,7 @@ export class CmdrTestComponent implements OnInit {
       ShipTargetName: null,
     },
     ShipHullHealth: 0.234,
+    IsStreaming: true,
   };
 
   public constructor() { }

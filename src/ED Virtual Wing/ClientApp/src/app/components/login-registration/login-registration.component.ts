@@ -41,7 +41,7 @@ export class LoginRegistrationComponent implements OnInit {
   }
 
   public toggleMode(): void {
-    this.formMode = (this.formMode == FormMode.Registration) ? FormMode.Login : FormMode.Registration;
+    this.formMode = (this.formMode === FormMode.Registration) ? FormMode.Login : FormMode.Registration;
     this.errors = [];
   }
 

@@ -8,7 +8,7 @@ import { WebsocketService } from 'src/app/websocket.service';
   styleUrls: ['./wing-list.component.css']
 })
 export class WingListComponent implements OnInit {
-  public wings: Wing[] = [];
+  public wings: WingDetail[] = [];
 
   public constructor(
     private readonly webSocketService: WebsocketService
@@ -27,5 +27,10 @@ export class WingListComponent implements OnInit {
 }
 
 interface WingsGetResponse {
-  Wings: Wing[];
+  Wings: WingDetail[];
+}
+
+interface WingDetail extends Wing {
+  MemberCount: number;
+  MemberOnline: number;
 }

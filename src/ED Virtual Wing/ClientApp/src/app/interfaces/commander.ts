@@ -15,6 +15,7 @@ export interface Commander {
     Location: CommanderLocation;
     Target: CommanderTarget;
     ShipHullHealth: number;
+    IsStreaming: boolean;
 }
 
 export interface CommanderTarget {

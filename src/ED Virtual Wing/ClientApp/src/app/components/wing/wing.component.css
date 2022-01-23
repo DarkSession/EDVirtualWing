@@ -1,4 +1,5 @@
 .action-btns {
-    display: flex;
-    flex-direction: row-reverse;
+    position: fixed;
+    right: 10px;
+    top: 10px;
 }

@@ -8,10 +8,10 @@
         Waiting to receive settings from server...
     </div>
     <ng-template #journalWorkerBtn>
-        <div *ngIf="journalWorkerService.journalWorkerActive">
-            <mat-icon class="live" matTooltip="Sharing game information with wing(s)/team(s)">circle</mat-icon>
+        <div *ngIf="journalWorkerService.journalWorkerActive || journalWorkerService.streamingJournalInOtherInstance">
+            <mat-icon class="online" matTooltip="Sharing game information with wing(s)/team(s)">circle</mat-icon>
         </div>
-        <div *ngIf="!journalWorkerService.journalWorkerActive">
+        <div *ngIf="!journalWorkerService.journalWorkerActive && !journalWorkerService.streamingJournalInOtherInstance">
             <button mat-raised-button color="primary" (click)="journalWorkerService.startJournalWorker()">
                 Share Game Information</button>
         </div>

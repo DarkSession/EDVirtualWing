@@ -1,7 +1,7 @@
 import { Injectable, Injector } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { openDB, IDBPDatabase } from 'idb';
-import { WebsocketService } from './websocket.service';
+import { WebSocketMessage, WebsocketService } from './websocket.service';
 import * as dayjs from 'dayjs';
 import * as utc from 'dayjs/plugin/utc';
 import { AppService } from './app.service';
@@ -9,7 +9,7 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { JournalWorkerSetupHelpComponent } from './components/journal-worker-setup-help/journal-worker-setup-help.component';
 import { OVERLAY_DATA } from './injector/overlay-data';
-import { JournalWorkerHelpData } from './injector/journal-worker-help-data';
+import { JournalWorkerHelpData } from './interfaces/journal-worker-help-data';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 dayjs.extend(utc);
@@ -26,6 +26,7 @@ export class JournalWorkerService {
   private journalLastDate: dayjs.Dayjs = dayjs.utc();
   public serverSettingsReceived: boolean = false;
   public journalWorkerActive: boolean = false;
+  public streamingJournalInOtherInstance: boolean = false;
 
   public constructor(
     private readonly webSocketService: WebsocketService,
@@ -72,13 +73,21 @@ export class JournalWorkerService {
         }
       },
     });
+    this.webSocketService.on("JournalStreamingChanged").subscribe((message: WebSocketMessage<JournalStreamingChangedMessage>) => {
+      this.streamingJournalInOtherInstance = message.Data.Status;
+    });
     // We want to get some information from the server.
     // Depending on the authentication status, this can take a while. Therefore, we shouldn't place any other essential operations further below.
-    const relevantEvents = await this.webSocketService.sendMessageAndWaitForResponse<JournalGetSettingsResponseData>("JournalGetSettings", {});
-    if (relevantEvents !== null && relevantEvents.Success) {
+    this.requestJournalSettings();
+  }
+
+  private async requestJournalSettings(): Promise<void> {
+    const journalSettings = await this.webSocketService.sendMessageAndWaitForResponse<JournalGetSettingsResponseData>("JournalGetSettings", {});
+    if (journalSettings !== null && journalSettings.Success) {
       this.serverSettingsReceived = true;
-      this.relevantEvents = relevantEvents.Data.Events;
-      this.journalLastDate = dayjs(relevantEvents.Data.JournalLastEventDate);
+      this.relevantEvents = journalSettings.Data.Events;
+      this.journalLastDate = dayjs(journalSettings.Data.JournalLastEventDate);
+      this.streamingJournalInOtherInstance = journalSettings.Data.StreamingJournal;
     }
   }
 
@@ -107,7 +116,7 @@ export class JournalWorkerService {
   }
 
   private hideHelp(): void {
-    if (this.helpOverlayRef != null) {
+    if (this.helpOverlayRef !== null) {
       this.helpOverlayRef.dispose();
       this.helpOverlayRef = null;
     }
@@ -220,7 +229,7 @@ export class JournalWorkerService {
             continue;
           }
           // The status file gives us a lot of information about the player.
-          else if (entry.name == "Status.json") {
+          else if (entry.name === "Status.json") {
             statusFile = entry;
           }
         }
@@ -354,7 +363,7 @@ export class JournalWorkerService {
       for (const journalEntry of lines) {
         if (this.relevantEvents.includes(journalEntry.event)) {
           const entryTime = dayjs(journalEntry.timestamp);
-          const isStatus = journalEntry.event == "Status";
+          const isStatus = journalEntry.event === "Status";
           if (isStatus || entryTime >= journalLastDate) {
             relevantEntries.push(journalEntry);
             if (!isStatus) {
@@ -376,7 +385,7 @@ export class JournalWorkerService {
         const response = await this.webSocketService.sendMessageAndWaitForResponse<JournalSendRequestData>("JournalSend", {
           Entries: relevantEntries,
         });
-        if (response == null || !response.Success) {
+        if (response === null || !response.Success) {
           console.error("JournalSend failed");
           // It failed, so we stop here and try again in a second.
           return;
@@ -424,6 +433,7 @@ interface JournalEntry {
 interface JournalGetSettingsResponseData {
   Events: string[];
   JournalLastEventDate: string;
+  StreamingJournal: boolean;
 }
 
 interface JournalSendRequestData {
@@ -437,4 +447,8 @@ interface JournalAndStatusFileFromDirectoryHandleResult {
 interface FileSystemFileHandleAndFile {
   handle: FileSystemFileHandle;
   file: File;
+}
+
+interface JournalStreamingChangedMessage {
+  Status: boolean;
 }

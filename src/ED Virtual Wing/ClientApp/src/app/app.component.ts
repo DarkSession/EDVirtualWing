@@ -14,7 +14,7 @@ import { AppService } from './app.service';
 })
 export class AppComponent implements OnInit, OnDestroy {
   public readonly ConnectionStatus = ConnectionStatus;
-  public isMenuOpen: boolean = false;
+  public isMenuOpen: boolean = true;
   public isLoggedIn: boolean = false;
   private loadingOverlayRef: OverlayRef | null = null;
 
@@ -31,7 +31,7 @@ export class AppComponent implements OnInit, OnDestroy {
     });
     this.appService.loadingChanged.pipe(untilDestroyed(this)).subscribe((state: boolean) => {
       if (state) {
-        if (this.loadingOverlayRef != null) {
+        if (this.loadingOverlayRef !== null) {
           return;
         }
         this.loadingOverlayRef = this.overlay.create({
@@ -43,7 +43,7 @@ export class AppComponent implements OnInit, OnDestroy {
         this.loadingOverlayRef.attach(loadingOverlay);
       }
       else {
-        if (this.loadingOverlayRef == null) {
+        if (this.loadingOverlayRef === null) {
           return;
         }
         this.loadingOverlayRef.detach();

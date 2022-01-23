@@ -31,11 +31,13 @@ namespace ED_Virtual_Wing.Controllers
 
         private UserManager<ApplicationUser> UserManager { get; }
         private SignInManager<ApplicationUser> SignInManager { get; }
+        private ApplicationDbContext ApplicationDbContext { get; }
 
         public UserController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ApplicationDbContext applicationDbContext)
         {
             UserManager = userManager;
             SignInManager = signInManager;
+            ApplicationDbContext = applicationDbContext;
         }
 
         [HttpPost("login")]
@@ -90,6 +92,8 @@ namespace ED_Virtual_Wing.Controllers
             IdentityResult result = await UserManager.CreateAsync(user, registrationRequest.Password);
             if (result.Succeeded)
             {
+                await user.GetCommander(ApplicationDbContext);
+                await ApplicationDbContext.SaveChangesAsync();
                 await SignInManager.SignInAsync(user, true);
                 return new RegistrationResponse(true);
             }

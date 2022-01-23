@@ -30,6 +30,7 @@ import { WingInviteLinkComponent } from './components/wing-invite-link/wing-invi
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { JournalWorkerSetupHelpComponent } from './components/journal-worker-setup-help/journal-worker-setup-help.component';
 import { MainComponent } from './components/main/main.component';
+import { FaqComponent } from './faq/faq.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { MainComponent } from './components/main/main.component';
     WingInviteLinkComponent,
     JournalWorkerSetupHelpComponent,
     MainComponent,
+    FaqComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

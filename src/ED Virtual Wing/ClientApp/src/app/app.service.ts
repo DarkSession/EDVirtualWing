@@ -10,7 +10,7 @@ export class AppService {
   public constructor() { }
 
   public setLoading(loading: boolean): void {
-    if (this.loading != loading) {
+    if (this.loading !== loading) {
       this.loading = loading;
       this.loadingChanged.emit(loading);
     }

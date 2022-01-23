@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { JournalWorkerHelpData } from 'src/app/injector/journal-worker-help-data';
+import { JournalWorkerHelpData } from 'src/app/interfaces/journal-worker-help-data';
 import { OVERLAY_DATA } from 'src/app/injector/overlay-data';
 
 @Component({
@@ -27,13 +27,13 @@ export class JournalWorkerSetupHelpComponent implements OnInit {
       for (let i = 0; i <= this.maxSteps; i++) {
         this.steps.push(i);
       }
+      this.interval = setInterval(() => {
+        this.showIndex += 1;
+        if (this.showIndex > this.maxSteps) {
+          this.showIndex = 0;
+        }
+      }, 5000);
     }
-    this.interval = setInterval(() => {
-      this.showIndex += 1;
-      if (this.showIndex > this.maxSteps) {
-        this.showIndex = 0;
-      }
-    }, 5000);
   }
 
   public next(): void {

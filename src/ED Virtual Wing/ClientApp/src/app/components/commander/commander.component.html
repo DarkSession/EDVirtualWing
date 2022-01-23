@@ -2,7 +2,8 @@
     <div class="cmdr-basic-info">
         <div class="flex-center">
             <span class="cmdr-title">CMDR {{ commander.Name }}</span>
-            <mat-icon [ngClass]="{'cmdr-live': true}" matTooltip="Online, in-game">circle
+            <mat-icon *ngIf="commander.IsStreaming" [ngClass]="{'online': commander.IsStreaming}"
+                matTooltip="Online, in-game">circle
             </mat-icon>
             <img *ngIf="inTeam" src="assets/images/Wing.svg" matTooltip="In team" class="svg-icon-small" />
             <img *ngIf="inCombat" src="assets/images/Combat.svg" matTooltip="In combat" class="svg-icon-small" />
@@ -19,7 +20,8 @@
         <div class="ship-data-row-value">
             <span *ngIf="commander.GameActivity == GameActivity.Hyperspace; else nonHyperspaceLocation">
                 Hyperspace jump
-                <span *ngIf="commander.Target?.StarSystem || commander.Target?.Name">to {{ commander.Target.StarSystem?.Name ?? commander.Target?.Name }}</span>
+                <span *ngIf="commander.Target?.StarSystem || commander.Target?.Name">to {{
+                    commander.Target.StarSystem?.Name ?? commander.Target?.Name }}</span>
             </span>
             <ng-template #nonHyperspaceLocation>
                 <span *ngIf="commander.Location?.StarSystem" class="flex-center" matTooltip="System">
@@ -29,7 +31,8 @@
                     <img src="assets/images/Planet.svg" class="svg-icon"> {{ commander.Location.SystemBody?.Name }}
                     <span *ngIf="commander.GameActivity == GameActivity.InSrv" class="badge">In SRV</span>
                     <span *ngIf="commander.GameActivity == GameActivity.Landed" class="badge">Landed</span>
-                    <span *ngIf="commander.GameActivity == GameActivity.OnFoot && !commander.Location?.Station" class="badge">On foot</span>
+                    <span *ngIf="commander.GameActivity == GameActivity.OnFoot && !commander.Location?.Station"
+                        class="badge">On foot</span>
                 </span>
                 <span *ngIf="commander.Location?.Station" class="flex-center" matTooltip="Station">
                     <ng-container [ngSwitch]="commander.Location.Station?.StationType">

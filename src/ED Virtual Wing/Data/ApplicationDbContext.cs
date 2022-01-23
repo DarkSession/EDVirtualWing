@@ -27,7 +27,7 @@ namespace ED_Virtual_Wing.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseMySql(Environment.GetEnvironmentVariable("EDVW_MARIADB_CONNECTIONSTRING") ?? "server=localhost;user=root;password=1234;database=edvw",
-                new MariaDbServerVersion(new Version(10, 3, 25)),
+                new MariaDbServerVersion(new Version(10, 6, 0)),
                 options =>
                 {
                     options.EnableRetryOnFailure();

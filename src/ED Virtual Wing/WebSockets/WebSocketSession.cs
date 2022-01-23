@@ -8,6 +8,7 @@ namespace ED_Virtual_Wing.WebSockets
         public WebSocket WebSocket { get; }
         public ApplicationUser User { get; }
         public Wing? ActiveWing { get; set; }
+        public bool StreamingJournal { get; set; }
 
         public WebSocketSession(WebSocket webSocket, ApplicationUser user)
         {

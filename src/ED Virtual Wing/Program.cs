@@ -6,6 +6,7 @@ using ED_Virtual_Wing.WebSockets;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
+builder.Logging.AddDebug();
 
 // Add services to the container.
 builder.Services.AddDbContext<ApplicationDbContext>();
@@ -74,7 +75,7 @@ app.UseAuthorization();
 
 app.Use((ctx, next) =>
 {
-    // ctx.Response.Headers.Add("Content-Security-Policy", string.Empty);
+    ctx.Response.Headers.Add("Content-Security-Policy", "default-src 'self'; style-src: 'self' 'unsafe-inline';");
     ctx.Response.Headers.Add("X-Frame-Options", "deny");
     ctx.Response.Headers.Add("X-XSS-Protection", "1; mode=block");
     ctx.Response.Headers.Add("Referrer-Policy", "strict-origin");

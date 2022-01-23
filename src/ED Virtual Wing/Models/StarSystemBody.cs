@@ -60,9 +60,8 @@ namespace ED_Virtual_Wing.Models
                             }
                         }
                     }
-                    catch (Exception e)
+                    catch
                     {
-
                     }
                 }
             }

@@ -3,7 +3,7 @@
     <mat-icon [ngClass]="{'menu-open': isMenuOpen, 'menu-closed': !isMenuOpen}">menu</mat-icon>
   </button>
   <img src="assets/images/EliteDangerous.svg" style="width: 45px; height: 45px;" />
-  <span routerLink="/">Elite Dangerous Virtual Wing</span>
+  <span routerLink="/" class="clickable">Elite Dangerous Virtual Wing</span>
   <span class="toolbar-spacer"></span>
 </mat-toolbar>
 
@@ -11,15 +11,15 @@
   <mat-sidenav #sidenav mode="side" class="edvw-sidenav" [opened]="isMenuOpen">
     <div *ngIf="isLoggedIn">
       <div><b>Wings / Teams</b></div>
-      <div routerLink="wing/list">My teams</div>
-      <div routerLink="wing/create">Create</div>
+      <div routerLink="wing/list" class="clickable">My wings</div>
+      <div routerLink="wing/create" class="clickable">Create</div>
     </div>
     <div *ngIf="!isLoggedIn">
-      <div routerLink="login">Login</div>
+      <div routerLink="login" class="clickable">Login</div>
     </div>
     <hr>
     <div>
-      <div routerLink="about">About</div>
+      <div routerLink="about" class="clickable">About</div>
     </div>
     <div *ngIf="isLoggedIn">
       <hr>
@@ -30,9 +30,9 @@
     <ng-container [ngSwitch]="websocketService.connectionStatus">
       <div *ngSwitchCase="ConnectionStatus.Connecting">Connecting to server...</div>
       <div *ngSwitchCase="ConnectionStatus.NoConnection">Error! Connection to server failed!</div>
-      <div *ngSwitchDefault class="container">
+      <ng-container *ngSwitchDefault>
         <router-outlet></router-outlet>
-      </div>
+      </ng-container>
     </ng-container>
   </mat-sidenav-content>
 </mat-sidenav-container>

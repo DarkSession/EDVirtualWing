@@ -25,7 +25,7 @@ export class WebsocketService {
   }
 
   public reconnect(): void {
-    if (this.initalizeTimeout != null) {
+    if (this.initalizeTimeout !== null) {
       clearTimeout(this.initalizeTimeout);
       this.initalizeTimeout = null;
     }
@@ -43,7 +43,7 @@ export class WebsocketService {
     });
     this.failCallbacks();
     this.setConnectionStatus(ConnectionStatus.Connecting);
-    this.webSocket = new WebSocket(((window.location.protocol == "http:") ? "ws://" : "wss://") + window.location.hostname + ":" + environment.backendPort + "/ws");
+    this.webSocket = new WebSocket(((window.location.protocol === "http:") ? "ws://" : "wss://") + window.location.hostname + ":" + environment.backendPort + "/ws");
     this.webSocket.onopen = () => {
       if (!environment.production) {
         console.log("WebSocket.onopen");
@@ -54,7 +54,7 @@ export class WebsocketService {
         console.log("WebSocket.onclose", event);
       }
       if (!event.wasClean) {
-        if (this.initalizeTimeout != null) {
+        if (this.initalizeTimeout !== null) {
           clearTimeout(this.initalizeTimeout);
         }
         this.initalizeTimeout = setTimeout(() => {
@@ -64,7 +64,7 @@ export class WebsocketService {
           console.log("Unclean close. Scheduling another connection in 10s.");
         }
       }
-      if (this.connectionStatus != ConnectionStatus.NotAuthenticated) {
+      if (this.connectionStatus !== ConnectionStatus.NotAuthenticated) {
         this.setConnectionStatus(ConnectionStatus.NoConnection);
         this.failCallbacks();
       }
@@ -146,9 +146,12 @@ export class WebsocketService {
   }
 
   private sendMessageInternal(message: WebSocketMessage, callback?: (response: WebSocketResponseMessage | null) => void): void {
-    if (this.connectionStatus == ConnectionStatus.Authenticated && this.webSocket != null) {
+    if (this.connectionStatus === ConnectionStatus.Authenticated && this.webSocket !== null) {
       if (callback && message.MessageId) {
         this.responseCallbacks[message.MessageId] = callback;
+      }
+      if (!environment.production) {
+        console.log("sendMessageInternal", message);
       }
       this.webSocket.send(JSON.stringify(message));
     }

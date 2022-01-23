@@ -22,10 +22,10 @@ export class WingJoinComponent implements OnInit {
   ) { }
 
   public ngOnInit(): void {
-    this.requestWingDetails();
+    this.requestWingDetails(false);
   }
 
-  private async requestWingDetails(): Promise<void> {
+  private async requestWingDetails(join: boolean): Promise<void> {
     if (this.appService.isLoading) {
       return;
     }
@@ -38,7 +38,7 @@ export class WingJoinComponent implements OnInit {
       try {
         const response = await this.webSocketService.sendMessageAndWaitForResponse<WingJoinResponse>("WingJoin", {
           Invite: invite,
-          Join: false,
+          Join: join,
         });
         if (response !== null) {
           if (!response.Success) {
@@ -46,6 +46,9 @@ export class WingJoinComponent implements OnInit {
           }
           else {
             this.wing = response.Data.Wing;
+            if (join) {
+              this.router.navigate(["/wing", this.wing.WingId]);
+            }
           }
         }
       }
@@ -59,8 +62,8 @@ export class WingJoinComponent implements OnInit {
     }
   }
 
-  public async join(): Promise<void> {
-    
+  public join(): Promise<void> {
+    return this.requestWingDetails(true);
   }
 }
 

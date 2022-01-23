@@ -52,3 +52,7 @@ html, body {
 .error-msg {
   color: red;
 }
+
+.online {
+  color: rgb(0, 163, 0);
+}

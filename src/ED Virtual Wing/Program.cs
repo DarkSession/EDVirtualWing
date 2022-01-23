@@ -16,6 +16,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequireUppercase = false;
     options.Password.RequiredLength = 8;
+    options.User.AllowedUserNameCharacters += " ";
 })
     .AddEntityFrameworkStores<ApplicationDbContext>();
 

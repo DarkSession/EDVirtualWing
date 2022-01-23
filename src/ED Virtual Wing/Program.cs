@@ -65,7 +65,6 @@ WebSocketOptions webSocketOptions = new()
 webSocketOptions.AllowedOrigins.Add(httpOrigin);
 app.UseWebSockets(webSocketOptions);
 
-app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseCors();
@@ -75,7 +74,7 @@ app.UseAuthorization();
 
 app.Use((ctx, next) =>
 {
-    ctx.Response.Headers.Add("Content-Security-Policy", "default-src 'self'; style-src: 'self' 'unsafe-inline';");
+    ctx.Response.Headers.Add("Content-Security-Policy", "default-src: 'self'; style-src: 'self' 'unsafe-inline';");
     ctx.Response.Headers.Add("X-Frame-Options", "deny");
     ctx.Response.Headers.Add("X-XSS-Protection", "1; mode=block");
     ctx.Response.Headers.Add("Referrer-Policy", "strict-origin");

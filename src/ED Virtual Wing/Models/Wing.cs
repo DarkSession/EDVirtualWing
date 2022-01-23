@@ -22,6 +22,15 @@ namespace ED_Virtual_Wing.Models
         [JsonIgnore]
         public ApplicationUser? Owner { get; set; }
 
+        [NotMapped]
+        public string? OwnerName
+        {
+            get
+            {
+                return Owner?.UserName;
+            }
+        }
+
         [Column]
         [JsonIgnore]
         public DateTimeOffset Created { get; set; }
@@ -36,6 +45,10 @@ namespace ED_Virtual_Wing.Models
 
         [JsonIgnore]
         public IEnumerable<WingMember>? Members { get; set; }
+
+        [JsonIgnore]
+        public IEnumerable<WingInvite>? Invites { get; set; }
+
     }
 
     public enum WingStatus : short

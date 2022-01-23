@@ -1,8 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ED_Virtual_Wing.Models
 {
     [Table("TranslationsPending")]
+    [Index(nameof(NonLocalized), IsUnique = true)]
     public class TranslationsPending
     {
         [Column]

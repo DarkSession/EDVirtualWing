@@ -11,19 +11,16 @@ export class WebsocketService {
   private webSocket: WebSocket | null = null;
   private messageQueue: WebSocketMessageQueueItem[] = [];
   private responseCallbacks: {
-    [key: string]: (response: WebSocketMessage | null) => void;
+    [key: string]: (response: WebSocketResponseMessage | null) => void;
   } = {};
-  public authenticationResolved: Promise<ConnectionStatus>;
-  private authenticationResolve: ((connectionStatus: ConnectionStatus) => void) | null = null;
+  public authenticationResolved!: Promise<ConnectionStatus>;
+  private authenticationResolve!: ((connectionStatus: ConnectionStatus) => void);
   public onConnectionStatusChanged: EventEmitter<ConnectionStatus> = new EventEmitter<ConnectionStatus>();
   private eventSubscribers: {
     [key: string]: EventEmitter<WebSocketMessage<any>>;
   } = {};
 
   public constructor() {
-    this.authenticationResolved = new Promise((resolve) => {
-      this.authenticationResolve = resolve;
-    });
     this.initalize();
   }
 
@@ -41,6 +38,9 @@ export class WebsocketService {
   }
 
   private initalize(): void {
+    this.authenticationResolved = new Promise((resolve) => {
+      this.authenticationResolve = resolve;
+    });
     this.failCallbacks();
     this.setConnectionStatus(ConnectionStatus.Connecting);
     this.webSocket = new WebSocket(((window.location.protocol == "http:") ? "ws://" : "wss://") + window.location.hostname + ":" + environment.backendPort + "/ws");
@@ -78,7 +78,7 @@ export class WebsocketService {
       if (!environment.production) {
         console.log("WebSocket.onmessage", event);
       }
-      const message: WebSocketMessage = JSON.parse(event.data);
+      const message: WebSocketResponseMessage = JSON.parse(event.data);
       this.processMessage(message);
     };
   }
@@ -90,7 +90,7 @@ export class WebsocketService {
     this.responseCallbacks = {};
   }
 
-  private async processMessage(message: WebSocketMessage): Promise<void> {
+  private async processMessage(message: WebSocketResponseMessage): Promise<void> {
     switch (message.Name) {
       case "Authentication": {
         const authenticationData: WebSocketMessageAuthenticationData = message.Data as any;
@@ -115,11 +115,11 @@ export class WebsocketService {
           delete this.responseCallbacks[message.MessageId];
           callback(message);
         }
-        else if (typeof this.eventSubscribers[message.Name] !== undefined) {
+        else if (typeof this.eventSubscribers[message.Name] !== 'undefined') {
           this.eventSubscribers[message.Name].emit(message);
         }
         else {
-          console.info("Unprocessed message", message);
+          console.warn("Unprocessed message", message);
         }
       }
     }
@@ -133,19 +133,19 @@ export class WebsocketService {
     this.sendMessageInternal(message);
   }
 
-  public sendMessageAndWaitForResponse<T>(name: string, data: any): Promise<WebSocketMessage<T> | null> {
+  public sendMessageAndWaitForResponse<T>(name: string, data: any): Promise<WebSocketResponseMessage<T> | null> {
     const message: WebSocketMessage = {
       Name: name,
       Data: data,
       MessageId: Guid.create().toString(),
     };
     let messageResolve;
-    const result: Promise<WebSocketMessage<T> | null> = new Promise((resolve) => { messageResolve = resolve; });
+    const result: Promise<WebSocketResponseMessage<T> | null> = new Promise((resolve) => { messageResolve = resolve; });
     this.sendMessageInternal(message, messageResolve);
     return result;
   }
 
-  private sendMessageInternal(message: WebSocketMessage, callback?: (response: WebSocketMessage | null) => void): void {
+  private sendMessageInternal(message: WebSocketMessage, callback?: (response: WebSocketResponseMessage | null) => void): void {
     if (this.connectionStatus == ConnectionStatus.Authenticated && this.webSocket != null) {
       if (callback && message.MessageId) {
         this.responseCallbacks[message.MessageId] = callback;
@@ -178,13 +178,17 @@ export enum ConnectionStatus {
 export interface WebSocketMessage<T = unknown> {
   Name: string;
   Data: T;
-  Errors?: string[];
   MessageId?: string;
+}
+
+export interface WebSocketResponseMessage<T = unknown> extends WebSocketMessage<T> {
+  Success: boolean;
+  Errors?: string[];
 }
 
 interface WebSocketMessageQueueItem {
   message: WebSocketMessage;
-  callback?: (response: WebSocketMessage | null) => void;
+  callback?: (response: WebSocketResponseMessage | null) => void;
 }
 
 interface WebSocketMessageAuthenticationData {

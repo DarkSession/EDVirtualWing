@@ -57,5 +57,40 @@ namespace ED_Virtual_Wing.Models
                 .Where(w => w.Members!.Any(m => m.User == this && m.Status == WingMembershipStatus.Joined))
                 .ToListAsync();
         }
+
+        public static bool operator ==(ApplicationUser? lhs, ApplicationUser? rhs)
+        {
+            if (lhs is null)
+            {
+                return (rhs is null);
+            }
+            return lhs.Equals(rhs);
+        }
+
+        public static bool operator !=(ApplicationUser? lhs, ApplicationUser? rhs) => !(lhs == rhs);
+
+        public override int GetHashCode() => Id.GetHashCode();
+
+        public override bool Equals(object? obj)
+        {
+            return (obj is ApplicationUser u && Equals(u));
+        }
+
+        public bool Equals(ApplicationUser? u)
+        {
+            if (u is null)
+            {
+                return false;
+            }
+            else if (ReferenceEquals(this, u))
+            {
+                return true;
+            }
+            else if (GetType() != u.GetType())
+            {
+                return false;
+            }
+            return (u.Id == Id);
+        }
     }
 }

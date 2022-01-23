@@ -8,9 +8,8 @@
             </mat-form-field>
         </div>
         <div>
-            <button mat-raised-button color="primary" [disabled]="loading || !createWingForm.valid"
+            <button mat-raised-button color="primary" [disabled]="!createWingForm.valid"
                 (click)="create()">Create</button>
-            <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
         </div>
     </div>
 </div>

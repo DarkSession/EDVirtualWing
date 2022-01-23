@@ -1,0 +1,64 @@
+<div class="help-container">
+    <h2>Setup Journal</h2>
+    <div [ngSwitch]="showIndex">
+        <div *ngSwitchCase="0">
+            <div class="img-holder">
+                <img src="assets/images/JWHelp01.png">
+            </div>
+            <p>First, open the main directory of your current user, as shown in the screenshot above. In this case, the
+                user name is <b>Admin</b>.</p>
+            <br><br>
+        </div>
+        <div *ngSwitchCase="1">
+            <div class="img-holder">
+                <img src="assets/images/JWHelp02.png">
+            </div>
+            <p>Select the folder <b>Saved Games</b>.</p>
+            <br><br>
+        </div>
+        <div *ngSwitchCase="2">
+            <div class="img-holder">
+                <img src="assets/images/JWHelp03.png">
+            </div>
+            <p>Select the folder <b>Frontier Developments</b>.</p>
+            <br><br>
+        </div>
+        <div *ngSwitchCase="3">
+            <div class="img-holder">
+                <img src="assets/images/JWHelp04.png">
+            </div>
+            <p>Select the folder <b>Elite Dangerous</b>.</p>
+            <br><br>
+        </div>
+        <div *ngSwitchCase="4">
+            <div class="img-holder">
+                <img src="assets/images/JWHelp05.png">
+            </div>
+            <p>Click on the button <b>Select Folder</b>.</p>
+            <br><br>
+        </div>
+        <div *ngSwitchCase="5">
+            <div class="img-holder">
+                <img src="assets/images/JWHelp06.png">
+            </div>
+            <p>
+                <span *ngIf="!onlyShowFinalStep">The setup is now complete.&nbsp;</span>Every time when you start
+                sharing your game logs, this prompt will appear.
+                <br>
+                Once you confirm it with <b>View files</b> the virtual wing/team application will be able to read<br>
+                your game journal and share your game activities with your wing(s).
+            </p>
+        </div>
+    </div>
+    <div class="dots">
+        <div *ngFor="let step of steps" class="dot" [ngClass]="{'dot-active': step == showIndex}"></div>
+    </div>
+    <div class="btns" *ngIf="!onlyShowFinalStep">
+        <div>
+            <button *ngIf="showIndex > 0" mat-raised-button color="primary" (click)="previos()">Previous</button>
+        </div>
+        <div>
+            <button *ngIf="showIndex < maxSteps" mat-raised-button color="primary" (click)="next()">Next</button>
+        </div>
+    </div>
+</div>

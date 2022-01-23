@@ -1,6 +1,7 @@
 export interface Wing {
     WingId: string;
     Name: string;
+    OwnerName?: string;
 }
 
 export enum WingStatus {

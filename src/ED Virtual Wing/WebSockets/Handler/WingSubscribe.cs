@@ -17,25 +17,25 @@ namespace ED_Virtual_Wing.WebSockets.Handler
         {
             public Wing Wing { get; set; }
             public List<Commander> Commanders { get; set; }
-            public WingSubscribeResponse(Wing wing, List<Commander> commanders)
+            public bool CanManage { get; set; }
+            public WingSubscribeResponse(Wing wing, List<Commander> commanders, bool canManage)
             {
                 Wing = wing;
                 Commanders = commanders;
+                CanManage = canManage;
             }
         }
 
         protected override Type? MessageDataType { get; } = typeof(WingSubscribeRequestData);
-
-        public WingSubscribe()
-        {
-        }
 
         public override async ValueTask<WebSocketHandlerResult> ProcessMessage(WebSocketMessageReceived message, WebSocketSession webSocketSession, ApplicationUser user, ApplicationDbContext applicationDbContext)
         {
             WingSubscribeRequestData? data = message.Data?.ToObject<WingSubscribeRequestData>();
             if (data != null && Guid.TryParse(data.WingId, out Guid wingId))
             {
-                Wing? wing = await applicationDbContext.Wings.FirstOrDefaultAsync(w => w.WingId == wingId && w.Members!.Any(m => m.Status == WingMembershipStatus.Joined && m.User == user));
+                Wing? wing = await applicationDbContext.Wings
+                    .Include(w => w.Owner)
+                    .FirstOrDefaultAsync(w => w.WingId == wingId && w.Members!.Any(m => m.Status == WingMembershipStatus.Joined && m.User == user));
                 if (wing == null)
                 {
                     return new WebSocketHandlerResultError("You are not a member of this wing.");
@@ -53,7 +53,7 @@ namespace ED_Virtual_Wing.WebSockets.Handler
                     .Where(c => c.User.WingMemberships!.Any(w => w.Wing == wing && w.Status == WingMembershipStatus.Joined))
                     .ToListAsync();
 
-                return new WebSocketHandlerResultSuccess(new WingSubscribeResponse(wing, commanders));
+                return new WebSocketHandlerResultSuccess(new WingSubscribeResponse(wing, commanders, wing.Owner == user));
             }
             return new WebSocketHandlerResultError();
         }

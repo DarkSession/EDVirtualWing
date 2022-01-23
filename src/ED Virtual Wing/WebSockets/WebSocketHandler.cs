@@ -57,9 +57,6 @@ namespace ED_Virtual_Wing.WebSockets
     /// </summary>
     public class WebSocketHandlerResultVoid : WebSocketHandlerResult
     {
-        public WebSocketHandlerResultVoid()
-        {
-        }
     }
 
     /// <summary>

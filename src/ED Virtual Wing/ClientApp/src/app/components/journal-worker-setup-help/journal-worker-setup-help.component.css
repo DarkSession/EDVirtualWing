@@ -1,0 +1,41 @@
+:host {
+    background-color: #dddddd;
+    box-shadow: 0px 0px 2px 2px #7e7e7e;
+}
+
+.help-container {
+    margin: 24px;
+}
+
+.btns {
+    display: flex;
+    justify-content: space-between;
+}
+
+.dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+}
+
+.img-holder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 946px;
+    min-height: 499px;
+}
+
+.dot {
+    height: 14px;
+    width: 14px;
+    background-color: #bbbbbb;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 4px;
+}
+
+.dot-active {
+    background-color: #747474;
+}

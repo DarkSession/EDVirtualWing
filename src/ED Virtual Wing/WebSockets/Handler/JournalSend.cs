@@ -5,9 +5,9 @@ using Newtonsoft.Json.Linq;
 
 namespace ED_Virtual_Wing.WebSockets.Handler
 {
-    public class SendJournal : WebSocketHandler
+    public class JournalSend : WebSocketHandler
     {
-        class SendJournalRequestData
+        class JournalSendRequestData
         {
             public List<JObject>? Entries { get; set; }
         }
@@ -23,10 +23,10 @@ namespace ED_Virtual_Wing.WebSockets.Handler
             }
         }
 
-        protected override Type? MessageDataType { get; } = typeof(SendJournalRequestData);
+        protected override Type? MessageDataType { get; } = typeof(JournalSendRequestData);
         private JournalProcessor JournalProcessor { get; }
         private WebSocketServer WebSocketServer { get; }
-        public SendJournal(JournalProcessor journalProcessor, WebSocketServer webSocketServer)
+        public JournalSend(JournalProcessor journalProcessor, WebSocketServer webSocketServer)
         {
             JournalProcessor = journalProcessor;
             WebSocketServer = webSocketServer;
@@ -34,7 +34,7 @@ namespace ED_Virtual_Wing.WebSockets.Handler
 
         public override async ValueTask<WebSocketHandlerResult> ProcessMessage(WebSocketMessageReceived message, WebSocketSession webSocketSession, ApplicationUser user, ApplicationDbContext applicationDbContext)
         {
-            SendJournalRequestData? data = message.Data?.ToObject<SendJournalRequestData>();
+            JournalSendRequestData? data = message.Data?.ToObject<JournalSendRequestData>();
             if (data?.Entries != null)
             {
                 Commander commander = await user.GetCommander(applicationDbContext);

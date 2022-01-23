@@ -11,7 +11,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { LoginRegistrationComponent } from './components/login-registration/login-registration.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { CommanderComponent } from './components/commander/commander.component';
 import { JournalWorkerComponent } from './components/journal-worker/journal-worker.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -25,6 +24,12 @@ import { NotAuthenticatedGuard } from './not-authenticated.guard';
 import { environment } from 'src/environments/environment';
 import { WingListComponent } from './components/wing-list/wing-list.component';
 import { WingComponent } from './components/wing/wing.component';
+import { MatMenuModule } from '@angular/material/menu';
+import { LoadingComponent } from './components/loading/loading.component';
+import { WingInviteLinkComponent } from './components/wing-invite-link/wing-invite-link.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { JournalWorkerSetupHelpComponent } from './components/journal-worker-setup-help/journal-worker-setup-help.component';
+import { MainComponent } from './components/main/main.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +43,10 @@ import { WingComponent } from './components/wing/wing.component';
     AboutComponent,
     WingListComponent,
     WingComponent,
+    LoadingComponent,
+    WingInviteLinkComponent,
+    JournalWorkerSetupHelpComponent,
+    MainComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -49,9 +58,10 @@ import { WingComponent } from './components/wing/wing.component';
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    MatProgressBarModule,
     MatTooltipModule,
     MatSidenavModule,
+    MatMenuModule,
+    MatSnackBarModule,
     RouterModule.forRoot(
       [
         {
@@ -72,6 +82,10 @@ import { WingComponent } from './components/wing/wing.component';
               component: WingListComponent,
             },
             {
+              path: 'join/:invite',
+              component: WingJoinComponent,
+            },
+            {
               path: ':id',
               component: WingComponent,
             },
@@ -88,7 +102,7 @@ import { WingComponent } from './components/wing/wing.component';
         },
         {
           path: '**',
-          component: JournalWorkerComponent,
+          component: MainComponent,
           canActivate: [AuthenticationGuard],
         }
       ],

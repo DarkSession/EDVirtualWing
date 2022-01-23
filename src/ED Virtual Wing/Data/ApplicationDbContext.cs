@@ -15,6 +15,7 @@ namespace ED_Virtual_Wing.Data
         public DbSet<TranslationsPending> TranslationsPendings { get; set; }
         public DbSet<Wing> Wings { get; set; }
         public DbSet<WingMember> WingMembers { get; set; }
+        public DbSet<WingInvite> WingInvites { get; set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public ApplicationDbContext(DbContextOptions options, IOptions<OperationalStoreOptions> operationalStoreOptions)
@@ -38,11 +39,32 @@ namespace ED_Virtual_Wing.Data
 #endif
                 ;
         }
-        /*
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            builder.Entity<ApplicationUser>()
+                .HasOne(a => a.Commander)
+                .WithOne(c => c.User);
+
+            builder.Entity<Commander>()
+                .HasOne(c => c.User)
+                .WithOne(u => u.Commander);
+
+            builder.Entity<Commander>()
+                .HasOne(c => c.Location)
+                .WithOne(l => l.Commander);
+
+            builder.Entity<CommanderLocation>()
+                .HasOne(l => l.Commander)
+                .WithOne(c => c.Location);
+
+            builder.Entity<Commander>()
+                .HasOne(c => c.Target)
+                .WithOne(t => t.Commander);
+
+            builder.Entity<CommanderLocation>()
+                .HasOne(l => l.Commander)
+                .WithOne(c => c.Location);
         }
-        */
     }
 }

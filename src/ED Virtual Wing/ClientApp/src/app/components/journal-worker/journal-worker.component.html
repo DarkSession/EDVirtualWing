@@ -9,10 +9,11 @@
     </div>
     <ng-template #journalWorkerBtn>
         <div *ngIf="journalWorkerService.journalWorkerActive">
-            You are sharing.
+            <mat-icon class="live" matTooltip="Sharing game information with wing(s)/team(s)">circle</mat-icon>
         </div>
         <div *ngIf="!journalWorkerService.journalWorkerActive">
-            <button (click)="journalWorkerService.startJournalWorker()">Start Wing Share</button>
+            <button mat-raised-button color="primary" (click)="journalWorkerService.startJournalWorker()">
+                Share Game Information</button>
         </div>
     </ng-template>
 </div>

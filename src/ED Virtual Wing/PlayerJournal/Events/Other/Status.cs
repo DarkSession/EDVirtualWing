@@ -95,25 +95,29 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Other
                 string destinationName = string.Empty;
                 if (Destination != null && !string.IsNullOrEmpty(Destination?.Name))
                 {
-                    if (ScenarioLocalisation.TryGetValue(Destination.Name, out string? localisedScenarioName))
+                    string destinationNameNotLocalised = Destination.Name.Trim();
+                    if (ScenarioLocalisation.TryGetValue(destinationNameNotLocalised, out string? localisedScenarioName))
                     {
                         destinationName = localisedScenarioName;
                     }
                     else
                     {
-                        Match localisationStringMatch = LocalisationString.Match(Destination.Name);
+                        Match localisationStringMatch = LocalisationString.Match(destinationNameNotLocalised);
                         if (localisationStringMatch.Success)
                         {
-                            destinationName = Destination.Name_Localised ?? Destination.Name;
-                            applicationDbContext.TranslationsPendings.Add(new TranslationsPending()
+                            destinationName = Destination.Name_Localised ?? destinationNameNotLocalised;
+                            if (!await applicationDbContext.TranslationsPendings.AnyAsync(t => t.NonLocalized == destinationNameNotLocalised))
                             {
-                                NonLocalized = Destination.Name,
-                                LocalizedExample = Destination.Name_Localised ?? string.Empty,
-                            });
+                                applicationDbContext.TranslationsPendings.Add(new TranslationsPending()
+                                {
+                                    NonLocalized = destinationNameNotLocalised,
+                                    LocalizedExample = Destination.Name_Localised ?? string.Empty,
+                                });
+                            }
                         }
                         else
                         {
-                            destinationName = Destination.Name;
+                            destinationName = destinationNameNotLocalised;
                         }
                     }
                 }

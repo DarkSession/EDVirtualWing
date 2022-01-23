@@ -1,0 +1,13 @@
+<div class="link-container">
+    <p>
+        Use the following link to invite additional players to your group:
+    </p>
+    <div class="field-button">
+        <mat-form-field>
+            <input matInput [value]="data.inviteLink" required>
+        </mat-form-field>
+        <div style="padding: 4px;">
+            <button mat-raised-button color="primary" (click)="copy()">Copy</button>
+        </div>
+    </div>
+</div>

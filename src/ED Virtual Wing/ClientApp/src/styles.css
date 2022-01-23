@@ -1,3 +1,5 @@
+@import 'material-icons/iconfont/material-icons.css';
+
 body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
   margin: 0;
@@ -45,4 +47,8 @@ html, body {
 
 *:focus {
   outline: 0;
+}
+
+.error-msg {
+  color: red;
 }

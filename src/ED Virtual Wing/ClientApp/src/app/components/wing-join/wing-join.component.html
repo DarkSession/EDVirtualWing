@@ -1,1 +1,17 @@
-<p>wing-join works!</p>
+<div>
+    <h2>Join Virtual Wing/Team</h2>
+    <div *ngIf="errors.length > 0" class="error-msg">
+        <p>Could not join wing/team:</p>
+        <div *ngFor="let error of errors">
+            {{ error }}
+        </div>
+    </div>
+    <div *ngIf="wing">
+        <div>
+            You have been invited to join the virtual wing/team <b>{{ wing.Name }}</b> from <b>{{ wing.OwnerName }}</b>.
+        </div>
+        <div>
+            <button mat-raised-button color="primary" (click)="join()">Join</button>
+        </div>
+    </div>
+</div>

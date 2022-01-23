@@ -1,9 +1,18 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { openDB, IDBPDatabase } from 'idb';
 import { WebsocketService } from './websocket.service';
 import * as dayjs from 'dayjs';
-import { Commander } from './interfaces/commander';
+import * as utc from 'dayjs/plugin/utc';
+import { AppService } from './app.service';
+import { Overlay, OverlayRef } from '@angular/cdk/overlay';
+import { ComponentPortal } from '@angular/cdk/portal';
+import { JournalWorkerSetupHelpComponent } from './components/journal-worker-setup-help/journal-worker-setup-help.component';
+import { OVERLAY_DATA } from './injector/overlay-data';
+import { JournalWorkerHelpData } from './injector/journal-worker-help-data';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
+dayjs.extend(utc);
 
 @Injectable({
   providedIn: 'root'
@@ -14,11 +23,17 @@ export class JournalWorkerService {
   public isBrowserSupported = true;
   public requiredUserPermissionsGranted = true;
   private relevantEvents: string[] = [];
-  private journalLastDate: dayjs.Dayjs = dayjs();
+  private journalLastDate: dayjs.Dayjs = dayjs.utc();
   public serverSettingsReceived: boolean = false;
   public journalWorkerActive: boolean = false;
 
-  public constructor(private readonly webSocketService: WebsocketService) {
+  public constructor(
+    private readonly webSocketService: WebsocketService,
+    private readonly appService: AppService,
+    private readonly overlay: Overlay,
+    private readonly injector: Injector,
+    private readonly snackBar: MatSnackBar
+  ) {
     this.initialize();
   }
 
@@ -59,11 +74,42 @@ export class JournalWorkerService {
     });
     // We want to get some information from the server.
     // Depending on the authentication status, this can take a while. Therefore, we shouldn't place any other essential operations further below.
-    const relevantEvents = await this.webSocketService.sendMessageAndWaitForResponse<GetJournalSettingsResponse>("GetJournalSettings", {});
-    if (relevantEvents !== null) {
+    const relevantEvents = await this.webSocketService.sendMessageAndWaitForResponse<JournalGetSettingsResponseData>("JournalGetSettings", {});
+    if (relevantEvents !== null && relevantEvents.Success) {
       this.serverSettingsReceived = true;
       this.relevantEvents = relevantEvents.Data.Events;
       this.journalLastDate = dayjs(relevantEvents.Data.JournalLastEventDate);
+    }
+  }
+
+  private helpOverlayRef: OverlayRef | null = null;
+
+  private showHelp(onlyShowFinalStep: boolean): void {
+    this.helpOverlayRef = this.overlay.create({
+      positionStrategy: this.overlay.position().global().centerHorizontally().centerVertically(),
+      backdropClass: "cdk-overlay-transparent-backdrop",
+      hasBackdrop: true,
+    });
+    const helpData: JournalWorkerHelpData = {
+      onlyShowFinalStep: onlyShowFinalStep,
+    };
+    const injectorData = Injector.create({
+      parent: this.injector,
+      providers: [
+        { provide: OVERLAY_DATA, useValue: helpData },
+      ],
+    });
+    const loadingOverlay = new ComponentPortal(JournalWorkerSetupHelpComponent, null, injectorData);
+    this.helpOverlayRef.attach(loadingOverlay);
+    this.helpOverlayRef.backdropClick().subscribe(() => {
+      this.hideHelp();
+    });
+  }
+
+  private hideHelp(): void {
+    if (this.helpOverlayRef != null) {
+      this.helpOverlayRef.dispose();
+      this.helpOverlayRef = null;
     }
   }
 
@@ -82,10 +128,12 @@ export class JournalWorkerService {
           mode: "read",
         });
         if (directoryReadPermission !== "granted") {
+          this.showHelp(true);
           // We don't, so let's request the permissions from the user.
           directoryReadPermission = await directoryHandle.requestPermission({
             mode: "read",
           });
+          this.hideHelp();
         }
         // Check if permissions were granted
         if (directoryReadPermission === "granted") {
@@ -103,18 +151,55 @@ export class JournalWorkerService {
   }
 
   private async requestDirectoryFromUser(): Promise<void> {
+    this.showHelp(false);
     // Ask the user about the directory with the Elite Dangerous journals
     // This needs to happen after an user interaction (e.g. a button click) for security reasons.
     const directoryHandle = await window.showDirectoryPicker();
+    this.hideHelp();
     await this.processDirectoryHandle(directoryHandle);
   }
 
   private async processDirectoryHandle(directoryHandle: FileSystemDirectoryHandle): Promise<void> {
+    const result: JournalAndStatusFileFromDirectoryHandleResult = await this.getJournalAndStatusFileFromDirectoryHandle(directoryHandle);
+    const journalFile: FileSystemFileHandleAndFile | null = result.journalFile;
+    const statusFile: FileSystemHandle | null = result.statusFile;
+    // If we found all the files, we can continue.
+    // Otherwise we might have received a wrong folder.
+    if (journalFile !== null && statusFile !== null) {
+      if (!environment.production) {
+        console.log("Required files found.");
+        console.log("Journal file:", journalFile.file.name);
+      }
+      if (this.edVirtualWingDb !== null) {
+        const transaction = this.edVirtualWingDb.transaction("JournalDirectory", "readwrite");
+        const journalDirectoryStore = transaction.objectStore("JournalDirectory");
+        await journalDirectoryStore.put(directoryHandle, 1);
+        transaction.commit();
+      }
+      this.createJournalWorker(directoryHandle, {
+        statusFile,
+        journalFile: journalFile.handle,
+      });
+    }
+    else {
+      console.error("Journal file or status file not found");
+      if (statusFile === null) {
+        this.snackBar.open("Required files not found. Make sure you select the correct directory.", "Dismiss", {
+          duration: 10000,
+        });
+      }
+      else {
+        this.snackBar.open("No recent game journal found. Make sure your game is running and that you selected the correct directory.", "Dismiss", {
+          duration: 10000,
+        });
+      }
+      await this.requestDirectoryFromUser();
+    }
+  }
+
+  private async getJournalAndStatusFileFromDirectoryHandle(directoryHandle: FileSystemDirectoryHandle): Promise<JournalAndStatusFileFromDirectoryHandleResult> {
     const now = new Date().getTime();
-    let journalFile: {
-      handle: FileSystemFileHandle;
-      file: File
-    } | null = null;
+    let journalFile: FileSystemFileHandleAndFile | null = null;
     let statusFile: FileSystemHandle | null = null;
     try {
       for await (const entry of directoryHandle.values()) {
@@ -134,12 +219,9 @@ export class JournalWorkerService {
             }
             continue;
           }
-          switch (entry.name) {
-            // The status file gives us a lot of information about the player.
-            case "Status.json": {
-              statusFile = entry;
-              break;
-            }
+          // The status file gives us a lot of information about the player.
+          else if (entry.name == "Status.json") {
+            statusFile = entry;
           }
         }
       }
@@ -147,31 +229,15 @@ export class JournalWorkerService {
     catch (e) {
       console.error(e);
     }
-    // If we found all the files, we can continue.
-    // Otherwise we might have received a wrong folder.
-    if (journalFile !== null && statusFile !== null) {
-      if (!environment.production) {
-        console.log("Required files found.");
-        console.log("Journal file:", journalFile.file.name);
-      }
-      if (this.edVirtualWingDb !== null) {
-        const transaction = this.edVirtualWingDb.transaction("JournalDirectory", "readwrite");
-        const journalDirectoryStore = transaction.objectStore("JournalDirectory");
-        await journalDirectoryStore.put(directoryHandle, 1);
-        transaction.commit();
-      }
-      this.createJournalWorker({
-        statusFile,
-        journalFile: journalFile.handle,
-      });
-    }
-    else {
-      console.error("Journal file or status file not found");
-      await this.requestDirectoryFromUser();
-    }
+    return {
+      journalFile: journalFile,
+      statusFile: statusFile,
+    };
   }
 
-  private async createJournalWorker(journalWorkerOptions: JournalWorkerOptions): Promise<void> {
+  private journalInactivityNextCheck: dayjs.Dayjs = dayjs.utc();
+
+  private async createJournalWorker(directoryHandle: FileSystemDirectoryHandle, journalWorkerOptions: JournalWorkerOptions): Promise<void> {
     const journalFile: JournalFileChangeTracker = {
       handle: journalWorkerOptions.journalFile,
       lastModified: 0,
@@ -193,6 +259,9 @@ export class JournalWorkerService {
     if (this.journalWorkerInterval) {
       clearInterval(this.journalWorkerInterval);
     }
+    this.appService.setLoading(true);
+    await this.journalWorker(journalFile, statusFile);
+    this.appService.setLoading(false);
     let journalWorkerRunning = false;
     // Unfortunately, the File Access API doesn't have a tracking functionality. So we need to check the files on a regular basis
     this.journalWorkerInterval = setInterval(async () => {
@@ -202,6 +271,21 @@ export class JournalWorkerService {
       try {
         journalWorkerRunning = true;
         await this.journalWorker(journalFile, statusFile);
+        const now = dayjs.utc();
+        const diff = now.diff(this.journalLastDate, "second");
+        if (diff > 120 && now.isAfter(this.journalInactivityNextCheck)) {
+          this.journalInactivityNextCheck = now.add(2, "minute");
+          const res = await this.getJournalAndStatusFileFromDirectoryHandle(directoryHandle);
+          if (res.journalFile !== null && res.journalFile.handle.name != journalFile.handle.name) {
+            console.log("Journal rotation detected. Switchting to new journal", res.journalFile.handle.name);
+            journalFile.handle = res.journalFile.handle;
+            journalFile.lastModified = 0;
+            journalFile.lastPosition = 0;
+          }
+          else {
+            console.log("No journal rotation detected.");
+          }
+        }
       }
       catch (e) {
         console.error(e);
@@ -270,9 +354,12 @@ export class JournalWorkerService {
       for (const journalEntry of lines) {
         if (this.relevantEvents.includes(journalEntry.event)) {
           const entryTime = dayjs(journalEntry.timestamp);
-          if (entryTime >= journalLastDate) {
+          const isStatus = journalEntry.event == "Status";
+          if (isStatus || entryTime >= journalLastDate) {
             relevantEntries.push(journalEntry);
-            journalLastDate = entryTime;
+            if (!isStatus) {
+              journalLastDate = entryTime;
+            }
           }
           else if (!environment.production) {
             console.log(`Removed event '${journalEntry.event}' since it older than the last journal date. The event is from ${entryTime} while the most recent journal entry was from ${journalLastDate}`);
@@ -286,12 +373,12 @@ export class JournalWorkerService {
         if (!environment.production) {
           console.log(`${relevantEntries.length} relevant events`);
         }
-        const response = await this.webSocketService.sendMessageAndWaitForResponse<SendJournalResponse>("SendJournal", {
+        const response = await this.webSocketService.sendMessageAndWaitForResponse<JournalSendRequestData>("JournalSend", {
           Entries: relevantEntries,
         });
-        if (!response?.Data) {
-          console.error("SendJournal failed");
-          // It probably failed, so...
+        if (response == null || !response.Success) {
+          console.error("JournalSend failed");
+          // It failed, so we stop here and try again in a second.
           return;
         }
       }
@@ -334,10 +421,20 @@ interface JournalEntry {
   event: string;
 }
 
-interface GetJournalSettingsResponse {
+interface JournalGetSettingsResponseData {
   Events: string[];
   JournalLastEventDate: string;
 }
 
-interface SendJournalResponse {
+interface JournalSendRequestData {
+}
+
+interface JournalAndStatusFileFromDirectoryHandleResult {
+  journalFile: FileSystemFileHandleAndFile | null;
+  statusFile: FileSystemFileHandle | null;
+}
+
+interface FileSystemFileHandleAndFile {
+  handle: FileSystemFileHandle;
+  file: File;
 }

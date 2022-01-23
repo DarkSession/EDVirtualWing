@@ -123,7 +123,7 @@ namespace ED_Virtual_Wing.WebSockets
                                 WebSocketHandlerResult result = await webSocketHandler.ProcessMessage(webSocketMessage, webSocketSession, user, applicationDbContext);
                                 if (result is WebSocketHandlerResultSuccess webSocketHandlerResultSuccess)
                                 {
-                                    WebSocketMessage responseMessage = new(webSocketMessage.Name, webSocketHandlerResultSuccess.ResponseData, webSocketMessage.MessageId);
+                                    WebSocketResponseMessage responseMessage = new(webSocketMessage.Name, true, webSocketHandlerResultSuccess.ResponseData, webSocketMessage.MessageId);
                                     await responseMessage.Send(webSocketSession.WebSocket);
                                 }
                                 else if (result is WebSocketHandlerResultError webSocketHandlerResultError)

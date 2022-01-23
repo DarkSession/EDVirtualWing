@@ -1,5 +1,6 @@
 ﻿using ED_Virtual_Wing.Data;
 using ED_Virtual_Wing.Models;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.Text.RegularExpressions;
@@ -13,6 +14,7 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Combat
         {
             { "$ShipName_Military_Independent;", "System Defence Force" },
             { "$ShipName_Police_Independent;", "System Authority Vessel" },
+            { "$ShipName_PassengerLiner_Cruise;", "Cruise Ship" },
         };
         public bool TargetLocked { get; set; }
         public short ScanStage { get; set; }
@@ -21,7 +23,7 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Combat
         [JsonConverter(typeof(StringEnumConverter))]
         public Ship Ship { get; set; }
 
-        public override ValueTask ProcessEntry(Commander commander, ApplicationDbContext applicationDbContext)
+        public override async ValueTask ProcessEntry(Commander commander, ApplicationDbContext applicationDbContext)
         {
             if (commander.Target != null)
             {
@@ -39,7 +41,7 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Combat
                         {
                             shipTargetName = localisedName;
                         }
-                        else
+                        else if (!await applicationDbContext.TranslationsPendings.AnyAsync(t => t.NonLocalized == PilotName))
                         {
                             applicationDbContext.TranslationsPendings.Add(new TranslationsPending()
                             {
@@ -56,7 +58,6 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Combat
                     commander.Target.ResetShipTarget();
                 }
             }
-            return ValueTask.CompletedTask;
         }
     }
 }

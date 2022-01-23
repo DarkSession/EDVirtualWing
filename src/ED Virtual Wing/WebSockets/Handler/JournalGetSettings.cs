@@ -4,13 +4,13 @@ using ED_Virtual_Wing.PlayerJournal;
 
 namespace ED_Virtual_Wing.WebSockets.Handler
 {
-    public class GetJournalSettings : WebSocketHandler
+    public class JournalGetSettings : WebSocketHandler
     {
-        class GetJournalSettingsResponse
+        class JournalGetSettingsResponseData
         {
             public List<string> Events { get; }
             public DateTimeOffset JournalLastEventDate { get; }
-            public GetJournalSettingsResponse(List<string> events, Commander commander)
+            public JournalGetSettingsResponseData(List<string> events, Commander commander)
             {
                 Events = events;
                 JournalLastEventDate = commander.JournalLastEventDate;
@@ -18,7 +18,7 @@ namespace ED_Virtual_Wing.WebSockets.Handler
         }
         protected override Type? MessageDataType { get; } = null;
         private JournalProcessor JournalProcessor { get; }
-        public GetJournalSettings(JournalProcessor journalProcessor)
+        public JournalGetSettings(JournalProcessor journalProcessor)
         {
             JournalProcessor = journalProcessor;
         }
@@ -26,7 +26,7 @@ namespace ED_Virtual_Wing.WebSockets.Handler
         public override async ValueTask<WebSocketHandlerResult> ProcessMessage(WebSocketMessageReceived message, WebSocketSession webSocketSession, ApplicationUser user, ApplicationDbContext applicationDbContext)
         {
             Commander commander = await user.GetCommander(applicationDbContext);
-            GetJournalSettingsResponse getJournalSettingsResponse = new(JournalProcessor.RelevantJournalEvents, commander);
+            JournalGetSettingsResponseData getJournalSettingsResponse = new(JournalProcessor.RelevantJournalEvents, commander);
             return new WebSocketHandlerResultSuccess(getJournalSettingsResponse);
         }
     }

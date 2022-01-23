@@ -17,6 +17,11 @@ namespace ED_Virtual_Wing.WebSockets.Handler
 
         class WingCreateResponse
         {
+            public Wing Wing { get; set; }
+            public WingCreateResponse(Wing wing)
+            {
+                Wing = wing;
+            }
         }
 
         protected override Type? MessageDataType { get; } = typeof(WingCreateRequestData);
@@ -46,7 +51,7 @@ namespace ED_Virtual_Wing.WebSockets.Handler
                     Status = WingMembershipStatus.Joined,
                     User = user,
                 });
-                return new WebSocketHandlerResultSuccess();
+                return new WebSocketHandlerResultSuccess(new WingCreateResponse(wing));
             }
             return new WebSocketHandlerResultError();
         }

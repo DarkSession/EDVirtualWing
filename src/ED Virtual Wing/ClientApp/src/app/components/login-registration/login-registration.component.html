@@ -9,10 +9,9 @@
         <mat-label>Password</mat-label>
         <input matInput id="password" formControlName="password" type="password" required>
     </mat-form-field>
-    <button mat-raised-button [disabled]="loading || !loginForm.valid" color="primary" (click)="login()">Login</button>
+    <button mat-raised-button [disabled]="!loginForm.valid" color="primary" (click)="login()">Login</button>
     <br>
-    <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
-    <span *ngIf="!loading" class="clickable" (click)="toggleMode()">No account yet? Register here.</span>
+    <span class="clickable" (click)="toggleMode()">No account yet? Register here.</span>
 </div>
 <div class="content-large-box" *ngIf="formMode == FormMode.Registration" [formGroup]="registrationForm">
     <h2>Registration</h2>
@@ -29,8 +28,8 @@
         <mat-label>Password</mat-label>
         <input matInput id="password" formControlName="password" type="password" required>
     </mat-form-field>
-    <button mat-raised-button color="primary" [disabled]="loading || !registrationForm.valid" (click)="register()">Register</button>
+    <button mat-raised-button color="primary" [disabled]="!registrationForm.valid"
+        (click)="register()">Register</button>
     <br>
-    <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
-    <span *ngIf="!loading" class="clickable" (click)="toggleMode()">Already have an account? Login here.</span>
+    <span class="clickable" (click)="toggleMode()">Already have an account? Login here.</span>
 </div>

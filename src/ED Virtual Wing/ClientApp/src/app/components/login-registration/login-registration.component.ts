@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AppService } from 'src/app/app.service';
 import { environment } from 'src/environments/environment';
 import { WebsocketService } from '../../websocket.service';
 
@@ -11,7 +13,6 @@ import { WebsocketService } from '../../websocket.service';
 })
 export class LoginRegistrationComponent implements OnInit {
   public formMode: FormMode = FormMode.Login;
-  public loading: boolean = false;
   public readonly FormMode = FormMode;
   public userNameLogin: FormControl = new FormControl("", [Validators.required, Validators.minLength(4)]);
   public passwordLogin: FormControl = new FormControl("", [Validators.required, Validators.minLength(8)]);
@@ -31,7 +32,9 @@ export class LoginRegistrationComponent implements OnInit {
 
   public constructor(
     private readonly httpClient: HttpClient,
-    private readonly webSocketService: WebsocketService
+    private readonly webSocketService: WebsocketService,
+    private readonly router: Router,
+    private readonly appService: AppService
   ) { }
 
   public ngOnInit(): void {
@@ -43,10 +46,10 @@ export class LoginRegistrationComponent implements OnInit {
   }
 
   public async register(): Promise<void> {
-    if (this.loading && this.registrationForm.valid) {
+    if (this.appService.isLoading || !this.registrationForm.valid) {
       return;
     }
-    this.loading = true;
+    this.appService.setLoading(true);
     try {
       const registrationUrl: string = window.location.protocol + "//" + window.location.hostname + ":" + environment.backendPort + "/user/register";
       const registrationData = {
@@ -68,14 +71,14 @@ export class LoginRegistrationComponent implements OnInit {
       console.error(e);
       this.errors = ["An error occured while communicating with the server"];
     }
-    this.loading = false;
+    this.appService.setLoading(false);
   }
 
   public async login(): Promise<void> {
-    if (this.loading && this.loginForm.valid) {
+    if (this.appService.isLoading || !this.loginForm.valid) {
       return;
     }
-    this.loading = true;
+    this.appService.setLoading(true);
     try {
       const loginUrl: string = window.location.protocol + "//" + window.location.hostname + ":" + environment.backendPort + "/user/login";
       const loginData = {
@@ -96,11 +99,12 @@ export class LoginRegistrationComponent implements OnInit {
       console.error(e);
       this.errors = ["An error occured while communicating with the server"];
     }
-    this.loading = false;
+    this.appService.setLoading(false);
   }
 
   private loginSuccessful(): void {
     this.webSocketService.reconnect();
+    this.router.navigate(["/"]);
   }
 }
 

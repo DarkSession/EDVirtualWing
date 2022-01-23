@@ -40,10 +40,19 @@ namespace ED_Virtual_Wing.WebSockets
         }
     }
 
-    public class WebSocketErrorMessage : WebSocketMessage
+    public class WebSocketResponseMessage : WebSocketMessage
+    {
+        public bool Success { get; set; }
+        public WebSocketResponseMessage(string name, bool success, object? data = null, string? messageId = null) : base(name, data, messageId)
+        {
+            Success = success;
+        }
+    }
+
+    public class WebSocketErrorMessage : WebSocketResponseMessage
     {
         public List<string> Errors { get; }
-        public WebSocketErrorMessage(string name, List<string> errors, string? messageId = null) : base(name, null, messageId)
+        public WebSocketErrorMessage(string name, List<string> errors, string? messageId = null) : base(name, false, null, messageId)
         {
             Errors = errors;
         }

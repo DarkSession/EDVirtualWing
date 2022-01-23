@@ -48,10 +48,8 @@ namespace ED_Virtual_Wing.Models
         [Column]
         public Ship? Ship { get; set; }
 
-        [ForeignKey("LocationId")]
         public CommanderLocation? Location { get; set; }
 
-        [ForeignKey("TargetId")]
         public CommanderTarget? Target { get; set; }
 
         [Column(TypeName = "decimal(14,8)")]

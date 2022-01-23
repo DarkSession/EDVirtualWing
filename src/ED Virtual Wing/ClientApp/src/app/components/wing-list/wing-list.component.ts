@@ -20,7 +20,7 @@ export class WingListComponent implements OnInit {
 
   private async requestWings(): Promise<void> {
     const response = await this.webSocketService.sendMessageAndWaitForResponse<WingsGetResponse>("WingsGet", {});
-    if (response !== null) {
+    if (response !== null && response.Success) {
       this.wings = response.Data.Wings;
     }
   }

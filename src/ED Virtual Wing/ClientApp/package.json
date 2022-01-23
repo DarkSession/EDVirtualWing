@@ -32,6 +32,7 @@
     "guid-typescript": "^1.0.9",
     "idb": "^7.0.0",
     "jquery": "^3.5.1",
+    "material-icons": "^1.10.6",
     "oidc-client": "^1.11.5",
     "popper.js": "^1.16.0",
     "run-script-os": "^1.1.6",

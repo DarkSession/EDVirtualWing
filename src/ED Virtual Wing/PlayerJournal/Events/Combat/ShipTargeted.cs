@@ -48,6 +48,7 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Combat
                                 NonLocalized = PilotName,
                                 LocalizedExample = PilotName_Localised,
                             });
+                            await applicationDbContext.SaveChangesAsync();
                         }
                     }
                     commander.Target.ShipTarget = Ship;

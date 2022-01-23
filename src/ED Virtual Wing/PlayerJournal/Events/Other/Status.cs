@@ -113,6 +113,7 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Other
                                     NonLocalized = destinationNameNotLocalised,
                                     LocalizedExample = Destination.Name_Localised ?? string.Empty,
                                 });
+                                await applicationDbContext.SaveChangesAsync();
                             }
                         }
                         else

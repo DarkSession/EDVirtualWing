@@ -220,7 +220,11 @@ export class JournalWorkerService {
             const journalFileEntry = await entry.getFile();
             // Now we check if it was modified in the last 10 minutes (10 * 60 * 1000). If it was, it's a recent journal
             // Last we check if we already found a journal file earlier, and if yes, if this file is more recent.
-            if ((now - journalFileEntry.lastModified) <= 60000000 && (journalFile === null || journalFile.file.lastModified < journalFileEntry.lastModified)) {
+            let journalFileMaxAge = 600000;
+            if (!environment.production) {
+              journalFileMaxAge = 60000000;
+            }
+            if ((now - journalFileEntry.lastModified) <= journalFileMaxAge && (journalFile === null || journalFile.file.lastModified < journalFileEntry.lastModified)) {
               journalFile = {
                 handle: entry,
                 file: journalFileEntry,

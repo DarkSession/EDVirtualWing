@@ -31,6 +31,7 @@ builder.Services.AddSingleton<WebSocketServer>();
 builder.Services.AddSingleton<JournalProcessor>();
 
 string httpOrigin = Environment.GetEnvironmentVariable("EDVW_HTTP_ORIGIN") ?? string.Empty;
+Console.WriteLine("httpOrigin: " + httpOrigin);
 
 builder.Services.AddCors(options =>
 {
@@ -74,7 +75,7 @@ app.UseAuthorization();
 
 app.Use((ctx, next) =>
 {
-    ctx.Response.Headers.Add("Content-Security-Policy", "default-src: 'self'; style-src: 'self' 'unsafe-inline';");
+    ctx.Response.Headers.Add("Content-Security-Policy", "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-hashes' 'sha256-MhtPZXr7+LpJUY5qtMutB+qWfQtMaPccfe7QXtCcEYc=';");
     ctx.Response.Headers.Add("X-Frame-Options", "deny");
     ctx.Response.Headers.Add("X-XSS-Protection", "1; mode=block");
     ctx.Response.Headers.Add("Referrer-Policy", "strict-origin");

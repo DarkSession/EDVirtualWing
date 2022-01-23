@@ -421,6 +421,9 @@ namespace ED_Virtual_Wing.Models
         [EnumMember(Value = "Krait_Light")]
         KraitPhantom = 128839281,
         Mamba = 128915979,
+
+        [EnumMember(Value = "independent_fighter")]
+        IndepdenentFighter = 999999990,
     }
 
     public enum Suit : short

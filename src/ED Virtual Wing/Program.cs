@@ -32,7 +32,6 @@ builder.Services.AddSingleton<WebSocketServer>();
 builder.Services.AddSingleton<JournalProcessor>();
 
 string httpOrigin = Environment.GetEnvironmentVariable("EDVW_HTTP_ORIGIN") ?? string.Empty;
-Console.WriteLine("httpOrigin: " + httpOrigin);
 
 builder.Services.AddCors(options =>
 {

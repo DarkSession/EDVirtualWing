@@ -14,7 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { CommanderComponent } from './components/commander/commander.component';
 import { JournalWorkerComponent } from './components/journal-worker/journal-worker.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { CmdrTestComponent } from './components/cmdr-test/cmdr-test.component';
+import { ExampleComponent } from './components/example/example.component';
 import { WingCreateComponent } from './components/wing-create/wing-create.component';
 import { WingJoinComponent } from './components/wing-join/wing-join.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -30,7 +30,8 @@ import { WingInviteLinkComponent } from './components/wing-invite-link/wing-invi
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { JournalWorkerSetupHelpComponent } from './components/journal-worker-setup-help/journal-worker-setup-help.component';
 import { MainComponent } from './components/main/main.component';
-import { FaqComponent } from './faq/faq.component';
+import { FaqComponent } from './components/faq/faq.component';
+import { TosComponent } from './components/tos/tos.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,7 @@ import { FaqComponent } from './faq/faq.component';
     LoginRegistrationComponent,
     CommanderComponent,
     JournalWorkerComponent,
-    CmdrTestComponent,
+    ExampleComponent,
     WingCreateComponent,
     WingJoinComponent,
     AboutComponent,
@@ -49,6 +50,7 @@ import { FaqComponent } from './faq/faq.component';
     JournalWorkerSetupHelpComponent,
     MainComponent,
     FaqComponent,
+    TosComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -67,8 +69,16 @@ import { FaqComponent } from './faq/faq.component';
     RouterModule.forRoot(
       [
         {
-          path: 'test',
-          component: CmdrTestComponent,
+          path: 'example',
+          component: ExampleComponent,
+        },
+        {
+          path: 'faq',
+          component: FaqComponent,
+        },
+        {
+          path: 'about',
+          component: AboutComponent,
         },
         {
           path: 'wing',
@@ -92,10 +102,6 @@ import { FaqComponent } from './faq/faq.component';
               component: WingComponent,
             },
           ],
-        },
-        {
-          path: 'about',
-          component: AboutComponent,
         },
         {
           path: 'login',

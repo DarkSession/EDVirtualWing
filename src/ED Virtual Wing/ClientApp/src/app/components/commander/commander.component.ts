@@ -1,4 +1,5 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, DoCheck, Input, OnChanges } from '@angular/core';
+import * as dayjs from 'dayjs';
 import { Commander, GameActivity, GameExtraFlags, GameMode, GameVersion, Ship, VehicleStatusFlags } from 'src/app/interfaces/commander';
 import { StationType } from 'src/app/interfaces/station';
 
@@ -7,12 +8,13 @@ import { StationType } from 'src/app/interfaces/station';
   templateUrl: './commander.component.html',
   styleUrls: ['./commander.component.css']
 })
-export class CommanderComponent implements OnInit, OnChanges {
+export class CommanderComponent implements OnChanges, DoCheck {
   @Input() commander!: Commander | null;
   public readonly GameActivity = GameActivity;
   public readonly StationType = StationType;
   public shieldsUp: boolean = false;
   public fsdCharging: boolean = false;
+  public fsdMassLocked: boolean = false;
   public fsdCooldown: boolean = false;
   public isBeingInterdicted: boolean = false;
   public inTeam: boolean = false;
@@ -20,27 +22,37 @@ export class CommanderComponent implements OnInit, OnChanges {
   public inFighter: boolean = false;
   public weaponsDeployed: boolean = false;
   public showLatLong: boolean = false;
+  public overHeating: boolean = false;
   public targetShip: string = "";
   public targetSystem: string = "";
   public gameMode: string = "";
   public gameVersion: string = "";
   public shipHealthSVG: number = 100;
+  public isOnline: boolean = false;
+  private lastOnline: dayjs.Dayjs | null = null;
 
   public constructor() { }
 
-  public ngOnInit(): void {
+  public ngDoCheck(): void {
+    if (this.lastOnline) {
+      const now = dayjs.utc();
+      this.isOnline = (now.diff(this.lastOnline, "second") <= 120);
+    }
   }
 
   public ngOnChanges(): void {
     if (this.commander) {
+      this.lastOnline = dayjs.utc(this.commander.LastEventDate);
       this.shieldsUp = this.hasFlag(VehicleStatusFlags.ShieldsUp);
       this.fsdCharging = this.hasFlag(VehicleStatusFlags.FsdCharging);
       this.fsdCooldown = this.hasFlag(VehicleStatusFlags.FsdCooldown);
+      this.fsdMassLocked = this.hasFlag(VehicleStatusFlags.FsdMassLocked);
       this.isBeingInterdicted = this.hasFlag(VehicleStatusFlags.BeingInterdicted);
       this.showLatLong = this.hasFlag(VehicleStatusFlags.HasLatLong);
       this.inTeam = this.hasFlag(VehicleStatusFlags.InWing);
       this.inFighter = this.hasFlag(VehicleStatusFlags.InFighter);
       this.weaponsDeployed = this.hasFlag(VehicleStatusFlags.HardpointsDeployed);
+      this.overHeating = this.hasFlag(VehicleStatusFlags.OverHeating);
       this.inCombat = this.hasExtraFlag(GameExtraFlags.InCombat);
       const shieldHullPercentage = (this.commander.ShipHullHealth * 100);
       if (shieldHullPercentage > 90) {

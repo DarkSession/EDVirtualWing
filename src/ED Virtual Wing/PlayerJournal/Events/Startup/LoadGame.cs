@@ -13,8 +13,8 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Startup
         public string? Commander { get; set; }
         public string? GameMode { get; set; }
         public string? Group { get; set; }
-        //[JsonConverter(typeof(StringEnumConverter))]
         public string Ship { get; set; } = string.Empty;
+        public string? ShipName { get; set; }
 
         public override ValueTask ProcessEntry(Commander commander, ApplicationDbContext applicationDbContext)
         {
@@ -62,6 +62,7 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Startup
             {
                 commander.Ship = ToEnum<Ship>(Ship);
             }
+            commander.ShipName = ShipName;
             return ValueTask.CompletedTask;
         }
 

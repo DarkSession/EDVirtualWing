@@ -1,16 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import * as dayjs from 'dayjs';
 import { Commander, GameActivity, GameExtraFlags, GameMode, GameVersion, Ship, VehicleStatusFlags } from 'src/app/interfaces/commander';
 import { StationType } from 'src/app/interfaces/station';
 
 @Component({
-  selector: 'app-cmdr-test',
-  templateUrl: './cmdr-test.component.html',
-  styleUrls: ['./cmdr-test.component.css']
+  selector: 'app-example',
+  templateUrl: './example.component.html',
+  styleUrls: ['./example.component.css']
 })
-export class CmdrTestComponent implements OnInit {
+export class ExampleComponent {
   public commander1: Commander = {
     CommanderId: "1",
     Name: "Test1",
+    LastEventDate: dayjs.utc().toISOString(),
     GameActivity: GameActivity.Dead,
     ExtraFlags: GameExtraFlags.InCombat,
     GameVersion: GameVersion.Horizons,
@@ -21,7 +23,9 @@ export class CmdrTestComponent implements OnInit {
       VehicleStatusFlags.FsdCooldown |
       VehicleStatusFlags.HasLatLong |
       VehicleStatusFlags.ShieldsUp |
-      VehicleStatusFlags.BeingInterdicted,
+      VehicleStatusFlags.BeingInterdicted |
+      VehicleStatusFlags.FsdMassLocked | 
+      VehicleStatusFlags.OverHeating,
     Ship: Ship.FederalCorvette,
     Location: {
       StarSystem: {
@@ -67,11 +71,12 @@ export class CmdrTestComponent implements OnInit {
       ShipTargetName: "Target name",
     },
     ShipHullHealth: 0.3456,
-    IsStreaming: true,
+    ShipName: "TestShip 1",
   };
   public commander2: Commander = {
     CommanderId: "2",
     Name: "Test2",
+    LastEventDate: dayjs.utc().toISOString(),
     GameActivity: GameActivity.Hyperspace,
     ExtraFlags: GameExtraFlags.None,
     GameVersion: GameVersion.Horizons,
@@ -109,17 +114,18 @@ export class CmdrTestComponent implements OnInit {
       ShipTargetName: null,
     },
     ShipHullHealth: 1,
-    IsStreaming: true,
+    ShipName: "TestShip 2",
   };
   public commander3: Commander = {
     CommanderId: "3",
     Name: "Test3",
+    LastEventDate: dayjs.utc().toISOString(),
     GameActivity: GameActivity.Supercruise,
     ExtraFlags: GameExtraFlags.InCombat,
     GameVersion: GameVersion.Horizons,
     GameMode: GameMode.Solo,
     GameModeGroupName: "",
-    VehicleStatusFlags: VehicleStatusFlags.HardpointsDeployed | VehicleStatusFlags.InFighter | VehicleStatusFlags.IsInDanger,
+    VehicleStatusFlags: VehicleStatusFlags.HardpointsDeployed | VehicleStatusFlags.InFighter | VehicleStatusFlags.IsInDanger | VehicleStatusFlags.OverHeating,
     Ship: Ship.FederalCorvette,
     Location: {
       StarSystem: {
@@ -143,17 +149,18 @@ export class CmdrTestComponent implements OnInit {
       ShipTargetName: "System Defence Force",
     },
     ShipHullHealth: 0.91,
-    IsStreaming: true,
+    ShipName: "TestShip 3",
   };
   public commander4: Commander = {
     CommanderId: "4",
     Name: "Test4",
+    LastEventDate: dayjs.utc().toISOString(),
     GameActivity: GameActivity.Docked,
     ExtraFlags: GameExtraFlags.None,
     GameVersion: GameVersion.Odyssey,
     GameMode: GameMode.Open,
     GameModeGroupName: "",
-    VehicleStatusFlags: VehicleStatusFlags.ShieldsUp | VehicleStatusFlags.Docked | VehicleStatusFlags.InWing,
+    VehicleStatusFlags: VehicleStatusFlags.ShieldsUp | VehicleStatusFlags.Docked | VehicleStatusFlags.InWing | VehicleStatusFlags.FsdMassLocked,
     Ship: Ship.Eagle,
     Location: {
       StarSystem: {
@@ -188,11 +195,12 @@ export class CmdrTestComponent implements OnInit {
       ShipTargetName: "Random Dude",
     },
     ShipHullHealth: 1,
-    IsStreaming: true,
+    ShipName: "TestShip 4",
   };
   public commander5: Commander = {
     CommanderId: "5",
     Name: "Test5",
+    LastEventDate: dayjs.utc().toISOString(),
     GameActivity: GameActivity.OnFoot,
     ExtraFlags: GameExtraFlags.None,
     GameVersion: GameVersion.Odyssey,
@@ -236,11 +244,12 @@ export class CmdrTestComponent implements OnInit {
       ShipTargetName: null,
     },
     ShipHullHealth: 1,
-    IsStreaming: true,
+    ShipName: "TestShip 5",
   };
   public commander6: Commander = {
     CommanderId: "6",
     Name: "Test6",
+    LastEventDate: dayjs.utc().toISOString(),
     GameActivity: GameActivity.Supercruise,
     ExtraFlags: GameExtraFlags.None,
     GameVersion: GameVersion.Odyssey,
@@ -270,17 +279,18 @@ export class CmdrTestComponent implements OnInit {
       ShipTargetName: null,
     },
     ShipHullHealth: 0.75,
-    IsStreaming: true,
+    ShipName: "TestShip 6",
   };
   public commander7: Commander = {
     CommanderId: "7",
     Name: "Test7",
+    LastEventDate: dayjs.utc().toISOString(),
     GameActivity: GameActivity.Docked,
     ExtraFlags: GameExtraFlags.None,
     GameVersion: GameVersion.Base,
     GameMode: GameMode.Solo,
     GameModeGroupName: "",
-    VehicleStatusFlags: VehicleStatusFlags.Docked | VehicleStatusFlags.ShieldsUp,
+    VehicleStatusFlags: VehicleStatusFlags.Docked | VehicleStatusFlags.ShieldsUp | VehicleStatusFlags.FsdMassLocked,
     Ship: Ship.Python,
     Location: {
       StarSystem: {
@@ -315,11 +325,13 @@ export class CmdrTestComponent implements OnInit {
       ShipTargetName: "Random Ganker #123",
     },
     ShipHullHealth: 0.123,
-    IsStreaming: true,
+    ShipName: "TestShip 7",
   };
   public commander8: Commander = {
     CommanderId: "8",
     Name: "Test8",
+    LastEventDate: dayjs.utc().toISOString(),
+
     GameActivity: GameActivity.None,
     ExtraFlags: GameExtraFlags.None,
     GameVersion: GameVersion.Horizons,
@@ -365,11 +377,12 @@ export class CmdrTestComponent implements OnInit {
       ShipTargetName: null,
     },
     ShipHullHealth: 0.87,
-    IsStreaming: true,
+    ShipName: "TestShip 8",
   };
   public commander9: Commander = {
     CommanderId: "9",
     Name: "Test9",
+    LastEventDate: dayjs.utc().toISOString(),
     GameActivity: GameActivity.Supercruise,
     ExtraFlags: GameExtraFlags.None,
     GameVersion: GameVersion.Horizons,
@@ -399,11 +412,12 @@ export class CmdrTestComponent implements OnInit {
       ShipTargetName: "CMDR Test99",
     },
     ShipHullHealth: 0.4444,
-    IsStreaming: true,
+    ShipName: "TestShip 9",
   };
   public commander10: Commander = {
     CommanderId: "10",
     Name: "Test10",
+    LastEventDate: dayjs.utc().toISOString(),
     GameActivity: GameActivity.InSrv,
     ExtraFlags: GameExtraFlags.None,
     GameVersion: GameVersion.Horizons,
@@ -436,12 +450,9 @@ export class CmdrTestComponent implements OnInit {
       ShipTargetName: null,
     },
     ShipHullHealth: 0.234,
-    IsStreaming: true,
+    ShipName: "TestShip 10",
   };
 
   public constructor() { }
-
-  public ngOnInit(): void {
-  }
 
 }

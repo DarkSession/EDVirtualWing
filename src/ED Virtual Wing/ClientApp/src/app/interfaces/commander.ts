@@ -1,11 +1,14 @@
 import { StarSystemBody } from "./star-system-body";
 import { StarSystem } from "./star-system";
 import { Station } from "./station";
+import * as dayjs from "dayjs";
 
 export interface Commander {
     CommanderId: string;
     Name: string;
     GameActivity: GameActivity;
+    LastEventDate: string;
+    LastEventDateObj?: dayjs.Dayjs;
     ExtraFlags: GameExtraFlags;
     GameVersion: GameVersion;
     GameMode: GameMode;
@@ -15,7 +18,7 @@ export interface Commander {
     Location: CommanderLocation;
     Target: CommanderTarget;
     ShipHullHealth: number;
-    IsStreaming: boolean;
+    ShipName: string | null;
 }
 
 export interface CommanderTarget {

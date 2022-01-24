@@ -1,9 +1,8 @@
-<div *ngIf="commander" class="cmdr">
+<div *ngIf="commander && commander.Name" class="cmdr">
     <div class="cmdr-basic-info">
         <div class="flex-center">
             <span class="cmdr-title">CMDR {{ commander.Name }}</span>
-            <mat-icon *ngIf="commander.IsStreaming" [ngClass]="{'online': commander.IsStreaming}"
-                matTooltip="Online, in-game">circle
+            <mat-icon *ngIf="isOnline" class="online" matTooltip="Online, in-game">circle
             </mat-icon>
             <img *ngIf="inTeam" src="assets/images/Wing.svg" matTooltip="In team" class="svg-icon-small" />
             <img *ngIf="inCombat" src="assets/images/Combat.svg" matTooltip="In combat" class="svg-icon-small" />
@@ -87,6 +86,9 @@
                 <span *ngIf="fsdCooldown" matTooltip="FSD cooldown">
                     <mat-icon>ac_unit</mat-icon>
                 </span>
+                <span *ngIf="fsdMassLocked" matTooltip="FSD Mass Locked">
+                    <img src="assets/images/FSDMassLocked.svg" class="svg-icon" />
+                </span>
             </div>
         </div>
     </div>
@@ -129,6 +131,9 @@
     </ng-container>
     <ng-template #shipStatus>
         <div *ngIf="commander.Ship" style="position: relative;" class="cmdr-status-picture">
+            <div *ngIf="commander.ShipName" style="position: absolute;" class="ship-name">
+                {{ commander.ShipName }}
+            </div>
             <div [ngClass]="{'shield-up': shieldsUp}" class="shield-circle shield-circle3">
                 <div [ngClass]="{'shield-up': shieldsUp}" class="shield-circle shield-circle2">
                     <div [ngClass]="{'shield-up': shieldsUp}" class="shield-circle shield-circle1">
@@ -140,8 +145,6 @@
                     </div>
                 </div>
             </div>
-            <br>
-            <span *ngIf="isBeingInterdicted">Interdiction in progress...</span>
             <div style="position: absolute; left: 10px;">
                 <div *ngIf="inFighter">
                     <img src="assets/images/Fighter.svg" class="ship-status-icon" matTooltip="In fighter" />
@@ -149,6 +152,9 @@
                 <div *ngIf="weaponsDeployed">
                     <img src="assets/images/HardpointsDeployed.svg" class="ship-status-icon"
                         matTooltip="Hardpoints deployed" />
+                </div>
+                <div *ngIf="overHeating">
+                    <img src="assets/images/Heat.svg" class="ship-status-icon" matTooltip="Overheating" />
                 </div>
             </div>
         </div>

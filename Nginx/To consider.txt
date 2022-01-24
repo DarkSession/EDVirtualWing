@@ -1,2 +1,0 @@
-keepalive_timeout 120;
-proxy_read_timeout 86400;

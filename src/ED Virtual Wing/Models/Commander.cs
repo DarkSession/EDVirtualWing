@@ -29,7 +29,6 @@ namespace ED_Virtual_Wing.Models
         [Column]
         public DateTimeOffset JournalLastEventDate { get; set; }
 
-        [JsonIgnore]
         [Column]
         public DateTimeOffset? LastEventDate { get; set; }
 
@@ -58,6 +57,7 @@ namespace ED_Virtual_Wing.Models
         /// Indicates if the Commander is currently streaming their game journal to the application.
         /// </summary>
         [NotMapped]
+        [JsonIgnore]
         public bool IsStreaming
         {
             get
@@ -72,6 +72,9 @@ namespace ED_Virtual_Wing.Models
 
         [Column(TypeName = "decimal(14,8)")]
         public decimal ShipHullHealth { get; set; }
+
+        [Column(TypeName = "varchar(256)")]
+        public string? ShipName { get; set; }
 
         [Column]
         public Suit Suit { get; set; }
@@ -424,6 +427,8 @@ namespace ED_Virtual_Wing.Models
 
         [EnumMember(Value = "independent_fighter")]
         IndepdenentFighter = 999999990,
+        [EnumMember(Value = "gdn_hybrid_fighter_v1")]
+        GuardianFighter = 999999991,
     }
 
     public enum Suit : short

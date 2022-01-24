@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CmdrTestComponent } from './cmdr-test.component';
+import { ExampleComponent } from './example.component';
 
-describe('CmdrTestComponent', () => {
-  let component: CmdrTestComponent;
-  let fixture: ComponentFixture<CmdrTestComponent>;
+describe('ExampleComponent', () => {
+  let component: ExampleComponent;
+  let fixture: ComponentFixture<ExampleComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CmdrTestComponent ]
+      declarations: [ ExampleComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CmdrTestComponent);
+    fixture = TestBed.createComponent(ExampleComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

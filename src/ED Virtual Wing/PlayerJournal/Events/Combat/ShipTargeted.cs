@@ -21,7 +21,6 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Combat
         public string PilotName { get; set; } = string.Empty;
         public string PilotName_Localised { get; set; } = string.Empty;
         public string Ship { get; set; } = string.Empty;
-        // public Ship Ship { get; set; }
 
         public override async ValueTask ProcessEntry(Commander commander, ApplicationDbContext applicationDbContext)
         {

@@ -40,4 +40,8 @@ For development and testing purposes, run a local MariaDB instance using Docker,
 ## Credits
 ### Assets
 [edassets.org](https://edassets.org/): Ships, icons  
-CMDR Arithon [elite-dangerous-blog.co.uk](https://www.elite-dangerous-blog.co.uk/post/2017/10/26/Vehicle-icons): SRV image
+CMDR Arithon [elite-dangerous-blog.co.uk](https://www.elite-dangerous-blog.co.uk/post/2017/10/26/Vehicle-icons): SRV image  
+Font Awesome(https://fontawesome.com/license)  
+
+### Frameworks
+![Angular](https://angular.io/assets/images/logos/angular/angular.png) ![.NET](https://i.imgur.com/RYRYKhH.png)

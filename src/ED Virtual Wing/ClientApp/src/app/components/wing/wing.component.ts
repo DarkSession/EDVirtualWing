@@ -11,6 +11,7 @@ import { ComponentPortal } from '@angular/cdk/portal';
 import { WingInviteLinkComponent } from '../wing-invite-link/wing-invite-link.component';
 import { InviteLinkData } from 'src/app/interfaces/invite-link-data';
 import { OVERLAY_DATA } from 'src/app/injector/overlay-data';
+import * as dayjs from 'dayjs';
 
 @UntilDestroy()
 @Component({
@@ -41,6 +42,7 @@ export class WingComponent implements OnInit {
       }
       if (message.Data.Wing.WingId === this.wing?.WingId) {
         const commanderData = message.Data.Commander;
+        commanderData.LastEventDateObj = dayjs(commanderData.LastEventDate);
         const i = this.commanders.findIndex(c => c.CommanderId === commanderData.CommanderId);
         if (i === -1) {
           this.commanders.push(commanderData);
@@ -63,14 +65,28 @@ export class WingComponent implements OnInit {
       });
       if (response !== null && response.Success) {
         this.wing = response.Data.Wing;
-        this.commanders = response.Data.Commanders.sort((a, b) => {
-          if (a.IsStreaming == b.IsStreaming) {
-            return 0;
+        for (const commanderData of this.commanders) {
+          if (commanderData.LastEventDate) {
+            commanderData.LastEventDateObj = dayjs.utc(commanderData.LastEventDate);
           }
-          if (a.IsStreaming > b.IsStreaming) {
+        }
+        const now = dayjs.utc();
+        this.commanders = response.Data.Commanders.sort((a, b) => {
+          const aIsOnline = (a.LastEventDateObj?.diff(now, "second") ?? 999) <= 120;
+          const bIsOnline = (b.LastEventDateObj?.diff(now, "second") ?? 999) <= 120;;
+          if (aIsOnline < bIsOnline) {
             return 1;
           }
-          return -1;
+          else if (aIsOnline > bIsOnline) {
+            return -1;
+          }
+          else if (a.Name < b.Name) {
+            return -1;
+          }
+          else if (a.Name > b.Name) {
+            return 1;
+          }
+          return 0;
         });
         this.canManage = response.Data.CanManage;
         return;

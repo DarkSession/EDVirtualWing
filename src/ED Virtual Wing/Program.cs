@@ -78,7 +78,7 @@ string contentSecurityPolicy =
     "default-src 'self'; " +
     $"connect-src 'self' wss://{httpOriginUri.Host}/; " +
     "style-src 'self' 'unsafe-inline'; " +
-    "script-src 'self' 'unsafe-hashes' 'sha256-MhtPZXr7+LpJUY5qtMutB+qWfQtMaPccfe7QXtCcEYc=';";
+    "script-src 'self' 'unsafe-inline';"; // Once this is fixed: https://github.com/angular/angular-cli/issues/20864 we want to remove 'unsafe-inline' again. In Angular 13 the suggested workaround there doesn't seem to work anymore.
 
 app.Use((ctx, next) =>
 {

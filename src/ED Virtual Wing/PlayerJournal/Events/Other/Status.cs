@@ -1,25 +1,11 @@
 ﻿using ED_Virtual_Wing.Data;
 using ED_Virtual_Wing.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Text.RegularExpressions;
 
 namespace ED_Virtual_Wing.PlayerJournal.Events.Other
 {
     public class Status : JournalEventHandler
     {
-        private static Regex LocalisationString { get; } = new(@"^\$(.*?);$");
-        private static Dictionary<string, string> ScenarioLocalisation { get; } = new()
-        {
-            { "$MULTIPLAYER_SCENARIO14_TITLE;", "Resource Extraction Site" },
-
-            { "$MULTIPLAYER_SCENARIO42_TITLE;", "Nav Beacon" },
-
-            { "$MULTIPLAYER_SCENARIO77_TITLE;", "Resource Extraction Site [Low]" },
-            { "$MULTIPLAYER_SCENARIO78_TITLE;", "Resource Extraction Site [High]" },
-            { "$MULTIPLAYER_SCENARIO79_TITLE;", "Resource Extraction Site [Hazardous]" },
-
-        };
-
         public VehicleStatusFlags Flags { get; set; }
         public OnFootStatusFlags Flags2 { get; set; }
         public decimal Latitude { get; set; }
@@ -93,34 +79,9 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Other
             if (commander.Target != null)
             {
                 string destinationName = string.Empty;
-                if (Destination != null && !string.IsNullOrEmpty(Destination?.Name))
+                if (Destination != null)
                 {
-                    string destinationNameNotLocalised = Destination.Name.Trim();
-                    if (ScenarioLocalisation.TryGetValue(destinationNameNotLocalised, out string? localisedScenarioName))
-                    {
-                        destinationName = localisedScenarioName;
-                    }
-                    else
-                    {
-                        Match localisationStringMatch = LocalisationString.Match(destinationNameNotLocalised);
-                        if (localisationStringMatch.Success)
-                        {
-                            destinationName = Destination.Name_Localised ?? destinationNameNotLocalised;
-                            if (!await applicationDbContext.TranslationsPendings.AnyAsync(t => t.NonLocalized == destinationNameNotLocalised))
-                            {
-                                applicationDbContext.TranslationsPendings.Add(new TranslationsPending()
-                                {
-                                    NonLocalized = destinationNameNotLocalised,
-                                    LocalizedExample = Destination.Name_Localised ?? string.Empty,
-                                });
-                                await applicationDbContext.SaveChangesAsync();
-                            }
-                        }
-                        else
-                        {
-                            destinationName = destinationNameNotLocalised;
-                        }
-                    }
+                    destinationName = (await EDTranslatedString.Translate(Destination.Name, Destination.Name_Localised ?? Destination.Name, applicationDbContext)) ?? string.Empty;
                 }
                 commander.Target.StarSystem = starSystem;
                 commander.Target.Body = starSystemBody;

@@ -11,6 +11,7 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Startup
         {
             commander.ShipHullHealth = HullHealth;
             commander.ShipName = ShipName;
+            commander.Target?.ResetShipTarget();
             return ValueTask.CompletedTask;
         }
     }

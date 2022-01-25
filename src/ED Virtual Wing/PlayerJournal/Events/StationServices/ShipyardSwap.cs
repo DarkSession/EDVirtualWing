@@ -13,6 +13,7 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.StationServices
         public override ValueTask ProcessEntry(Commander commander, ApplicationDbContext applicationDbContext)
         {
             commander.Ship = ShipType;
+            commander.ShipName = string.Empty;
             return ValueTask.CompletedTask;
         }
     }

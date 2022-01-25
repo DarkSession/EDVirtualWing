@@ -8,15 +8,15 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Odyssey
         public string SuitName { get; set; } = string.Empty;
         public override ValueTask ProcessEntry(Commander commander, ApplicationDbContext applicationDbContext)
         {
-            if (SuitName.StartsWith("tacticalsuit"))
+            if (SuitName.ToLower().StartsWith("tacticalsuit"))
             {
                 commander.Suit = Suit.Dominator;
             }
-            else if (SuitName.StartsWith("utilitysuit"))
+            else if (SuitName.ToLower().StartsWith("utilitysuit"))
             {
                 commander.Suit = Suit.Maverick;
             }
-            else if (SuitName.StartsWith("explorationsuit"))
+            else if (SuitName.ToLower().StartsWith("explorationsuit"))
             {
                 commander.Suit = Suit.Artemis;
             }

@@ -61,7 +61,7 @@
                     <span *ngIf="commander.GameActivity == GameActivity.Docked" class="badge">Docked</span>
                     <span *ngIf="commander.GameActivity == GameActivity.OnFoot" class="badge">On foot</span>
                 </span>
-                <span *ngIf="commander.Location?.Name" class="flex-center" matTooltip="Target location">
+                <span *ngIf="commander.Location?.Name" class="flex-center" matTooltip="Station/Signal">
                     <img src="assets/images/Marker.svg" class="svg-icon"> {{ commander.Location.Name }}
                 </span>
                 <span *ngIf="showLatLong" class="flex-center" matTooltip="Planet position">

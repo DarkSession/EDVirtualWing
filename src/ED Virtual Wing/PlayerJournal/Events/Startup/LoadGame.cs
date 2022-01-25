@@ -42,19 +42,19 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Startup
                 _ => Models.GameMode.Unknown,
             };
             commander.GameModeGroupName = (commander.GameMode == Models.GameMode.Group) ? Group : null;
-            if (Ship.StartsWith("tacticalsuit"))
+            if (Ship.ToLower().StartsWith("tacticalsuit"))
             {
                 commander.Suit = Suit.Dominator;
             }
-            else if (Ship.StartsWith("utilitysuit"))
+            else if (Ship.ToLower().StartsWith("utilitysuit"))
             {
                 commander.Suit = Suit.Maverick;
             }
-            else if (Ship.StartsWith("explorationsuit"))
+            else if (Ship.ToLower().StartsWith("explorationsuit"))
             {
                 commander.Suit = Suit.Artemis;
             }
-            else if (Ship.StartsWith("flightsuit"))
+            else if (Ship.ToLower().StartsWith("flightsuit"))
             {
                 commander.Suit = Suit.Flight;
             }
@@ -63,6 +63,7 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Startup
                 commander.Ship = ToEnum<Ship>(Ship);
             }
             commander.ShipName = ShipName;
+            commander.Target?.ResetShipTarget();
             return ValueTask.CompletedTask;
         }
 

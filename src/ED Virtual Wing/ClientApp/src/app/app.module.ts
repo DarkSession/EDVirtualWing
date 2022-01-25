@@ -77,6 +77,10 @@ import { TosComponent } from './components/tos/tos.component';
           component: FaqComponent,
         },
         {
+          path: 'tos',
+          component: TosComponent,
+        },
+        {
           path: 'about',
           component: AboutComponent,
         },

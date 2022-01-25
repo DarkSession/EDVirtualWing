@@ -34,6 +34,7 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Travel
                     commander.Location.Name = commander.Target.Name;
                 }
             }
+            commander.Target?.ResetShipTarget();
         }
     }
 }

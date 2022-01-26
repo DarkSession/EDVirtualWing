@@ -35,8 +35,12 @@
     </mat-sidenav>
     <mat-sidenav-content>
       <ng-container [ngSwitch]="websocketService.connectionStatus">
-        <div *ngSwitchCase="ConnectionStatus.Connecting">Connecting to server...</div>
-        <div *ngSwitchCase="ConnectionStatus.NoConnection">Error! Connection to server failed!</div>
+        <div *ngSwitchCase="ConnectionStatus.Connecting" class="content-large-box content-large-box-content ">
+          Connecting to server...
+        </div>
+        <div *ngSwitchCase="ConnectionStatus.NoConnection" class="content-large-box content-large-box-content ">
+          Error! Connection to server failed!
+        </div>
         <ng-container *ngSwitchDefault>
           <router-outlet></router-outlet>
         </ng-container>

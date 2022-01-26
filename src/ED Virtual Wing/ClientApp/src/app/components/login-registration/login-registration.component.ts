@@ -12,13 +12,13 @@ import { WebsocketService } from '../../websocket.service';
   styleUrls: ['./login-registration.component.css']
 })
 export class LoginRegistrationComponent implements OnInit {
-  public formMode: FormMode = FormMode.Login;
   public readonly FormMode = FormMode;
   public userNameLogin: FormControl = new FormControl("", [Validators.required, Validators.minLength(4)]);
   public passwordLogin: FormControl = new FormControl("", [Validators.required, Validators.minLength(8)]);
   public userNameReg: FormControl = new FormControl("", [Validators.required, Validators.minLength(4)]);
   public passwordReg: FormControl = new FormControl("", [Validators.required, Validators.minLength(8)]);
   public emailAddress: FormControl = new FormControl("", [Validators.required, Validators.email]);
+  public confirmTosReg: FormControl = new FormControl("", [Validators.required]);
   public loginForm = new FormGroup({
     userName: this.userNameLogin,
     password: this.passwordLogin,
@@ -27,8 +27,10 @@ export class LoginRegistrationComponent implements OnInit {
     userName: this.userNameReg,
     password: this.passwordReg,
     emailAddress: this.emailAddress,
+    confirmTos: this.confirmTosReg,
   });
   public errors: string[] = [];
+  public fDevAuthConfirmTos: boolean = false;
 
   public constructor(
     private readonly httpClient: HttpClient,
@@ -38,11 +40,6 @@ export class LoginRegistrationComponent implements OnInit {
   ) { }
 
   public ngOnInit(): void {
-  }
-
-  public toggleMode(): void {
-    this.formMode = (this.formMode === FormMode.Registration) ? FormMode.Login : FormMode.Registration;
-    this.errors = [];
   }
 
   public async register(): Promise<void> {
@@ -106,6 +103,25 @@ export class LoginRegistrationComponent implements OnInit {
     this.webSocketService.reconnect();
     this.router.navigate(["/"]);
   }
+
+  public async loginViaFdev(): Promise<void> {
+    if (this.appService.isLoading) {
+      return;
+    }
+    this.appService.setLoading(true);
+    try {
+      const fdevGetStateUrl: string = window.location.protocol + "//" + window.location.hostname + ":" + environment.backendPort + "/user/fdev-get-state";
+      const fdevGetResponse = await this.httpClient.post<FDevGetStateResponse>(fdevGetStateUrl, {}, {
+        withCredentials: true,
+      }).toPromise();
+      window.location.href = fdevGetResponse.Url;
+    }
+    catch (e) {
+      console.error(e);
+      this.errors = ["An error occured while communicating with the server"];
+    }
+    this.appService.setLoading(false);
+  }
 }
 
 enum FormMode {
@@ -120,4 +136,8 @@ interface RegistrationResponse {
 
 interface LoginResponse {
   Success: boolean;
+}
+
+interface FDevGetStateResponse {
+  Url: string;
 }

@@ -30,6 +30,7 @@ builder.Services.AddControllersWithViews()
 builder.Services.AddRazorPages();
 builder.Services.AddSingleton<WebSocketServer>();
 builder.Services.AddSingleton<JournalProcessor>();
+//builder.Services.AddSingleton<FDevApi>();
 
 string httpOrigin = Environment.GetEnvironmentVariable("EDVW_HTTP_ORIGIN") ?? string.Empty;
 Uri httpOriginUri = new(httpOrigin);

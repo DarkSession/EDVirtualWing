@@ -17,6 +17,7 @@ For development and testing purposes, run a local MariaDB instance using Docker,
 ### Configuration
 `EDVW_MARIADB_CONNECTIONSTRING`: MariaDB instance connection string.  
 `EDVW_HTTP_ORIGIN`: Allowed origin for CORS and the WebSocket client.  
+`FRONTIER_AUTH_CLIENT_ID`: FDev OAuth Client ID  
 
 ## Idea
 - Web based application. Unfortunately only possible for PC based users. Everything will be updated live.

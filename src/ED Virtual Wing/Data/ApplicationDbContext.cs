@@ -9,6 +9,7 @@ namespace ED_Virtual_Wing.Data
     public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>
     {
         public DbSet<Commander> Commanders { get; set; }
+        // public DbSet<FDevApiAuthCode> FDevApiAuthCodes { get; set; }
         public DbSet<StarSystem> StarSystems { get; set; }
         public DbSet<StarSystemBody> StarSystemBodies { get; set; }
         public DbSet<Station> Stations { get; set; }

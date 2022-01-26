@@ -59,10 +59,6 @@ html, body {
 }
 
 .content-small-box, .content-large-box {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
   margin: 16px;
   padding: 16px;
   border-radius: 8px;
@@ -73,6 +69,13 @@ html, body {
   transform: translate(-50%, -50%);
 }
 
+.content-large-box-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
 .content-small-box {
   min-height: 100px;
   width: 100px;
@@ -80,7 +83,7 @@ html, body {
 
 .content-large-box {
   min-height: 300px;
-  width: 300px;
+  width: 500px;
 }
 
 .clickable {
@@ -98,7 +101,7 @@ html, body {
 }
 
 .error-msg {
-  color: red;
+  color: #d30000;
 }
 
 .online {

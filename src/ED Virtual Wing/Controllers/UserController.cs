@@ -32,12 +32,19 @@ namespace ED_Virtual_Wing.Controllers
         private UserManager<ApplicationUser> UserManager { get; }
         private SignInManager<ApplicationUser> SignInManager { get; }
         private ApplicationDbContext ApplicationDbContext { get; }
+        //private FDevApi.FDevApi FDevApi { get; }
 
-        public UserController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ApplicationDbContext applicationDbContext)
+        public UserController(
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            ApplicationDbContext applicationDbContext
+            // FDevApi.FDevApi fdevApi
+            )
         {
             UserManager = userManager;
             SignInManager = signInManager;
             ApplicationDbContext = applicationDbContext;
+            // FDevApi = fdevApi;
         }
 
         [HttpPost("login")]
@@ -99,5 +106,71 @@ namespace ED_Virtual_Wing.Controllers
             }
             return new RegistrationResponse(result.Errors.Select(e => e.Description).ToList());
         }
+        /*
+        public class FDevAuthRequest
+        {
+            [Required]
+            public string State { get; set; } = string.Empty;
+            [Required]
+            public string Code { get; set; } = string.Empty;
+        }
+
+        [HttpPost("fdev-auth")]
+        public async Task<ActionResult<RegistrationResponse>> FDevAuth(FDevAuthRequest requestData)
+        {
+            FDevApiAuthCode? fdevApiAuthCode = await ApplicationDbContext.FDevApiAuthCodes.FirstOrDefaultAsync(f => f.State == requestData.State);
+            if (fdevApiAuthCode != null)
+            {
+                ApplicationDbContext.FDevApiAuthCodes.Remove(fdevApiAuthCode);
+                FDevApiResult? fdevApiResult = await FDevApi.AuthenticateUser(requestData.Code, fdevApiAuthCode.Code);
+                if (fdevApiResult != null)
+                {
+                    ApplicationUser? user = await ApplicationDbContext.Users.FirstOrDefaultAsync(u => u.FDevCustomerId == fdevApiResult.CustomerId);
+                    if (user == null)
+                    {
+                        string userName = $"{Functions.GenerateString(8)}-{fdevApiResult.CustomerId}";
+                        user = new()
+                        {
+                            UserName = userName,
+                            Email = $"{userName}@vw.edct.dev",
+                            FDevCustomerId = fdevApiResult.CustomerId,
+                        };
+                        IdentityResult result = await UserManager.CreateAsync(user, Functions.GenerateString(32));
+                        if (result.Succeeded)
+                        {
+                            await user.GetCommander(ApplicationDbContext);
+                            await ApplicationDbContext.SaveChangesAsync();
+                            await SignInManager.SignInAsync(user, true);
+                            return new RegistrationResponse(true);
+                        }
+                        return new RegistrationResponse(new List<string>() { "Registration could not be completed." });
+                    }
+                    else
+                    {
+                        await SignInManager.SignInAsync(user, true);
+                        return new RegistrationResponse(true);
+                    }
+                }
+            }
+            return new RegistrationResponse(new List<string>() { "Authentication failed!" });
+        }
+
+        public class FDevGetStateResponse
+        {
+            public string Url { get; }
+            public FDevGetStateResponse(string url)
+            {
+                Url = url;
+            }
+        }
+
+        [HttpPost("fdev-get-state")]
+        public async Task<ActionResult<FDevGetStateResponse>> FDevGetState()
+        {
+            string url = FDevApi.CreateAuthorizeUrl(ApplicationDbContext);
+            await ApplicationDbContext.SaveChangesAsync();
+            return new FDevGetStateResponse(url);
+        }
+        */
     }
 }

@@ -33,6 +33,8 @@ import { MainComponent } from './components/main/main.component';
 import { FaqComponent } from './components/faq/faq.component';
 import { TosComponent } from './components/tos/tos.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatStepperModule } from '@angular/material/stepper';
+import { FdevAuthComponent } from './components/fdev-auth/fdev-auth.component';
 
 @NgModule({
   declarations: [
@@ -52,6 +54,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     MainComponent,
     FaqComponent,
     TosComponent,
+    FdevAuthComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -68,6 +71,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     MatMenuModule,
     MatSnackBarModule,
     MatSlideToggleModule,
+    MatStepperModule,
     RouterModule.forRoot(
       [
         {
@@ -85,6 +89,16 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
         {
           path: 'about',
           component: AboutComponent,
+        },
+        {
+          path: 'auth',
+          component: FdevAuthComponent,
+          canActivate: [NotAuthenticatedGuard],
+        },
+        {
+          path: 'login',
+          component: LoginRegistrationComponent,
+          canActivate: [NotAuthenticatedGuard],
         },
         {
           path: 'wing',
@@ -110,15 +124,10 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
           ],
         },
         {
-          path: 'login',
-          component: LoginRegistrationComponent,
-          canActivate: [NotAuthenticatedGuard],
-        },
-        {
           path: '**',
           component: MainComponent,
           canActivate: [AuthenticationGuard],
-        }
+        },
       ],
       {
         enableTracing: !environment.production,

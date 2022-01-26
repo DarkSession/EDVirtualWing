@@ -32,6 +32,7 @@ import { JournalWorkerSetupHelpComponent } from './components/journal-worker-set
 import { MainComponent } from './components/main/main.component';
 import { FaqComponent } from './components/faq/faq.component';
 import { TosComponent } from './components/tos/tos.component';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @NgModule({
   declarations: [
@@ -66,6 +67,7 @@ import { TosComponent } from './components/tos/tos.component';
     MatSidenavModule,
     MatMenuModule,
     MatSnackBarModule,
+    MatSlideToggleModule,
     RouterModule.forRoot(
       [
         {

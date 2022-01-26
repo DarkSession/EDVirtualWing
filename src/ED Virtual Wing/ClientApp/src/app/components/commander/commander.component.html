@@ -4,8 +4,10 @@
             <span class="cmdr-title">CMDR {{ commander.Name }}</span>
             <mat-icon *ngIf="isOnline" class="online" matTooltip="Online, in-game">circle
             </mat-icon>
-            <img *ngIf="inTeam" src="assets/images/Wing.svg" matTooltip="In team" class="svg-icon-small" />
-            <img *ngIf="inCombat" src="assets/images/Combat.svg" matTooltip="In combat" class="svg-icon-small" />
+            <img *ngIf="inTeam" src="assets/images/Wing.svg" matTooltip="In team"
+                class="svg-icon-small icon-darkMode-correction" />
+            <img *ngIf="inCombat" src="assets/images/Combat.svg" matTooltip="In combat"
+                class="svg-icon-small icon-darkMode-correction" />
         </div>
         <div class="flex-center">
             <span>{{ gameMode }}</span>,&nbsp;
@@ -24,10 +26,12 @@
             </span>
             <ng-template #nonHyperspaceLocation>
                 <span *ngIf="commander.Location?.StarSystem" class="flex-center" matTooltip="System">
-                    <img src="assets/images/StarSystem.svg" class="svg-icon"> {{ commander.Location.StarSystem?.Name }}
+                    <img src="assets/images/StarSystem.svg" class="svg-icon icon-darkMode-correction"> {{
+                    commander.Location.StarSystem?.Name }}
                 </span>
                 <span *ngIf="commander.Location?.SystemBody" class="flex-center" matTooltip="System Body">
-                    <img src="assets/images/Planet.svg" class="svg-icon"> {{ commander.Location.SystemBody?.Name }}
+                    <img src="assets/images/Planet.svg" class="svg-icon icon-darkMode-correction"> {{
+                    commander.Location.SystemBody?.Name }}
                     <span *ngIf="commander.GameActivity == GameActivity.InSrv" class="badge">In SRV</span>
                     <span *ngIf="commander.GameActivity == GameActivity.Landed" class="badge">Landed</span>
                     <span *ngIf="commander.GameActivity == GameActivity.OnFoot && !commander.Location?.Station"
@@ -35,24 +39,30 @@
                 </span>
                 <span *ngIf="commander.Location?.Station" class="flex-center" matTooltip="Station">
                     <ng-container [ngSwitch]="commander.Location.Station?.StationType">
-                        <img *ngSwitchCase="StationType.Coriolis" src="assets/images/Coriolis.svg" class="svg-icon">
-                        <img *ngSwitchCase="StationType.Outpost" src="assets/images/Outpost.svg" class="svg-icon">
-                        <img *ngSwitchCase="StationType.Orbis" src="assets/images/Orbis.svg" class="svg-icon">
+                        <img *ngSwitchCase="StationType.Coriolis" src="assets/images/Coriolis.svg"
+                            class="svg-icon icon-darkMode-correction">
+                        <img *ngSwitchCase="StationType.Outpost" src="assets/images/Outpost.svg"
+                            class="svg-icon icon-darkMode-correction">
+                        <img *ngSwitchCase="StationType.Orbis" src="assets/images/Orbis.svg"
+                            class="svg-icon icon-darkMode-correction">
                         <img *ngSwitchCase="StationType.FleetCarrier" src="assets/images/FleetCarrier.svg"
-                            class="svg-icon">
+                            class="svg-icon icon-darkMode-correction ">
                         <img *ngSwitchCase="StationType.CraterOutpost" src="assets/images/SurfacePort.svg"
-                            class="svg-icon">
-                        <img *ngSwitchCase="StationType.Ocellus" src="assets/images/Ocellus.svg" class="svg-icon">
+                            class="svg-icon icon-darkMode-correction ">
+                        <img *ngSwitchCase="StationType.Ocellus" src="assets/images/Ocellus.svg"
+                            class="svg-icon icon-darkMode-correction">
                         <img *ngSwitchCase="StationType.CraterPort" src="assets/images/SurfacePort.svg"
-                            class="svg-icon">
+                            class="svg-icon icon-darkMode-correction">
                         <img *ngSwitchCase="StationType.AsteroidBase" src="assets/images/AsteroidStation.svg"
-                            class="svg-icon">
-                        <img *ngSwitchCase="StationType.Bernal" src="assets/images/Ocellus.svg" class="svg-icon">
-                        <img *ngSwitchCase="StationType.MegaShip" src="assets/images/MegaShip.svg" class="svg-icon">
+                            class="svg-icon icon-darkMode-correction">
+                        <img *ngSwitchCase="StationType.Bernal" src="assets/images/Ocellus.svg"
+                            class="svg-icon icon-darkMode-correction">
+                        <img *ngSwitchCase="StationType.MegaShip" src="assets/images/MegaShip.svg"
+                            class="svg-icon icon-darkMode-correction">
                         <img *ngSwitchCase="StationType.SurfaceStation" src="assets/images/SurfacePort.svg"
-                            class="svg-icon">
+                            class="svg-icon icon-darkMode-correction">
                         <img *ngSwitchCase="StationType.OnFootSettlement" src="assets/images/Settlement.svg"
-                            class="svg-icon">
+                            class="svg-icon icon-darkMode-correction">
                     </ng-container>
                     <span *ngIf="commander.Location.Station?.StationType != StationType.FleetCarrier">{{
                         commander.Location.Station?.Name }} </span>
@@ -62,10 +72,11 @@
                     <span *ngIf="commander.GameActivity == GameActivity.OnFoot" class="badge">On foot</span>
                 </span>
                 <span *ngIf="commander.Location?.Name" class="flex-center" matTooltip="Station/Signal">
-                    <img src="assets/images/Marker.svg" class="svg-icon"> {{ commander.Location.Name }}
+                    <img src="assets/images/Marker.svg" class="svg-icon icon-darkMode-correction"> {{
+                    commander.Location.Name }}
                 </span>
                 <span *ngIf="showLatLong" class="flex-center" matTooltip="Planet position">
-                    <img src="assets/images/LatLong.svg" class="svg-icon">
+                    <img src="assets/images/LatLong.svg" class="svg-icon icon-darkMode-correction">
                     <span>
                         Lat.: {{ commander.Location.Latitude }}<br>
                         Lon.: {{ commander.Location.Longitude }}<br>
@@ -87,7 +98,7 @@
                     <mat-icon>ac_unit</mat-icon>
                 </span>
                 <span *ngIf="fsdMassLocked" matTooltip="FSD Mass Locked">
-                    <img src="assets/images/FSDMassLocked.svg" class="svg-icon" />
+                    <img src="assets/images/FSDMassLocked.svg" class="svg-icon icon-darkMode-correction" />
                 </span>
             </div>
         </div>
@@ -102,7 +113,7 @@
     </div>
     <ng-container [ngSwitch]="commander.GameActivity">
         <div *ngSwitchCase="GameActivity.Dead" class="cmdr-status-picture">
-            <img src="assets/images/Dead.svg" class="img-large" matTooltip="Dead / Destroyed">
+            <img src="assets/images/Dead.svg" class="img-large icon-darkMode-correction" matTooltip="Dead / Destroyed">
             <br>
             Dead / Destroyed
         </div>
@@ -122,7 +133,7 @@
             <ng-container *ngTemplateOutlet="shipStatus"></ng-container>
         </ng-container>
         <div *ngSwitchCase="GameActivity.InSrv" class="cmdr-status-picture">
-            <img src="assets/images/Scarab.svg" class="img-large" />
+            <img src="assets/images/Scarab.svg" class="img-large icon-darkMode-correction" />
         </div>
         <div *ngSwitchCase="GameActivity.OnFoot" class="cmdr-status-picture">
         </div>
@@ -147,14 +158,14 @@
             </div>
             <div style="position: absolute; left: 10px;">
                 <div *ngIf="inFighter">
-                    <img src="assets/images/Fighter.svg" class="ship-status-icon" matTooltip="In fighter" />
+                    <img src="assets/images/Fighter.svg" class="ship-status-icon icon-darkMode-correction" matTooltip="In fighter" />
                 </div>
                 <div *ngIf="weaponsDeployed">
-                    <img src="assets/images/HardpointsDeployed.svg" class="ship-status-icon"
+                    <img src="assets/images/HardpointsDeployed.svg" class="ship-status-icon icon-darkMode-correction"
                         matTooltip="Hardpoints deployed" />
                 </div>
                 <div *ngIf="overHeating">
-                    <img src="assets/images/Heat.svg" class="ship-status-icon" matTooltip="Overheating" />
+                    <img src="assets/images/Heat.svg" class="ship-status-icon icon-darkMode-correction" matTooltip="Overheating" />
                 </div>
             </div>
         </div>

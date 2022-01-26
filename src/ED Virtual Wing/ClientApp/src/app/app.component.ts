@@ -21,7 +21,7 @@ export class AppComponent implements OnInit, OnDestroy {
   public constructor(
     public readonly websocketService: WebsocketService,
     private readonly overlay: Overlay,
-    private readonly appService: AppService
+    public readonly appService: AppService
   ) {
   }
 
@@ -59,6 +59,11 @@ export class AppComponent implements OnInit, OnDestroy {
 
   public toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  public darkModeChanged(value: boolean): void {
+    localStorage.setItem("darkMode", value ? "1" : "0");
+    console.log(value, value ? "1" : "0");
   }
 }
 

@@ -1,41 +1,46 @@
-<mat-toolbar class="edvw-header">
-  <button mat-icon-button aria-label="Menu" (click)="toggleMenu()">
-    <mat-icon [ngClass]="{'menu-open': isMenuOpen, 'menu-closed': !isMenuOpen}">menu</mat-icon>
-  </button>
-  <img src="assets/images/EliteDangerous.svg" style="width: 45px; height: 45px;" />
-  <span routerLink="/" class="clickable">Elite Dangerous Virtual Wing</span>
-  <span class="toolbar-spacer"></span>
-</mat-toolbar>
+<div [ngClass]="{'darkMode': appService.darkMode}">
+  <mat-toolbar class="edvw-header">
+    <button mat-icon-button aria-label="Menu" (click)="toggleMenu()">
+      <mat-icon [ngClass]="{'menu-open': isMenuOpen, 'menu-closed': !isMenuOpen}">menu</mat-icon>
+    </button>
+    <img src="assets/images/EliteDangerous.svg" style="width: 45px; height: 45px;" />
+    <span routerLink="/" class="clickable">Elite Dangerous Virtual Wing</span>
+    <span class="toolbar-spacer"></span>
+    <mat-slide-toggle [(ngModel)]="appService.darkMode" (ngModelChange)="darkModeChanged($event)">
+      <mat-icon>dark_mode</mat-icon>
+    </mat-slide-toggle>
+  </mat-toolbar>
 
-<mat-sidenav-container class="container-content">
-  <mat-sidenav #sidenav mode="side" class="edvw-sidenav" [opened]="isMenuOpen">
-    <div *ngIf="isLoggedIn">
-      <div><b>Wings / Teams</b></div>
-      <div routerLink="wing/list" class="clickable">My wings</div>
-      <div routerLink="wing/create" class="clickable">Create</div>
-    </div>
-    <div *ngIf="!isLoggedIn">
-      <div routerLink="login" class="clickable">Login</div>
-    </div>
-    <hr>
-    <div>
-      <div routerLink="faq" class="clickable">FAQ</div>
-    </div>
-    <div>
-      <div routerLink="about" class="clickable">About</div>
-    </div>
-    <div *ngIf="isLoggedIn">
+  <mat-sidenav-container class="container-content">
+    <mat-sidenav #sidenav mode="side" class="edvw-sidenav" [opened]="isMenuOpen">
+      <div *ngIf="isLoggedIn">
+        <div><b>Wings / Teams</b></div>
+        <div routerLink="wing/list" class="clickable">My wings</div>
+        <div routerLink="wing/create" class="clickable">Create</div>
+      </div>
+      <div *ngIf="!isLoggedIn">
+        <div routerLink="login" class="clickable">Login</div>
+      </div>
       <hr>
-      <app-journal-worker></app-journal-worker>
-    </div>
-  </mat-sidenav>
-  <mat-sidenav-content>
-    <ng-container [ngSwitch]="websocketService.connectionStatus">
-      <div *ngSwitchCase="ConnectionStatus.Connecting">Connecting to server...</div>
-      <div *ngSwitchCase="ConnectionStatus.NoConnection">Error! Connection to server failed!</div>
-      <ng-container *ngSwitchDefault>
-        <router-outlet></router-outlet>
+      <div>
+        <div routerLink="faq" class="clickable">FAQ</div>
+      </div>
+      <div>
+        <div routerLink="about" class="clickable">About</div>
+      </div>
+      <div *ngIf="isLoggedIn">
+        <hr>
+        <app-journal-worker></app-journal-worker>
+      </div>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <ng-container [ngSwitch]="websocketService.connectionStatus">
+        <div *ngSwitchCase="ConnectionStatus.Connecting">Connecting to server...</div>
+        <div *ngSwitchCase="ConnectionStatus.NoConnection">Error! Connection to server failed!</div>
+        <ng-container *ngSwitchDefault>
+          <router-outlet></router-outlet>
+        </ng-container>
       </ng-container>
-    </ng-container>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

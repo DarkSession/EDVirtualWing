@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="IdentityModel" Version="6.0.0" />
+    <PackageReference Include="IdentityModel" Version="5.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="6.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.1" />
@@ -40,13 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="FDevApi\FDevApi.cs" />
-    <Compile Remove="Models\FDevApiAuthCode.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Data\Migrations\" />
-    <Folder Include="FDevApi\" />
     <Folder Include="PlayerJournal\Events\FleetCarriers\" />
     <Folder Include="PlayerJournal\Events\Powerplay\" />
     <Folder Include="PlayerJournal\Events\Squadrons\" />

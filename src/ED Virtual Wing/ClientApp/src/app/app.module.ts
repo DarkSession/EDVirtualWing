@@ -35,6 +35,7 @@ import { TosComponent } from './components/tos/tos.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatStepperModule } from '@angular/material/stepper';
 import { FdevAuthComponent } from './components/fdev-auth/fdev-auth.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -72,6 +73,7 @@ import { FdevAuthComponent } from './components/fdev-auth/fdev-auth.component';
     MatSnackBarModule,
     MatSlideToggleModule,
     MatStepperModule,
+    MatCheckboxModule,
     RouterModule.forRoot(
       [
         {

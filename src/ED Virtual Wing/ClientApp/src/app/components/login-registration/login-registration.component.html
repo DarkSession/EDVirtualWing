@@ -51,6 +51,8 @@
                 <div class="content-large-box-content">
                     <mat-checkbox [(ngModel)]="fDevAuthConfirmTos">I accepted the <a routerLink="/tos">terms of
                             service</a>.</mat-checkbox>
+                    <button mat-raised-button color="primary" [disabled]="!fDevAuthConfirmTos"
+                        (click)="loginViaFdev()">Continue</button>
                 </div>
             </ng-template>
         </mat-step>

@@ -9,7 +9,7 @@ namespace ED_Virtual_Wing.Data
     public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>
     {
         public DbSet<Commander> Commanders { get; set; }
-        // public DbSet<FDevApiAuthCode> FDevApiAuthCodes { get; set; }
+        public DbSet<FDevApiAuthCode> FDevApiAuthCodes { get; set; }
         public DbSet<StarSystem> StarSystems { get; set; }
         public DbSet<StarSystemBody> StarSystemBodies { get; set; }
         public DbSet<Station> Stations { get; set; }
@@ -18,16 +18,19 @@ namespace ED_Virtual_Wing.Data
         public DbSet<WingMember> WingMembers { get; set; }
         public DbSet<WingInvite> WingInvites { get; set; }
 
+        private IConfiguration Configuration { get; }
+
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        public ApplicationDbContext(DbContextOptions options, IOptions<OperationalStoreOptions> operationalStoreOptions)
+        public ApplicationDbContext(DbContextOptions options, IOptions<OperationalStoreOptions> operationalStoreOptions, IConfiguration configuration)
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
             : base(options, operationalStoreOptions)
         {
+            Configuration = configuration;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseMySql(Environment.GetEnvironmentVariable("EDVW_MARIADB_CONNECTIONSTRING") ?? "server=localhost;user=root;password=1234;database=edvw",
+            optionsBuilder.UseMySql(Configuration["EDVW:ConnectionString"],
                 new MariaDbServerVersion(new Version(10, 6, 0)),
                 options =>
                 {

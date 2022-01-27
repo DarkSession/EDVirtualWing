@@ -10,18 +10,29 @@ namespace ED_Virtual_Wing.FDevApi
     public class FDevApi
     {
         private static HttpClient HttpClient { get; set; } = new();
-        private static string ClientId { get; } = Environment.GetEnvironmentVariable("FRONTIER_AUTH_CLIENT_ID") ?? string.Empty;
-        private static string RedirectUri { get; } = (Environment.GetEnvironmentVariable("EDVW_HTTP_ORIGIN") ?? string.Empty) + "/auth";
+        private string ClientId { get; }
+        private string RedirectUri { get; }
 
-        public async Task<FDevApiResult?> AuthenticateUser(string userCode, string verifierCode)
+        private IConfiguration Configuration { get; }
+
+        public FDevApi(IConfiguration configuration)
         {
+            Configuration = configuration;
+            ClientId = configuration["EDVW:FDevClientId"];
+            RedirectUri = Configuration["EDVW:FDevAuthReturnUrl"];
+        }
+
+        public async Task<FDevApiResult?> AuthenticateUser(string userCode, FDevApiAuthCode fdevApiAuthCode)
+        {
+            // If this request fails with an error 500, then we probably have a compatibility issue.
+            // It was tested and worked with IdentityModel 5.2
             TokenResponse tokenResponse = await HttpClient.RequestAuthorizationCodeTokenAsync(new AuthorizationCodeTokenRequest
             {
                 Address = "https://auth.frontierstore.net/token",
                 ClientId = ClientId,
                 Code = userCode,
                 RedirectUri = RedirectUri,
-                CodeVerifier = verifierCode,
+                CodeVerifier = fdevApiAuthCode.Code,
                 GrantType = "authorization_code",
             });
             if (!tokenResponse.IsError)
@@ -42,9 +53,9 @@ namespace ED_Virtual_Wing.FDevApi
 
         public string CreateAuthorizeUrl(ApplicationDbContext applicationDbContext)
         {
-            using SHA256 sha256 = SHA256.Create();
             string state = CryptoRandom.CreateUniqueId(32);
             string codeVerifier = CryptoRandom.CreateUniqueId(32);
+            using SHA256 sha256 = SHA256.Create();
             byte[] challengeBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(codeVerifier));
             string codeChallenge = Base64Url.Encode(challengeBytes);
             RequestUrl requestUrl = new("https://auth.frontierstore.net/auth");

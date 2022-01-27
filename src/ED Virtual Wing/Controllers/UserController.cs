@@ -1,8 +1,10 @@
 ﻿using ED_Virtual_Wing.Data;
+using ED_Virtual_Wing.FDevApi;
 using ED_Virtual_Wing.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
 namespace ED_Virtual_Wing.Controllers
@@ -32,19 +34,19 @@ namespace ED_Virtual_Wing.Controllers
         private UserManager<ApplicationUser> UserManager { get; }
         private SignInManager<ApplicationUser> SignInManager { get; }
         private ApplicationDbContext ApplicationDbContext { get; }
-        //private FDevApi.FDevApi FDevApi { get; }
+        private FDevApi.FDevApi FDevApi { get; }
 
         public UserController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            ApplicationDbContext applicationDbContext
-            // FDevApi.FDevApi fdevApi
+            ApplicationDbContext applicationDbContext,
+            FDevApi.FDevApi fdevApi
             )
         {
             UserManager = userManager;
             SignInManager = signInManager;
             ApplicationDbContext = applicationDbContext;
-            // FDevApi = fdevApi;
+            FDevApi = fdevApi;
         }
 
         [HttpPost("login")]
@@ -56,6 +58,13 @@ namespace ED_Virtual_Wing.Controllers
             }
             Microsoft.AspNetCore.Identity.SignInResult signInResult = await SignInManager.PasswordSignInAsync(loginRequest.UserName, loginRequest.Password, true, false);
             return new LoginResponse(signInResult.Succeeded);
+        }
+
+        [HttpGet("logout")]
+        public async Task<ActionResult> Logout()
+        {
+            await SignInManager.SignOutAsync();
+            return Ok();
         }
 
         public class RegistrationRequest
@@ -106,7 +115,7 @@ namespace ED_Virtual_Wing.Controllers
             }
             return new RegistrationResponse(result.Errors.Select(e => e.Description).ToList());
         }
-        /*
+
         public class FDevAuthRequest
         {
             [Required]
@@ -118,11 +127,15 @@ namespace ED_Virtual_Wing.Controllers
         [HttpPost("fdev-auth")]
         public async Task<ActionResult<RegistrationResponse>> FDevAuth(FDevAuthRequest requestData)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
             FDevApiAuthCode? fdevApiAuthCode = await ApplicationDbContext.FDevApiAuthCodes.FirstOrDefaultAsync(f => f.State == requestData.State);
             if (fdevApiAuthCode != null)
             {
                 ApplicationDbContext.FDevApiAuthCodes.Remove(fdevApiAuthCode);
-                FDevApiResult? fdevApiResult = await FDevApi.AuthenticateUser(requestData.Code, fdevApiAuthCode.Code);
+                FDevApiResult? fdevApiResult = await FDevApi.AuthenticateUser(requestData.Code, fdevApiAuthCode);
                 if (fdevApiResult != null)
                 {
                     ApplicationUser? user = await ApplicationDbContext.Users.FirstOrDefaultAsync(u => u.FDevCustomerId == fdevApiResult.CustomerId);
@@ -171,6 +184,5 @@ namespace ED_Virtual_Wing.Controllers
             await ApplicationDbContext.SaveChangesAsync();
             return new FDevGetStateResponse(url);
         }
-        */
     }
 }

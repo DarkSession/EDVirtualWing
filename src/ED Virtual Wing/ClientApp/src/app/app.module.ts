@@ -36,6 +36,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatStepperModule } from '@angular/material/stepper';
 import { FdevAuthComponent } from './components/fdev-auth/fdev-auth.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { LogoutComponent } from './components/logout/logout.component';
+import { WingLeaveDisbandComponent } from './components/wing-leave-disband/wing-leave-disband.component';
 
 @NgModule({
   declarations: [
@@ -56,6 +58,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     FaqComponent,
     TosComponent,
     FdevAuthComponent,
+    LogoutComponent,
+    WingLeaveDisbandComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -101,6 +105,11 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
           path: 'login',
           component: LoginRegistrationComponent,
           canActivate: [NotAuthenticatedGuard],
+        },
+        {
+          path: 'logout',
+          component: LogoutComponent,
+          canActivate: [AuthenticationGuard],
         },
         {
           path: 'wing',

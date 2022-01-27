@@ -6,9 +6,29 @@
     <img src="assets/images/EliteDangerous.svg" style="width: 45px; height: 45px;" />
     <span routerLink="/" class="clickable">Elite Dangerous Virtual Wing</span>
     <span class="toolbar-spacer"></span>
-    <mat-slide-toggle [(ngModel)]="appService.darkMode" (ngModelChange)="darkModeChanged($event)">
-      <mat-icon>dark_mode</mat-icon>
-    </mat-slide-toggle>
+    <div class="top-right-action">
+      <mat-slide-toggle [(ngModel)]="appService.darkMode" (ngModelChange)="darkModeChanged($event)">
+        <mat-icon>dark_mode</mat-icon>
+      </mat-slide-toggle>
+
+      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button *ngFor="let menuItem of appService.menuItems" mat-menu-item (click)="menuItem.callback()">
+          <mat-icon>{{ menuItem.icon }}</mat-icon>
+          <span>{{ menuItem.text }}</span>
+        </button>
+        <button *ngIf="isLoggedIn" mat-menu-item routerLink="/logout">
+          <mat-icon>logout</mat-icon>
+          <span>Logout</span>
+        </button>
+        <button *ngIf="!isLoggedIn" mat-menu-item routerLink="/login">
+          <mat-icon>login</mat-icon>
+          <span>Login</span>
+        </button>
+      </mat-menu>
+    </div>
   </mat-toolbar>
 
   <mat-sidenav-container class="container-content">
@@ -36,10 +56,10 @@
     <mat-sidenav-content>
       <ng-container [ngSwitch]="websocketService.connectionStatus">
         <div *ngSwitchCase="ConnectionStatus.Connecting" class="content-large-box content-large-box-content ">
-          Connecting to server...
+          <h3>Connecting to server...</h3>
         </div>
         <div *ngSwitchCase="ConnectionStatus.NoConnection" class="content-large-box content-large-box-content ">
-          Error! Connection to server failed!
+          <h3>Error! Connection to server failed!</h3>
         </div>
         <ng-container *ngSwitchDefault>
           <router-outlet></router-outlet>

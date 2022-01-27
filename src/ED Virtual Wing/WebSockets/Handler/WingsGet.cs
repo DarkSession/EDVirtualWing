@@ -37,7 +37,7 @@ namespace ED_Virtual_Wing.WebSockets.Handler
                 .Distinct()
                 .ToList();
             var wings = await applicationDbContext.Wings
-                .Where(w => w.Members!.Any(m => m.User == user && m.Status == WingMembershipStatus.Joined))
+                .Where(w => w.Status == WingStatus.Active && w.Members!.Any(m => m.User == user && m.Status == WingMembershipStatus.Joined))
                 .Select(w =>
                 new
                 {

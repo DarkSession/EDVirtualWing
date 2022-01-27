@@ -1,6 +1,4 @@
-﻿using ED_Virtual_Wing.Data;
-using ED_Virtual_Wing.WebSockets;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 
@@ -78,49 +76,6 @@ namespace ED_Virtual_Wing.Models
 
         [Column]
         public Suit Suit { get; set; }
-
-        public async Task DistributeCommanderData(WebSocketServer webSocketServer, ApplicationDbContext applicationDbContext)
-        {
-            List<Wing> wings = await User.GetWings(applicationDbContext);
-            IEnumerable<WebSocketSession> sessions = webSocketServer.ActiveSessions
-                .Where(a => wings.Any(w => w.Id == a.ActiveWing?.Id));
-            foreach (WebSocketSession session in sessions)
-            {
-                WebSocketMessage updateMessage = new("CommanderUpdated", new CommanderUpdatedMessage(this, session.ActiveWing!));
-                await updateMessage.Send(session);
-            }
-        }
-
-        public async ValueTask OtherCommanderWsInstancesNotifyStreaming(WebSocketServer webSocketServer, bool status)
-        {
-            IEnumerable<WebSocketSession> sessions = webSocketServer.ActiveSessions
-                .Where(a => a.User == User);
-            foreach (WebSocketSession session in sessions)
-            {
-                WebSocketMessage updateMessage = new("JournalStreamingChanged", new JournalStreamingChangedMessage(status));
-                await updateMessage.Send(session);
-            }
-        }
-
-        class CommanderUpdatedMessage
-        {
-            public Commander Commander { get; set; }
-            public Wing Wing { get; set; }
-            public CommanderUpdatedMessage(Commander commander, Wing wing)
-            {
-                Commander = commander;
-                Wing = wing;
-            }
-        }
-
-        class JournalStreamingChangedMessage
-        {
-            public bool Status { get; set; }
-            public JournalStreamingChangedMessage(bool status)
-            {
-                Status = status;
-            }
-        }
     }
 
     public class CommanderTarget
@@ -429,6 +384,8 @@ namespace ED_Virtual_Wing.Models
         IndepdenentFighter = 999999990,
         [EnumMember(Value = "gdn_hybrid_fighter_v1")]
         GuardianFighter = 999999991,
+        [EnumMember(Value = "empire_fighter")]
+        EmpireFighter = 999999992,
     }
 
     public enum Suit : short

@@ -1,11 +1,10 @@
-<div *ngIf="commander && commander.Name" class="cmdr">
+<div class="cmdr">
     <div class="cmdr-basic-info">
         <div class="flex-center">
             <span class="cmdr-title">CMDR {{ commander.Name }}</span>
             <mat-icon *ngIf="isOnline" class="online" matTooltip="Online, in-game">circle
             </mat-icon>
-            <img *ngIf="inTeam" src="assets/images/Wing.svg" matTooltip="In team"
-                class="svg-icon-small" />
+            <img *ngIf="inTeam" src="assets/images/Wing.svg" matTooltip="In team" class="svg-icon-small" />
             <img *ngIf="inCombat" src="assets/images/Combat.svg" matTooltip="In combat"
                 class="svg-icon-small icon-darkMode-correction" />
         </div>
@@ -158,14 +157,16 @@
             </div>
             <div style="position: absolute; left: 10px;">
                 <div *ngIf="inFighter">
-                    <img src="assets/images/Fighter.svg" class="ship-status-icon icon-darkMode-correction" matTooltip="In fighter" />
+                    <img src="assets/images/Fighter.svg" class="ship-status-icon icon-darkMode-correction"
+                        matTooltip="In fighter" />
                 </div>
                 <div *ngIf="weaponsDeployed">
                     <img src="assets/images/HardpointsDeployed.svg" class="ship-status-icon icon-darkMode-correction"
                         matTooltip="Hardpoints deployed" />
                 </div>
                 <div *ngIf="overHeating">
-                    <img src="assets/images/Heat.svg" class="ship-status-icon icon-darkMode-correction" matTooltip="Overheating" />
+                    <img src="assets/images/Heat.svg" class="ship-status-icon icon-darkMode-correction"
+                        matTooltip="Overheating" />
                 </div>
             </div>
         </div>

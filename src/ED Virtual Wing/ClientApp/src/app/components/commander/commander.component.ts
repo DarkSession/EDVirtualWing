@@ -9,7 +9,7 @@ import { StationType } from 'src/app/interfaces/station';
   styleUrls: ['./commander.component.css']
 })
 export class CommanderComponent implements OnChanges, DoCheck {
-  @Input() commander!: Commander | null;
+  @Input() commander!: Commander;
   public readonly GameActivity = GameActivity;
   public readonly StationType = StationType;
   public shieldsUp: boolean = false;

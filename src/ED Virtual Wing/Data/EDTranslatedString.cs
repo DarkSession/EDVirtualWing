@@ -101,6 +101,7 @@ namespace ED_Virtual_Wing.Data
             { "RolePanel2_unmanned", "Unmanned" },
             { "USS_DegradedEmissions", "Degraded Emissions" },
             { "RolePanel2_crew", "Crew" },
+            { "npc_name_decorate", "{name}" },
         };
 
         public string LocalisationKey { get; }

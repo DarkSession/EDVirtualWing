@@ -32,6 +32,18 @@ export class WebsocketService {
     this.initalize();
   }
 
+  public disconnect(): void {
+    if (this.webSocket?.readyState === 1) {
+      this.setConnectionStatus(ConnectionStatus.NotAuthenticated);
+      this.authenticationResolved = new Promise((resolve) => {
+        this.authenticationResolve = resolve;
+      });
+      this.authenticationResolve(ConnectionStatus.NotAuthenticated);
+      this.webSocket?.close();
+      this.webSocket = null;
+    }
+  }
+
   private setConnectionStatus(connectionStatus: ConnectionStatus): void {
     this.connectionStatus = connectionStatus;
     this.onConnectionStatusChanged.emit(connectionStatus);
@@ -53,7 +65,7 @@ export class WebsocketService {
       if (!environment.production) {
         console.log("WebSocket.onclose", event);
       }
-      if (!event.wasClean) {
+      if (!event.wasClean && this.connectionStatus == ConnectionStatus.Authenticated) {
         if (this.initalizeTimeout !== null) {
           clearTimeout(this.initalizeTimeout);
         }

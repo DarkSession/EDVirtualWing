@@ -35,7 +35,7 @@ namespace ED_Virtual_Wing.WebSockets.Handler
             {
                 Wing? wing = await applicationDbContext.Wings
                     .Include(w => w.Owner)
-                    .FirstOrDefaultAsync(w => w.WingId == wingId && w.Members!.Any(m => m.Status == WingMembershipStatus.Joined && m.User == user));
+                    .FirstOrDefaultAsync(w => w.WingId == wingId && w.Status == WingStatus.Active && w.Members!.Any(m => m.Status == WingMembershipStatus.Joined && m.User == user));
                 if (wing == null)
                 {
                     return new WebSocketHandlerResultError("You are not a member of this wing.");
@@ -50,7 +50,7 @@ namespace ED_Virtual_Wing.WebSockets.Handler
                     .Include(c => c.Location!.StarSystem)
                     .Include(c => c.Location!.SystemBody)
                     .Include(c => c.Location!.Station)
-                    .Where(c => c.User.WingMemberships!.Any(w => w.Wing == wing && w.Status == WingMembershipStatus.Joined))
+                    .Where(c => c.User.WingMemberships!.Any(w => w.Wing == wing && w.Status == WingMembershipStatus.Joined) && c.Name != "")
                     .ToListAsync();
 
                 return new WebSocketHandlerResultSuccess(new WingSubscribeResponse(wing, commanders, wing.Owner == user));

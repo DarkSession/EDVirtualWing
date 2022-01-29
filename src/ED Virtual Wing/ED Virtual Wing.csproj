@@ -34,29 +34,29 @@
 
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <Compile Remove="Data\Migrations\**" />
     <Compile Remove="PlayerJournal\Events\FleetCarriers\**" />
     <Compile Remove="PlayerJournal\Events\Powerplay\**" />
     <Compile Remove="PlayerJournal\Events\Squadrons\**" />
     <Compile Remove="PlayerJournal\Events\Trade\**" />
     <Content Remove="$(SpaRoot)**" />
+    <Content Remove="Data\Migrations\**" />
     <Content Remove="PlayerJournal\Events\FleetCarriers\**" />
     <Content Remove="PlayerJournal\Events\Powerplay\**" />
     <Content Remove="PlayerJournal\Events\Squadrons\**" />
     <Content Remove="PlayerJournal\Events\Trade\**" />
+    <EmbeddedResource Remove="Data\Migrations\**" />
     <EmbeddedResource Remove="PlayerJournal\Events\FleetCarriers\**" />
     <EmbeddedResource Remove="PlayerJournal\Events\Powerplay\**" />
     <EmbeddedResource Remove="PlayerJournal\Events\Squadrons\**" />
     <EmbeddedResource Remove="PlayerJournal\Events\Trade\**" />
     <None Remove="$(SpaRoot)**" />
+    <None Remove="Data\Migrations\**" />
     <None Remove="PlayerJournal\Events\FleetCarriers\**" />
     <None Remove="PlayerJournal\Events\Powerplay\**" />
     <None Remove="PlayerJournal\Events\Squadrons\**" />
     <None Remove="PlayerJournal\Events\Trade\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Data\Migrations\" />
   </ItemGroup>
 
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

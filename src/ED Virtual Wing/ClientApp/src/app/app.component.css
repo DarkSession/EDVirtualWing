@@ -45,3 +45,16 @@
     display: flex;
     align-items: center;
 }
+
+.version-div {
+    transform: rotate(-25deg);
+    margin: 8px;
+}
+
+.version {
+    padding: 4px;
+    border-radius: 4px;
+    white-space: nowrap;
+    background-color: #920000;
+    color: #cccccc;
+}

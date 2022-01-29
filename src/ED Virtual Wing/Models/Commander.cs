@@ -393,10 +393,16 @@ namespace ED_Virtual_Wing.Models
 
         [EnumMember(Value = "independent_fighter")]
         IndepdenentFighter = 999999990,
-        [EnumMember(Value = "gdn_hybrid_fighter_v1")]
-        GuardianFighter = 999999991,
         [EnumMember(Value = "empire_fighter")]
-        EmpireFighter = 999999992,
+        EmpireFighter = 999999991,
+        [EnumMember(Value = "federation_fighter")]
+        FederationFighter = 999999992,
+        [EnumMember(Value = "gdn_hybrid_fighter_v1")]
+        GuardianFighterV1 = 999999993,
+        [EnumMember(Value = "gdn_hybrid_fighter_v2")]
+        GuardianFighterV2 = 999999993,
+        [EnumMember(Value = "gdn_hybrid_fighter_v3")]
+        GuardianFighterV3 = 999999994,
     }
 
     public enum Suit : short
@@ -412,6 +418,7 @@ namespace ED_Virtual_Wing.Models
         Clean = 0,
         Wanted,
         Lawless,
+        WantedEnemy,
     }
 
     public enum CombatRank : short

@@ -28,6 +28,11 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Travel
             }
             if (commander.Location != null && starSystem != null)
             {
+                if (commander.Location.StarSystem?.SystemAddress == starSystem.SystemAddress)
+                {
+                    // This means the the CMDR probably got hyperdicted by Thargoids
+
+                }
                 commander.Location.SetLocationSystem(starSystem);
             }
         }

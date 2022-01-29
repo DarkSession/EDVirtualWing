@@ -30,10 +30,14 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Combat
                         Console.WriteLine($"Unknown ship: {Ship}");
                     }
                     commander.Target.ShipTargetName = shipTargetName;
+                    if (LegalStatus == Models.LegalStatus.WantedEnemy)
+                    {
+                        LegalStatus = Models.LegalStatus.Wanted;
+                    }
                     commander.Target.ShipTargetLegalStatus = LegalStatus;
                     if (ScanStage >= 2)
                     {
-                        if (string.IsNullOrEmpty(PilotRank))
+                        if (!string.IsNullOrEmpty(PilotRank))
                         {
                             commander.Target.ShipTargetCombatRank = ToEnum<CombatRank>(PilotRank);
                         }

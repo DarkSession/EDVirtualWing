@@ -1,6 +1,4 @@
-﻿using ED_Virtual_Wing.Data;
-using ED_Virtual_Wing.WebSockets;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 
@@ -31,6 +29,9 @@ namespace ED_Virtual_Wing.Models
 
         [Column]
         public DateTimeOffset? LastEventDate { get; set; }
+
+        [Column]
+        public DateTimeOffset LastActivity { get; set; }
 
         [Column]
         public GameActivity GameActivity { get; set; }
@@ -78,49 +79,6 @@ namespace ED_Virtual_Wing.Models
 
         [Column]
         public Suit Suit { get; set; }
-
-        public async Task DistributeCommanderData(WebSocketServer webSocketServer, ApplicationDbContext applicationDbContext)
-        {
-            List<Wing> wings = await User.GetWings(applicationDbContext);
-            IEnumerable<WebSocketSession> sessions = webSocketServer.ActiveSessions
-                .Where(a => wings.Any(w => w.Id == a.ActiveWing?.Id));
-            foreach (WebSocketSession session in sessions)
-            {
-                WebSocketMessage updateMessage = new("CommanderUpdated", new CommanderUpdatedMessage(this, session.ActiveWing!));
-                await updateMessage.Send(session);
-            }
-        }
-
-        public async ValueTask OtherCommanderWsInstancesNotifyStreaming(WebSocketServer webSocketServer, bool status)
-        {
-            IEnumerable<WebSocketSession> sessions = webSocketServer.ActiveSessions
-                .Where(a => a.User == User);
-            foreach (WebSocketSession session in sessions)
-            {
-                WebSocketMessage updateMessage = new("JournalStreamingChanged", new JournalStreamingChangedMessage(status));
-                await updateMessage.Send(session);
-            }
-        }
-
-        class CommanderUpdatedMessage
-        {
-            public Commander Commander { get; set; }
-            public Wing Wing { get; set; }
-            public CommanderUpdatedMessage(Commander commander, Wing wing)
-            {
-                Commander = commander;
-                Wing = wing;
-            }
-        }
-
-        class JournalStreamingChangedMessage
-        {
-            public bool Status { get; set; }
-            public JournalStreamingChangedMessage(bool status)
-            {
-                Status = status;
-            }
-        }
     }
 
     public class CommanderTarget
@@ -158,10 +116,18 @@ namespace ED_Virtual_Wing.Models
         [Column(TypeName = "varchar(256)")]
         public string ShipTargetName { get; set; } = string.Empty;
 
+        [Column]
+        public LegalStatus? ShipTargetLegalStatus { get; set; }
+
+        [Column]
+        public CombatRank? ShipTargetCombatRank { get; set; }
+
         public void ResetShipTarget()
         {
             ShipTarget = null;
             ShipTargetName = string.Empty;
+            ShipTargetLegalStatus = null;
+            ShipTargetCombatRank = null;
         }
     }
 
@@ -429,6 +395,8 @@ namespace ED_Virtual_Wing.Models
         IndepdenentFighter = 999999990,
         [EnumMember(Value = "gdn_hybrid_fighter_v1")]
         GuardianFighter = 999999991,
+        [EnumMember(Value = "empire_fighter")]
+        EmpireFighter = 999999992,
     }
 
     public enum Suit : short
@@ -437,5 +405,32 @@ namespace ED_Virtual_Wing.Models
         Maverick,
         Dominator,
         Artemis,
+    }
+
+    public enum LegalStatus : short
+    {
+        Clean = 0,
+        Wanted,
+        Lawless,
+    }
+
+    public enum CombatRank : short
+    {
+        Unknown = 0,
+        Harmless,
+        [EnumMember(Value = "Mostly Harmless")]
+        MostlyHarmless,
+        Novice,
+        Competent,
+        Expert,
+        Master,
+        Dangerous,
+        Deadly,
+        Elite,
+        EliteI,
+        EliteII,
+        EliteIII,
+        EliteIV,
+        EliteV,
     }
 }

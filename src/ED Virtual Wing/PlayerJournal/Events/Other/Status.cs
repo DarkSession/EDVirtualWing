@@ -81,7 +81,8 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Other
                 string destinationName = string.Empty;
                 if (Destination != null)
                 {
-                    destinationName = (await EDTranslatedString.Translate(Destination.Name, Destination.Name_Localised ?? Destination.Name, applicationDbContext)) ?? string.Empty;
+                    string defaultIfEmpty = string.IsNullOrEmpty(Destination.Name_Localised) ? Destination.Name : Destination.Name_Localised;
+                    destinationName = (await EDTranslatedString.Translate(Destination.Name, defaultIfEmpty, applicationDbContext)) ?? string.Empty;
                 }
                 commander.Target.StarSystem = starSystem;
                 commander.Target.Body = starSystemBody;

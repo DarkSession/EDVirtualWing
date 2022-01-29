@@ -260,7 +260,6 @@ export class JournalWorkerService {
       handle: journalWorkerOptions.statusFile,
       lastModified: 0,
     };
-
     if (this.edVirtualWingDb !== null) {
       const transaction = this.edVirtualWingDb.transaction("JournalDirectory", "readonly");
       const journalDirectoryStore = transaction.objectStore("JournalDirectory");
@@ -272,6 +271,7 @@ export class JournalWorkerService {
     if (this.journalWorkerInterval) {
       clearInterval(this.journalWorkerInterval);
     }
+    this.journalInactivityNextCheck = dayjs.utc().add(2, "minute");
     this.appService.setLoading(true);
     await this.journalWorker(journalFile, statusFile);
     this.appService.setLoading(false);
@@ -298,6 +298,7 @@ export class JournalWorkerService {
           else {
             console.log("No journal rotation detected.");
           }
+          this.webSocketService.sendMessage("JournalTag", {});
         }
       }
       catch (e) {
@@ -375,7 +376,7 @@ export class JournalWorkerService {
             }
           }
           else if (!environment.production) {
-            console.log(`Removed event '${journalEntry.event}' since it older than the last journal date. The event is from ${entryTime} while the most recent journal entry was from ${journalLastDate}`);
+            console.log(`Removed event '${journalEntry.event}' since it older than the last journal date. The event is from ${entryTime.toISOString()} while the most recent journal entry was from ${journalLastDate.toISOString()}`);
           }
         }
         else if (!environment.production) {

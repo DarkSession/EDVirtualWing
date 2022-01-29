@@ -33,6 +33,14 @@ import { MainComponent } from './components/main/main.component';
 import { FaqComponent } from './components/faq/faq.component';
 import { TosComponent } from './components/tos/tos.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatStepperModule } from '@angular/material/stepper';
+import { FdevAuthComponent } from './components/fdev-auth/fdev-auth.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { LogoutComponent } from './components/logout/logout.component';
+import { WingLeaveDisbandComponent } from './components/wing-leave-disband/wing-leave-disband.component';
+import { WingAdminMembersComponent } from './components/wing-admin-members/wing-admin-members.component';
+import { H3Component } from './components/h3/h3.component';
+import { H2Component } from './components/h2/h2.component';
 
 @NgModule({
   declarations: [
@@ -52,6 +60,12 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     MainComponent,
     FaqComponent,
     TosComponent,
+    FdevAuthComponent,
+    LogoutComponent,
+    WingLeaveDisbandComponent,
+    WingAdminMembersComponent,
+    H3Component,
+    H2Component,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -68,6 +82,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     MatMenuModule,
     MatSnackBarModule,
     MatSlideToggleModule,
+    MatStepperModule,
+    MatCheckboxModule,
     RouterModule.forRoot(
       [
         {
@@ -87,7 +103,22 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
           component: AboutComponent,
         },
         {
-          path: 'wing',
+          path: 'auth',
+          component: FdevAuthComponent,
+          canActivate: [NotAuthenticatedGuard],
+        },
+        {
+          path: 'login',
+          component: LoginRegistrationComponent,
+          canActivate: [NotAuthenticatedGuard],
+        },
+        {
+          path: 'logout',
+          component: LogoutComponent,
+          canActivate: [AuthenticationGuard],
+        },
+        {
+          path: 'team',
           canActivateChild: [AuthenticationGuard],
           canActivate: [AuthenticationGuard],
           children: [
@@ -104,21 +135,20 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
               component: WingJoinComponent,
             },
             {
+              path: 'admin/members/:id',
+              component: WingAdminMembersComponent,
+            },
+            {
               path: ':id',
               component: WingComponent,
             },
           ],
         },
         {
-          path: 'login',
-          component: LoginRegistrationComponent,
-          canActivate: [NotAuthenticatedGuard],
-        },
-        {
           path: '**',
           component: MainComponent,
           canActivate: [AuthenticationGuard],
-        }
+        },
       ],
       {
         enableTracing: !environment.production,

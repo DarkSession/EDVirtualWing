@@ -1,5 +1,6 @@
 ﻿using ED_Virtual_Wing.Data;
 using ED_Virtual_Wing.Models;
+using ED_Virtual_Wing.WebSockets.Messages;
 using Newtonsoft.Json.Linq;
 using NJsonSchema;
 using NJsonSchema.Validation;
@@ -13,15 +14,54 @@ namespace ED_Virtual_Wing.WebSockets
         private ILogger Logger { get; }
         private List<WebSocketSession> WebSocketSessions { get; } = new();
         private Dictionary<string, Type> WebSocketHandlers { get; } = new();
+        private Dictionary<WebSocketAction, List<Type>> WebSocketActions { get; } = new();
         private JsonSchema WebSocketMessageReceivedSchema { get; } = JsonSchema.FromType<WebSocketMessageReceived>();
         public WebSocketServer(ILogger<WebSocketServer> logger)
         {
             Logger = logger;
-            IEnumerable<Type> webSocketHandlerTypes = GetType().Assembly.GetTypes()
-                .Where(t => !t.IsAbstract && t.IsClass && t.IsSubclassOf(typeof(WebSocketHandler)));
-            foreach (Type type in webSocketHandlerTypes)
             {
-                WebSocketHandlers[type.Name] = type;
+                IEnumerable<Type> webSocketHandlerTypes = GetType().Assembly.GetTypes()
+                    .Where(t => !t.IsAbstract && t.IsClass && t.IsSubclassOf(typeof(WebSocketHandler)));
+                foreach (Type type in webSocketHandlerTypes)
+                {
+                    WebSocketHandlers[type.Name] = type;
+                }
+            }
+            {
+                IEnumerable<Type> webSocketActionTypes = GetType().Assembly.GetTypes()
+                    .Where(t => !t.IsAbstract && t.IsClass && typeof(IWebSocketAction).IsAssignableFrom(t));
+                foreach (Type type in webSocketActionTypes)
+                {
+                    WebSocketActionAttribute? webSocketActionAttribute = (WebSocketActionAttribute?)type.GetCustomAttributes(typeof(WebSocketActionAttribute), true).FirstOrDefault();
+                    if (webSocketActionAttribute != null)
+                    {
+                        if (!WebSocketActions.ContainsKey(webSocketActionAttribute.Action))
+                        {
+                            WebSocketActions[webSocketActionAttribute.Action] = new();
+                        }
+                        WebSocketActions[webSocketActionAttribute.Action].Add(type);
+                    }
+                }
+            }
+        }
+
+        private async ValueTask TriggerWebSocketAction(WebSocketSession webSocketSession, WebSocketAction webSocketAction, IServiceScopeFactory serviceScopeFactory)
+        {
+            if (WebSocketActions.TryGetValue(webSocketAction, out List<Type>? webSocketActions))
+            {
+                using IServiceScope serviceScope = serviceScopeFactory.CreateScope();
+                foreach (Type webSocketActionType in webSocketActions)
+                {
+                    try
+                    {
+                        IWebSocketAction action = (IWebSocketAction)ActivatorUtilities.CreateInstance(serviceScope.ServiceProvider, webSocketActionType);
+                        await action.Process(webSocketSession);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.LogError(e, "Error processing web socket action.");
+                    }
+                }
             }
         }
 
@@ -45,6 +85,7 @@ namespace ED_Virtual_Wing.WebSockets
             {
                 WebSocketSessions.Add(webSocketSession);
             }
+            await TriggerWebSocketAction(webSocketSession, WebSocketAction.OnUserConnected, serviceScopeFactory);
             ArraySegment<byte> buffer = new(new byte[4096]);
             bool disconnect = false;
             while (ws.State == WebSocketState.Open && !disconnect)
@@ -79,11 +120,11 @@ namespace ED_Virtual_Wing.WebSockets
                         }
                 }
             }
-            await OneUserDisconnected(webSocketSession, serviceScopeFactory);
             lock (WebSocketSessions)
             {
                 WebSocketSessions.Remove(webSocketSession);
             }
+            await TriggerWebSocketAction(webSocketSession, WebSocketAction.OnUserDisconnected, serviceScopeFactory);
             if (ws.State == WebSocketState.Open)
             {
                 await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
@@ -97,23 +138,6 @@ namespace ED_Virtual_Wing.WebSockets
                 lock (WebSocketSessions)
                 {
                     return new(WebSocketSessions);
-                }
-            }
-        }
-
-        private async Task OneUserDisconnected(WebSocketSession webSocketSession, IServiceScopeFactory serviceScopeFactory)
-        {
-            if (webSocketSession.StreamingJournal)
-            {
-                using IServiceScope serviceScope = serviceScopeFactory.CreateScope();
-                ApplicationDbContext applicationDbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                ApplicationUser? user = await applicationDbContext.Users.FindAsync(webSocketSession.User.Id);
-                if (user != null)
-                {
-                    Commander commander = await user.GetCommander(applicationDbContext);
-                    commander.LastEventDate = null;
-                    await commander.OtherCommanderWsInstancesNotifyStreaming(this, false);
-                    await commander.DistributeCommanderData(this, applicationDbContext);
                 }
             }
         }
@@ -139,15 +163,18 @@ namespace ED_Virtual_Wing.WebSockets
                             if (webSocketHandler.ValidateMessageData(webSocketMessage.Data))
                             {
                                 WebSocketHandlerResult result = await webSocketHandler.ProcessMessage(webSocketMessage, webSocketSession, user, applicationDbContext);
-                                if (result is WebSocketHandlerResultSuccess webSocketHandlerResultSuccess)
+                                if (webSocketMessage.MessageId != null)
                                 {
-                                    WebSocketResponseMessage responseMessage = new(webSocketMessage.Name, true, webSocketHandlerResultSuccess.ResponseData, webSocketMessage.MessageId);
-                                    await responseMessage.Send(webSocketSession.WebSocket);
-                                }
-                                else if (result is WebSocketHandlerResultError webSocketHandlerResultError)
-                                {
-                                    WebSocketErrorMessage webSocketErrorMessage = new(webSocketMessage.Name, webSocketHandlerResultError.Errors, webSocketMessage.MessageId);
-                                    await webSocketErrorMessage.Send(webSocketSession.WebSocket);
+                                    if (result is WebSocketHandlerResultSuccess webSocketHandlerResultSuccess)
+                                    {
+                                        WebSocketResponseMessage responseMessage = new(webSocketMessage.Name, true, webSocketHandlerResultSuccess.ResponseData, webSocketMessage.MessageId);
+                                        await responseMessage.Send(webSocketSession.WebSocket);
+                                    }
+                                    else if (result is WebSocketHandlerResultError webSocketHandlerResultError)
+                                    {
+                                        WebSocketErrorMessage webSocketErrorMessage = new(webSocketMessage.Name, webSocketHandlerResultError.Errors, webSocketMessage.MessageId);
+                                        await webSocketErrorMessage.Send(webSocketSession.WebSocket);
+                                    }
                                 }
                                 await applicationDbContext.SaveChangesAsync();
                             }

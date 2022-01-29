@@ -6,10 +6,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ED_Virtual_Wing.Models
 {
     [Table("ApplicationUser")]
+    [Index(nameof(FDevCustomerId))]
     public class ApplicationUser : IdentityUser
     {
+        [Column]
+        public long FDevCustomerId { get; set; }
         public Commander? Commander { get; set; }
-
         public List<WingMember>? WingMemberships { get; set; }
 
         public async Task<Commander> GetCommander(ApplicationDbContext applicationDbContext)
@@ -29,6 +31,7 @@ namespace ED_Virtual_Wing.Models
                 {
                     User = this,
                     JournalLastEventDate = default,
+                    LastActivity = DateTimeOffset.Now,
                     Name = string.Empty,
                 };
                 applicationDbContext.Commanders.Add(commander);

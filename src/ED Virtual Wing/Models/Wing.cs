@@ -49,6 +49,40 @@ namespace ED_Virtual_Wing.Models
         [JsonIgnore]
         public IEnumerable<WingInvite>? Invites { get; set; }
 
+        public static bool operator ==(Wing? lhs, Wing? rhs)
+        {
+            if (lhs is null)
+            {
+                return (rhs is null);
+            }
+            return lhs.Equals(rhs);
+        }
+
+        public static bool operator !=(Wing? lhs, Wing? rhs) => !(lhs == rhs);
+
+        public override int GetHashCode() => Id.GetHashCode();
+
+        public override bool Equals(object? obj)
+        {
+            return (obj is Wing w && Equals(w));
+        }
+
+        public bool Equals(Wing? w)
+        {
+            if (w is null)
+            {
+                return false;
+            }
+            else if (ReferenceEquals(this, w))
+            {
+                return true;
+            }
+            else if (GetType() != w.GetType())
+            {
+                return false;
+            }
+            return (w.Id == Id);
+        }
     }
 
     public enum WingStatus : short

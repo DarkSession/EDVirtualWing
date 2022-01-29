@@ -1,4 +1,5 @@
 using ED_Virtual_Wing.Data;
+using ED_Virtual_Wing.FDevApi;
 using ED_Virtual_Wing.Models;
 using ED_Virtual_Wing.PlayerJournal;
 using ED_Virtual_Wing.WebSockets;
@@ -30,8 +31,11 @@ builder.Services.AddControllersWithViews()
 builder.Services.AddRazorPages();
 builder.Services.AddSingleton<WebSocketServer>();
 builder.Services.AddSingleton<JournalProcessor>();
+builder.Services.AddSingleton<FDevApi>();
 
-string httpOrigin = Environment.GetEnvironmentVariable("EDVW_HTTP_ORIGIN") ?? string.Empty;
+builder.Configuration.AddEnvironmentVariables();
+
+string httpOrigin = builder.Configuration["EDVW:HttpOrigin"];
 Uri httpOriginUri = new(httpOrigin);
 
 builder.Services.AddCors(options =>

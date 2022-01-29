@@ -1,0 +1,40 @@
+<div class="container">
+    <div class="nav-back clickable" [routerLink]="['/team', wingId]">
+        <mat-icon>arrow_back</mat-icon>
+        Back
+    </div>
+    <app-h2>Wing Members</app-h2>
+    <table>
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let wingMember of wingMembers">
+                <td>{{ wingMember.Name }}</td>
+                <td>
+                    <span [ngSwitch]="wingMember.Status">
+                        <span *ngSwitchCase="WingMembershipStatus.Joined">Joined</span>
+                        <span *ngSwitchCase="WingMembershipStatus.PendingApproval">Pending Approval</span>
+                        <span *ngSwitchCase="WingMembershipStatus.Banned">Banned</span>
+                    </span>
+                </td>
+                <td>
+                    <span *ngIf="wingMember.CanModify">
+                        <button *ngIf="wingMember.Status == WingMembershipStatus.Joined" mat-raised-button color="warn"
+                            (click)="kickBan(wingMember)">Kick &amp; Ban</button>
+                        <button *ngIf="wingMember.Status == WingMembershipStatus.PendingApproval" mat-raised-button
+                            color="primary" (click)="approve(wingMember)">Approve</button>
+                        <button *ngIf="wingMember.Status == WingMembershipStatus.PendingApproval" mat-raised-button
+                            color="warn" (click)="reject(wingMember)">Reject &amp; Ban</button>
+                        <button *ngIf="wingMember.Status == WingMembershipStatus.Banned" mat-raised-button
+                            color="primary" (click)="unban(wingMember)">Unban</button>
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

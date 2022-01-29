@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { AppService } from 'src/app/app.service';
 import { Wing } from 'src/app/interfaces/wing';
 import { WebsocketService } from 'src/app/websocket.service';
 
@@ -7,15 +9,32 @@ import { WebsocketService } from 'src/app/websocket.service';
   templateUrl: './wing-list.component.html',
   styleUrls: ['./wing-list.component.css']
 })
-export class WingListComponent implements OnInit {
+export class WingListComponent implements OnInit, OnDestroy {
   public wings: WingDetail[] = [];
 
   public constructor(
-    private readonly webSocketService: WebsocketService
+    private readonly webSocketService: WebsocketService,
+    private readonly appService: AppService,
+    private readonly router: Router
   ) { }
 
   public ngOnInit(): void {
     this.requestWings();
+    this.appService.addMenuItem({
+      icon: "add",
+      text: "Create team",
+      callback: () => {
+        this.create();
+      },
+    });
+  }
+
+  public ngOnDestroy(): void {
+    this.appService.clearMenuItems();
+  }
+
+  public create(): void {
+    this.router.navigate(["/team", "create"]);
   }
 
   private async requestWings(): Promise<void> {

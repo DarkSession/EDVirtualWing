@@ -31,7 +31,7 @@ namespace ED_Virtual_Wing.WebSockets.Handler
             {
                 Wing? wing = await applicationDbContext.Wings
                     .Include(w => w.Owner)
-                    .FirstOrDefaultAsync(w => w.WingId == wingId);
+                    .FirstOrDefaultAsync(w => w.WingId == wingId && w.Status == WingStatus.Active);
                 if (wing != null)
                 {
                     if (wing.Owner != user)

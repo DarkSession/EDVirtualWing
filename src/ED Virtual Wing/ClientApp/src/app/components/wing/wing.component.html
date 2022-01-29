@@ -1,28 +1,8 @@
-<div class="action-btns">
-    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-        <mat-icon>more_vert</mat-icon>
-    </button>
-    <mat-menu #menu="matMenu">
-        <button mat-menu-item *ngIf="canManage" (click)="generateInvite()">
-            <mat-icon>check_box_outline_blank</mat-icon>
-            <span>Create invite</span>
-        </button>
-        <button mat-menu-item *ngIf="canManage" disabled>
-            <mat-icon>check_box_outline_blank</mat-icon>
-            <span>Invites need approval</span>
-        </button>
-        <button mat-menu-item *ngIf="!canManage" (click)="leaveDisband()">
-            <mat-icon>exit_to_app</mat-icon>
-            <span>Leave wing/team</span>
-        </button>
-        <button mat-menu-item *ngIf="canManage" (click)="leaveDisband()">
-            <mat-icon>delete_forever</mat-icon>
-            <span>Disband wing/team</span>
-        </button>
-    </mat-menu>
+<div class="content-large-box content-large-box-content" *ngIf="commanders.length == 0">
+    <p>No commanders in this wing.</p>
 </div>
-<div style="display: flex; flex-wrap: wrap;">
-    <div style="padding: 8px" *ngFor="let commander of commanders">
+<div style="display: flex; flex-wrap: wrap;" *ngIf="commanders.length > 0">
+    <div style="padding: 8px" *ngFor="let commander of commanders; trackBy: trackByCommander">
         <app-commander [commander]="commander"></app-commander>
     </div>
 </div>

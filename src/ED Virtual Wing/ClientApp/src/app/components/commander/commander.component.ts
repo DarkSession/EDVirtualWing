@@ -1,17 +1,21 @@
-import { Component, DoCheck, Input, OnChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DoCheck, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
 import * as dayjs from 'dayjs';
-import { Commander, GameActivity, GameExtraFlags, GameMode, GameVersion, Ship, VehicleStatusFlags } from 'src/app/interfaces/commander';
+import { CombatRank, Commander, GameActivity, GameExtraFlags, GameMode, GameVersion, LegalStatus, Ship, VehicleStatusFlags } from 'src/app/interfaces/commander';
 import { StationType } from 'src/app/interfaces/station';
 
 @Component({
   selector: 'app-commander',
   templateUrl: './commander.component.html',
-  styleUrls: ['./commander.component.css']
+  styleUrls: ['./commander.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CommanderComponent implements OnChanges, DoCheck {
-  @Input() commander!: Commander | null;
+export class CommanderComponent implements OnInit, OnDestroy, OnChanges, DoCheck {
+  @Input() commander!: Commander;
   public readonly GameActivity = GameActivity;
   public readonly StationType = StationType;
+  public readonly CommanderOnlineStatus = CommanderOnlineStatus;
+  public readonly LegalStatus = LegalStatus;
+  public readonly CombatRank = CombatRank;
   public shieldsUp: boolean = false;
   public fsdCharging: boolean = false;
   public fsdMassLocked: boolean = false;
@@ -24,25 +28,51 @@ export class CommanderComponent implements OnChanges, DoCheck {
   public showLatLong: boolean = false;
   public overHeating: boolean = false;
   public targetShip: string = "";
+  public targetShipLegalStatus: LegalStatus | null = null;
+  public targetShipCombatRank: CombatRank | null = null;
   public targetSystem: string = "";
   public gameMode: string = "";
   public gameVersion: string = "";
   public shipHealthSVG: number = 100;
-  public isOnline: boolean = false;
-  private lastOnline: dayjs.Dayjs | null = null;
+  public onlineStatus: CommanderOnlineStatus = CommanderOnlineStatus.Offline;
+  private refreshInterval: any = null;
 
   public constructor() { }
 
-  public ngDoCheck(): void {
-    if (this.lastOnline) {
-      const now = dayjs.utc();
-      this.isOnline = (now.diff(this.lastOnline, "second") <= 120);
+  public ngOnInit(): void {
+    if (this.refreshInterval !== null) {
+      clearInterval(this.refreshInterval);
+      this.refreshInterval = null;
     }
+    this.refreshInterval = setInterval(() => {
+      this.ngDoCheck();
+    }, 300000);
+  }
+
+  public ngOnDestroy(): void {
+    if (this.refreshInterval !== null) {
+      clearInterval(this.refreshInterval);
+      this.refreshInterval = null;
+    }
+  }
+
+  public ngDoCheck(): void {
+    const now = dayjs.utc();
+    if (this.commander.LastEventDate) {
+      if (now.diff(this.commander.LastEventDate, "second") <= 120) {
+        this.onlineStatus = CommanderOnlineStatus.Online;
+        return;
+      }
+      else if (this.commander.LastActivity && now.diff(this.commander.LastActivity, "second") <= 180) {
+        this.onlineStatus = CommanderOnlineStatus.Inactive;
+        return;
+      }
+    }
+    this.onlineStatus = CommanderOnlineStatus.Offline;
   }
 
   public ngOnChanges(): void {
     if (this.commander) {
-      this.lastOnline = dayjs.utc(this.commander.LastEventDate);
       this.shieldsUp = this.hasFlag(VehicleStatusFlags.ShieldsUp);
       this.fsdCharging = this.hasFlag(VehicleStatusFlags.FsdCharging);
       this.fsdCooldown = this.hasFlag(VehicleStatusFlags.FsdCooldown);
@@ -232,6 +262,8 @@ export class CommanderComponent implements OnChanges, DoCheck {
         }
       }
       this.targetShip = targetShip;
+      this.targetShipLegalStatus = this.commander?.Target?.ShipTargetLegalStatus ?? null;
+      this.targetShipCombatRank = this.commander?.Target?.ShipTargetCombatRank ?? null;
       let targetSystem: string = "";
       if (this.commander.Target) {
         if (this.commander.Target.StarSystem && this.commander.Target.StarSystem.Name !== this.commander.Location.StarSystem?.Name) {
@@ -291,4 +323,10 @@ export class CommanderComponent implements OnChanges, DoCheck {
   private hasExtraFlag(flag: GameExtraFlags): boolean {
     return ((this.commander?.ExtraFlags ?? 0) & flag) === flag;
   }
+}
+
+enum CommanderOnlineStatus {
+  Offline = 0,
+  Online,
+  Inactive,
 }

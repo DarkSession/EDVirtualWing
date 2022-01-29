@@ -1,35 +1,60 @@
-<div class="content-large-box" *ngIf="formMode == FormMode.Login" [formGroup]="loginForm">
-    <h2>Login</h2>
-    <span *ngFor="let error of errors" class="error-msg">{{ error }}</span>
-    <mat-form-field>
-        <mat-label>Username</mat-label>
-        <input matInput id="userName" formControlName="userName" minlength="1" required>
-    </mat-form-field>
-    <mat-form-field>
-        <mat-label>Password</mat-label>
-        <input matInput id="password" formControlName="password" type="password" required>
-    </mat-form-field>
-    <button mat-raised-button [disabled]="!loginForm.valid" color="primary" (click)="login()">Login</button>
-    <br>
-    <span class="clickable" (click)="toggleMode()">No account yet? Register here.</span>
-</div>
-<div class="content-large-box" *ngIf="formMode == FormMode.Registration" [formGroup]="registrationForm">
-    <h2>Registration</h2>
-    <span *ngFor="let error of errors" class="error-msg">{{ error }}</span>
-    <mat-form-field>
-        <mat-label>Username</mat-label>
-        <input matInput id="userName" formControlName="userName" required>
-    </mat-form-field>
-    <mat-form-field>
-        <mat-label>E-Mail Address</mat-label>
-        <input matInput id="emailAddress" formControlName="emailAddress" type="email" required>
-    </mat-form-field>
-    <mat-form-field>
-        <mat-label>Password</mat-label>
-        <input matInput id="password" formControlName="password" type="password" required>
-    </mat-form-field>
-    <button mat-raised-button color="primary" [disabled]="!registrationForm.valid"
-        (click)="register()">Register</button>
-    <br>
-    <span class="clickable" (click)="toggleMode()">Already have an account? Login here.</span>
+<div class="content-large-box">
+    <mat-stepper orientation="vertical" #stepper>
+        <mat-step>
+            <ng-template matStepLabel>Login with username / password.</ng-template>
+            <ng-template matStepContent>
+                <div [formGroup]="loginForm" class="content-large-box-content">
+                    <app-h2>Login</app-h2>
+                    <span *ngFor="let error of errors" class="error-msg">{{ error }}</span>
+                    <mat-form-field>
+                        <mat-label>Username</mat-label>
+                        <input matInput id="userName" formControlName="userName" minlength="1" required>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>Password</mat-label>
+                        <input matInput id="password" formControlName="password" type="password" required>
+                    </mat-form-field>
+                    <button mat-raised-button [disabled]="!loginForm.valid" color="primary"
+                        (click)="login()">Login</button>
+                </div>
+            </ng-template>
+        </mat-step>
+        <mat-step>
+            <ng-template matStepLabel>Register new account (without Frontier authentication)</ng-template>
+            <ng-template matStepContent>
+                <div [formGroup]="registrationForm" class="content-large-box-content">
+                    <app-h2>Registration</app-h2>
+                    <span *ngFor="let error of errors" class="error-msg">{{ error }}</span>
+                    <mat-form-field>
+                        <mat-label>Username</mat-label>
+                        <input matInput id="userName" formControlName="userName" required>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>E-Mail Address</mat-label>
+                        <input matInput id="emailAddress" formControlName="emailAddress" type="email" required>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>Password</mat-label>
+                        <input matInput id="password" formControlName="password" type="password" required>
+                    </mat-form-field>
+                    <mat-checkbox id="confirmTos" formControlName="confirmTos">I accepted the <a routerLink="/tos">terms
+                            of service</a>.</mat-checkbox>
+                    <button mat-raised-button color="primary" [disabled]="!registrationForm.valid"
+                        (click)="register()">Register</button>
+                    <br>
+                </div>
+            </ng-template>
+        </mat-step>
+        <mat-step>
+            <ng-template matStepLabel>Frontier Authentication: Login or register new account</ng-template>
+            <ng-template matStepContent>
+                <div class="content-large-box-content">
+                    <mat-checkbox [(ngModel)]="fDevAuthConfirmTos">I accepted the <a routerLink="/tos">terms of
+                            service</a>.</mat-checkbox>
+                    <button mat-raised-button color="primary" [disabled]="!fDevAuthConfirmTos"
+                        (click)="loginViaFdev()">Continue</button>
+                </div>
+            </ng-template>
+        </mat-step>
+    </mat-stepper>
 </div>

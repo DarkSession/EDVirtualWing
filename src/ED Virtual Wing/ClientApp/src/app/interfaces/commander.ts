@@ -6,9 +6,9 @@ import * as dayjs from "dayjs";
 export interface Commander {
     CommanderId: string;
     Name: string;
+    LastEventDate: dayjs.Dayjs | string | null;
+    LastActivity: dayjs.Dayjs | string;
     GameActivity: GameActivity;
-    LastEventDate: string;
-    LastEventDateObj?: dayjs.Dayjs;
     ExtraFlags: GameExtraFlags;
     GameVersion: GameVersion;
     GameMode: GameMode;
@@ -27,6 +27,8 @@ export interface CommanderTarget {
     Name: string | null;
     ShipTarget: Ship | null;
     ShipTargetName: string | null;
+    ShipTargetLegalStatus?: LegalStatus;
+    ShipTargetCombatRank?: CombatRank;
 }
 
 export interface CommanderLocation {
@@ -179,4 +181,35 @@ export enum Ship {
     AllianceChallenger = 128816588,
     KraitPhantom = 128839281,
     Mamba = 128915979,
+}
+
+export enum Suit {
+    Flight = 0,
+    Maverick,
+    Dominator,
+    Artemis,
+}
+
+export enum LegalStatus {
+    Clean = 0,
+    Wanted,
+    Lawless,
+}
+
+export enum CombatRank {
+    Unknown = 0,
+    Harmless,
+    MostlyHarmless,
+    Novice,
+    Competent,
+    Expert,
+    Master,
+    Dangerous,
+    Deadly,
+    Elite,
+    EliteI,
+    EliteII,
+    EliteIII,
+    EliteIV,
+    EliteV,
 }

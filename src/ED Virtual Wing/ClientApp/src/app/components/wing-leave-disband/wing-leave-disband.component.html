@@ -1,0 +1,13 @@
+<div class="confirmation-content">
+    <app-h3 *ngIf="!data.isAdmin">Leave {{ data.wing.Name }}</app-h3>
+    <app-h3 *ngIf="data.isAdmin">Disband {{ data.wing.Name }}</app-h3>
+    <p>Are you sure you want to {{ data.isAdmin ? "disband" : "leave" }} {{ data.wing.Name }}?</p>
+    <mat-checkbox [(ngModel)]="confirmed">I confirm</mat-checkbox>
+    <br>
+    <div class="buttons">
+        <button mat-raised-button color="warn" [disabled]="!confirmed" (click)="confim()">
+            Yes, {{ data.isAdmin ? "disband" : "leave" }} team</button>
+        <button mat-raised-button color="primary" (click)="cancel()">
+            Cancel</button>
+    </div>
+</div>

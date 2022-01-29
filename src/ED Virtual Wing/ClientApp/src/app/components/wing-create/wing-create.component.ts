@@ -37,7 +37,7 @@ export class WingCreateComponent implements OnInit {
       });
       if (response !== null) {
         if (response.Success) {
-          this.router.navigate(["/wing", response.Data.Wing.WingId]);
+          this.router.navigate(["/team", response.Data.Wing.WingId]);
         }
         else {
           this.errors = response.Errors ?? [];

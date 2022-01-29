@@ -81,26 +81,48 @@ namespace ED_Virtual_Wing.Data
     {
         private static Dictionary<string, string> Localisation { get; } = new()
         {
+            { "cmdr_decorate", "CMDR {name}" },
+
             { "MULTIPLAYER_SCENARIO14_TITLE", "Resource Extraction Site" },
             { "MULTIPLAYER_SCENARIO42_TITLE", "Nav Beacon" },
             { "MULTIPLAYER_SCENARIO77_TITLE", "Resource Extraction Site [Low]" },
             { "MULTIPLAYER_SCENARIO78_TITLE", "Resource Extraction Site [High]" },
             { "MULTIPLAYER_SCENARIO79_TITLE", "Resource Extraction Site [Hazardous]" },
             { "MULTIPLAYER_SCENARIO80_TITLE", "Compromised Navigation Beacon" },
+
+            { "LUASC_Scenario_Warzone_NPC_WarzoneGeneral_Fed", "Federal Captain" },
+            { "LUASC_Scenario_Warzone_NPC_WarzoneGeneral_Ind", "Independent Captain" },
+            { "LUASC_Scenario_Warzone_NPC_WarzoneCorrespondent", "Warzone Correspondent" },
+            { "LUASC_Scenario_Warzone_NPC_SpecOps_A", "Spec Ops Wing Alpha" },
+            { "LUASC_Scenario_Warzone_NPC_SpecOps_B", "Spec Ops Wing Beta" },
+            { "LUASC_Scenario_Warzone_NPC_SpecOps_D", "Spec Ops Wing Delta" },
+            { "LUASC_Scenario_Warzone_NPC_SpecOps_G", "Spec Ops Wing Gamma" },
+
+            { "npc_name_decorate", "{name}" },
+
+            { "POIScenario_Watson_Damaged_Eagle_01_Salvage_Medium", "Distress Beacon" },
+            { "POIScenario_Watson_Smugglers_Cache_02_Heist_Medium", "Irregular Markers" },
+
             { "ShipName_Military_Independent", "System Defence Force" },
-            { "ShipName_Police_Independent", "System Authority Vessel" },
+            { "ShipName_Military_Federation", "Federal Navy Ship" },
             { "ShipName_PassengerLiner_Cruise", "Cruise Ship" },
             { "ShipName_Police_Alliance", "Allied Police Forces" },
-            { "cmdr_decorate", "CMDR {name}" },
+            { "ShipName_Police_Federation", "Federal Security Service" },
+            { "ShipName_Police_Independent", "System Authority Vessel" },
+            { "ShipName_SearchAndRescue", "Search And Rescue Patrol" },
+
+            { "RolePanel2_unmanned", "Unmanned" },
+            { "RolePanel2_crew", "Crew" },
+
             { "USS", "Unidentified signal source" },
+            { "USS_DegradedEmissions", "Degraded Emissions" },
             { "USS_HighGradeEmissions", "High Grade Emissions" },
-            { "POIScenario_Watson_Smugglers_Cache_02_Heist_Medium", "Irregular Markers" },
-            { "POIScenario_Watson_Damaged_Eagle_01_Salvage_Medium", "Distress Beacon" },
             { "USS_ThreatLevel", "[Threat {threatLevel}]" },
             { "USS_TradingBeacon", "Trading Beacon" },
-            { "RolePanel2_unmanned", "Unmanned" },
-            { "USS_DegradedEmissions", "Degraded Emissions" },
-            { "RolePanel2_crew", "Crew" },
+
+            { "Warzone_PointRace_Low", "Conflict Zone [Low Intensity]" },
+            { "Warzone_PointRace_Med", "Conflict Zone [Medium Intensity]" },
+            { "Warzone_PointRace_High", "Conflict Zone [High Intensity]" },
         };
 
         public string LocalisationKey { get; }

@@ -1,5 +1,6 @@
 ﻿using ED_Virtual_Wing.Data;
 using ED_Virtual_Wing.Models;
+using ED_Virtual_Wing.WebSockets.Messages;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
@@ -29,6 +30,12 @@ namespace ED_Virtual_Wing.WebSockets.Handler
         }
 
         protected override Type? MessageDataType { get; } = typeof(WingJoinRequestData);
+        private WebSocketServer WebSocketServer { get; }
+
+        public WingJoin(WebSocketServer webSocketServer)
+        {
+            WebSocketServer = webSocketServer;
+        }
 
         public override async ValueTask<WebSocketHandlerResult> ProcessMessage(WebSocketMessageReceived message, WebSocketSession webSocketSession, ApplicationUser user, ApplicationDbContext applicationDbContext)
         {
@@ -40,12 +47,12 @@ namespace ED_Virtual_Wing.WebSockets.Handler
                             .FirstOrDefaultAsync(w => w.Invites!.Any(i => i.Invite == data.Invite && i.Status == WingInviteStatus.Active) && w.Status == WingStatus.Active);
                 if (wing != null)
                 {
-                    WingMember? wingMember = await applicationDbContext.WingMembers.FirstOrDefaultAsync(w => w.Wing == wing && w.User == user);
+                    WingMember? wingMember = await applicationDbContext.WingMembers.FirstOrDefaultAsync(w => w.Wing == wing && w.User == user && w.Status != WingMembershipStatus.Left);
                     switch (wingMember?.Status)
                     {
                         case WingMembershipStatus.Banned:
                             {
-                                return new WebSocketHandlerResultError("You have been banned from this wing/team.");
+                                return new WebSocketHandlerResultError("You have been banned from this team.");
                             }
                         case WingMembershipStatus.PendingApproval:
                             {
@@ -53,7 +60,7 @@ namespace ED_Virtual_Wing.WebSockets.Handler
                             }
                         case WingMembershipStatus.Joined:
                             {
-                                return new WebSocketHandlerResultError("You are already a member of this wing/team");
+                                return new WebSocketHandlerResultSuccess(new WingJoinResponse(true, WingMembershipStatus.Joined, wing));
                             }
                     }
                     if (data.Join)
@@ -66,9 +73,13 @@ namespace ED_Virtual_Wing.WebSockets.Handler
                             Wing = wing,
                         };
                         applicationDbContext.WingMembers.Add(wingMemberJoin);
+                        await applicationDbContext.SaveChangesAsync();
+                        Commander commander = await user.GetCommander(applicationDbContext);
+                        await commander.DistributeCommanderData(WebSocketServer, applicationDbContext);
+
                         return new WebSocketHandlerResultSuccess(new WingJoinResponse(true, wingMemberJoin.Status, wing));
                     }
-                    return new WebSocketHandlerResultSuccess(new WingJoinResponse(true, WingMembershipStatus.Left, wing));
+                    return new WebSocketHandlerResultSuccess(new WingJoinResponse(false, WingMembershipStatus.Left, wing));
                 }
             }
             return new WebSocketHandlerResultError("Invite not found.");

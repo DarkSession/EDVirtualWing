@@ -46,8 +46,8 @@ export class WingJoinComponent implements OnInit {
           }
           else {
             this.wing = response.Data.Wing;
-            if (join) {
-              this.router.navigate(["/wing", this.wing.WingId]);
+            if (response.Data.Joined) {
+              this.router.navigate(["/team", this.wing.WingId]);
             }
           }
         }

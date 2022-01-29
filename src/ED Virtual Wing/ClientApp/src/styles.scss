@@ -2,6 +2,103 @@
 
 @include mat.core();
 
+@import 'material-icons/iconfont/material-icons.css';
+
+body {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  margin: 0;
+  padding: 30px;
+}
+
+html, body {
+  height: 100%;
+}
+
+.content-small-box, .content-large-box {
+  margin: 16px;
+  padding: 16px;
+  border-radius: 8px;
+  background-color: rgb(173, 173, 173);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.content-large-box-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.content-small-box {
+  min-height: 100px;
+  width: 100px;
+}
+
+.content-large-box {
+  min-height: 300px;
+  width: 500px;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.container {
+  flex: 0 1 auto;
+  display: flex;
+  flex-flow: column;
+  margin-top: 24px;
+}
+
+*:focus {
+  outline: 0;
+}
+
+.error-msg {
+  color: #d30000;
+}
+
+.nav-back {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px;
+  width: 90px;
+}
+
+.div-box {
+  background-color: rgb(173, 173, 173);
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+tr:hover {
+  background-color: #ddd;
+}
+
+th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #ff7100;
+  color: white;
+}
+
 $angular-primary: mat.define-palette(mat.$indigo-palette, 500, 100, 900);
 $angular-primary-darkMode: mat.define-palette(mat.$amber-palette, 500, 100, 900);
 $angular-accent: mat.define-palette(mat.$orange-palette, A200, A100, A400);
@@ -41,66 +138,20 @@ $angular-dark-theme: mat.define-dark-theme(
     filter: invert(92%) sepia(100%) saturate(0%) hue-rotate(202deg) brightness(106%) contrast(106%);
   }
 
-  .content-large-box {
+  .content-large-box, .div-box {
     background-color: rgb(80, 80, 80);
+  }
+
+  tr:nth-child(even) {
+    background-color: #474747;
+  }
+
+  tr:hover {
+    background-color: #414141;
+  }
+
+  td, th {
+    border: 1px solid rgba(0, 0, 0, 0.5);
   }
 }
 
-@import 'material-icons/iconfont/material-icons.css';
-
-body {
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-  margin: 0;
-  padding: 30px;
-}
-
-html, body {
-  height: 100%;
-}
-
-.content-small-box, .content-large-box {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  margin: 16px;
-  padding: 16px;
-  border-radius: 8px;
-  background-color: rgb(173, 173, 173);
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.content-small-box {
-  min-height: 100px;
-  width: 100px;
-}
-
-.content-large-box {
-  min-height: 300px;
-  width: 300px;
-}
-
-.clickable {
-  cursor: pointer;
-}
-
-.container {
-  flex: 0 1 auto;
-  display: flex;
-  flex-flow: column;
-}
-
-*:focus {
-  outline: 0;
-}
-
-.error-msg {
-  color: red;
-}
-
-.online {
-  color: rgb(0, 163, 0);
-}

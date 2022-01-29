@@ -1,0 +1,19 @@
+:host {
+    background-color: #dddddd;
+    box-shadow: 0px 0px 2px 2px #7e7e7e;
+    width: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+}
+
+.confirmation-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+}

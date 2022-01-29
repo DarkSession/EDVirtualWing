@@ -11,6 +11,8 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Combat
         public string PilotName { get; set; } = string.Empty;
         public string PilotName_Localised { get; set; } = string.Empty;
         public string Ship { get; set; } = string.Empty;
+        public LegalStatus? LegalStatus { get; set; }
+        public string PilotRank { get; set; } = string.Empty;
 
         public override async ValueTask ProcessEntry(Commander commander, ApplicationDbContext applicationDbContext)
         {
@@ -28,6 +30,22 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Combat
                         Console.WriteLine($"Unknown ship: {Ship}");
                     }
                     commander.Target.ShipTargetName = shipTargetName;
+                    commander.Target.ShipTargetLegalStatus = LegalStatus;
+                    if (ScanStage >= 2)
+                    {
+                        if (string.IsNullOrEmpty(PilotRank))
+                        {
+                            commander.Target.ShipTargetCombatRank = ToEnum<CombatRank>(PilotRank);
+                        }
+                        else
+                        {
+                            commander.Target.ShipTargetCombatRank = CombatRank.Elite; // Above Elite, the combat rank is not written in the journal anymore.
+                        }
+                    }
+                    else
+                    {
+                        commander.Target.ShipTargetCombatRank = null;
+                    }
                 }
                 else
                 {

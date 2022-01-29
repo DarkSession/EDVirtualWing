@@ -1,5 +1,6 @@
 ﻿using ED_Virtual_Wing.Data;
 using ED_Virtual_Wing.Models;
+using ED_Virtual_Wing.WebSockets.Messages;
 
 namespace ED_Virtual_Wing.WebSockets.Handler
 {
@@ -15,7 +16,7 @@ namespace ED_Virtual_Wing.WebSockets.Handler
         public override async ValueTask<WebSocketHandlerResult> ProcessMessage(WebSocketMessageReceived message, WebSocketSession webSocketSession, ApplicationUser user, ApplicationDbContext applicationDbContext)
         {
             Commander commander = await user.GetCommander(applicationDbContext);
-            commander.LastEventDate = DateTimeOffset.Now;
+            commander.LastActivity = DateTimeOffset.Now;
             await commander.DistributeCommanderData(WebSocketServer, applicationDbContext);
             return new WebSocketHandlerResultSuccess();
         }

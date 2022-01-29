@@ -10,6 +10,7 @@ namespace ED_Virtual_Wing.Models
         [Column]
         public int Id { get; set; }
 
+        [JsonIgnore]
         [ForeignKey("UserId")]
         public ApplicationUser? User { get; set; }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { JournalWorkerService } from 'src/app/journal-worker.service';
 
 @Component({
@@ -6,12 +6,9 @@ import { JournalWorkerService } from 'src/app/journal-worker.service';
   templateUrl: './journal-worker.component.html',
   styleUrls: ['./journal-worker.component.css']
 })
-export class JournalWorkerComponent implements OnInit {  
+export class JournalWorkerComponent {  
   public constructor(
     public readonly journalWorkerService: JournalWorkerService
   ) { }
-
-  public ngOnInit(): void {
-  }
 
 }

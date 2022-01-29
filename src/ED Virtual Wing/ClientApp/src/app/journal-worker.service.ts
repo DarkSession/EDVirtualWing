@@ -171,7 +171,7 @@ export class JournalWorkerService {
   private async processDirectoryHandle(directoryHandle: FileSystemDirectoryHandle): Promise<void> {
     const result: JournalAndStatusFileFromDirectoryHandleResult = await this.getJournalAndStatusFileFromDirectoryHandle(directoryHandle);
     const journalFile: FileSystemFileHandleAndFile | null = result.journalFile;
-    const statusFile: FileSystemHandle | null = result.statusFile;
+    const statusFile: FileSystemFileHandle | null = result.statusFile;
     // If we found all the files, we can continue.
     // Otherwise we might have received a wrong folder.
     if (journalFile !== null && statusFile !== null) {
@@ -209,7 +209,7 @@ export class JournalWorkerService {
   private async getJournalAndStatusFileFromDirectoryHandle(directoryHandle: FileSystemDirectoryHandle): Promise<JournalAndStatusFileFromDirectoryHandleResult> {
     const now = new Date().getTime();
     let journalFile: FileSystemFileHandleAndFile | null = null;
-    let statusFile: FileSystemHandle | null = null;
+    let statusFile: FileSystemFileHandle | null = null;
     try {
       for await (const entry of directoryHandle.values()) {
         // We are only interested in some files

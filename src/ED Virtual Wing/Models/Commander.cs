@@ -31,6 +31,9 @@ namespace ED_Virtual_Wing.Models
         public DateTimeOffset? LastEventDate { get; set; }
 
         [Column]
+        public DateTimeOffset LastActivity { get; set; }
+
+        [Column]
         public GameActivity GameActivity { get; set; }
 
         [Column]
@@ -113,10 +116,18 @@ namespace ED_Virtual_Wing.Models
         [Column(TypeName = "varchar(256)")]
         public string ShipTargetName { get; set; } = string.Empty;
 
+        [Column]
+        public LegalStatus? ShipTargetLegalStatus { get; set; }
+
+        [Column]
+        public CombatRank? ShipTargetCombatRank { get; set; }
+
         public void ResetShipTarget()
         {
             ShipTarget = null;
             ShipTargetName = string.Empty;
+            ShipTargetLegalStatus = null;
+            ShipTargetCombatRank = null;
         }
     }
 
@@ -394,5 +405,32 @@ namespace ED_Virtual_Wing.Models
         Maverick,
         Dominator,
         Artemis,
+    }
+
+    public enum LegalStatus : short
+    {
+        Clean = 0,
+        Wanted,
+        Lawless,
+    }
+
+    public enum CombatRank : short
+    {
+        Unknown = 0,
+        Harmless,
+        [EnumMember(Value = "Mostly Harmless")]
+        MostlyHarmless,
+        Novice,
+        Competent,
+        Expert,
+        Master,
+        Dangerous,
+        Deadly,
+        Elite,
+        EliteI,
+        EliteII,
+        EliteIII,
+        EliteIV,
+        EliteV,
     }
 }

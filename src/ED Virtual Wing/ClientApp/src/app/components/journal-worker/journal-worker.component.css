@@ -1,0 +1,16 @@
+.dot {
+    height: 14px;
+    width: 14px;
+    background-color: #bbbbbb;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 4px;
+}
+
+.active-sharing {
+    background-color: rgb(0, 163, 0);
+}
+
+.other-instance-sharing {
+    background-color: rgb(255, 136, 0);
+}

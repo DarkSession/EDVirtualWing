@@ -63,7 +63,6 @@ namespace ED_Virtual_Wing.WebSockets
         [Required]
         public string Name { get; set; } = string.Empty;
         public JObject? Data { get; set; }
-        [Required]
         public string? MessageId { get; set; }
     }
 }

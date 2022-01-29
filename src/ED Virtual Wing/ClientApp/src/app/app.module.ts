@@ -38,6 +38,9 @@ import { FdevAuthComponent } from './components/fdev-auth/fdev-auth.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { LogoutComponent } from './components/logout/logout.component';
 import { WingLeaveDisbandComponent } from './components/wing-leave-disband/wing-leave-disband.component';
+import { WingAdminMembersComponent } from './components/wing-admin-members/wing-admin-members.component';
+import { H3Component } from './components/h3/h3.component';
+import { H2Component } from './components/h2/h2.component';
 
 @NgModule({
   declarations: [
@@ -60,6 +63,9 @@ import { WingLeaveDisbandComponent } from './components/wing-leave-disband/wing-
     FdevAuthComponent,
     LogoutComponent,
     WingLeaveDisbandComponent,
+    WingAdminMembersComponent,
+    H3Component,
+    H2Component,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -112,7 +118,7 @@ import { WingLeaveDisbandComponent } from './components/wing-leave-disband/wing-
           canActivate: [AuthenticationGuard],
         },
         {
-          path: 'wing',
+          path: 'team',
           canActivateChild: [AuthenticationGuard],
           canActivate: [AuthenticationGuard],
           children: [
@@ -127,6 +133,10 @@ import { WingLeaveDisbandComponent } from './components/wing-leave-disband/wing-
             {
               path: 'join/:invite',
               component: WingJoinComponent,
+            },
+            {
+              path: 'admin/members/:id',
+              component: WingAdminMembersComponent,
             },
             {
               path: ':id',

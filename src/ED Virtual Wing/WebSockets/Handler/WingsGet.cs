@@ -42,7 +42,7 @@ namespace ED_Virtual_Wing.WebSockets.Handler
                 new
                 {
                     Wing = w,
-                    MemberCount = w.Members!.Count(),
+                    MemberCount = w.Members!.Count(m => m.Status == WingMembershipStatus.Joined),
                     MemberOnline = w.Members!.Count(m => m.Status == WingMembershipStatus.Joined && onlineUsers.Any(o => o == m.User)),
                 })
                 .ToListAsync();

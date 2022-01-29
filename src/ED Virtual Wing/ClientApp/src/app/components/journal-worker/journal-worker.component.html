@@ -1,19 +1,24 @@
 <div *ngIf="!journalWorkerService.isBrowserSupported">
     We are sorry, but your browser doesn't support the required functionality for this website.<br>
-    Currently, mainly Chromium based browsers (such as Chromium, Google Chrome, Edge) support the required
-    functions.
+    More information in the <a routerLink="faq">FAQ</a>.
 </div>
 <div *ngIf="journalWorkerService.isBrowserSupported">
     <div *ngIf="!journalWorkerService.serverSettingsReceived; else journalWorkerBtn">
         Waiting to receive settings from server...
     </div>
     <ng-template #journalWorkerBtn>
-        <div *ngIf="journalWorkerService.journalWorkerActive || journalWorkerService.streamingJournalInOtherInstance">
-            <mat-icon class="online" matTooltip="Sharing game information with wing(s)/team(s)">circle</mat-icon>
-        </div>
-        <div *ngIf="!journalWorkerService.journalWorkerActive && !journalWorkerService.streamingJournalInOtherInstance">
+        <span *ngIf="journalWorkerService.journalWorkerActive">
+            <span class="dot active-sharing"
+                matTooltip="You are sharing your game information with wing(s)/team(s)."></span>
+        </span>
+        <span *ngIf="!journalWorkerService.journalWorkerActive && journalWorkerService.streamingJournalInOtherInstance">
+            <span class="dot other-instance-sharing"
+                matTooltip="You are sharing your game information with wing(s)/team(s) from another instance."></span>
+        </span>
+        <span
+            *ngIf="!journalWorkerService.journalWorkerActive && !journalWorkerService.streamingJournalInOtherInstance">
             <button mat-raised-button color="primary" (click)="journalWorkerService.startJournalWorker()">
                 Share Game Information</button>
-        </div>
+        </span>
     </ng-template>
 </div>

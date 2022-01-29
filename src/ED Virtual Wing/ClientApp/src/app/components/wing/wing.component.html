@@ -2,7 +2,7 @@
     <p>No commanders in this wing.</p>
 </div>
 <div style="display: flex; flex-wrap: wrap;" *ngIf="commanders.length > 0">
-    <div style="padding: 8px" *ngFor="let commander of commanders">
+    <div style="padding: 8px" *ngFor="let commander of commanders; trackBy: trackByCommander">
         <app-commander [commander]="commander"></app-commander>
     </div>
 </div>

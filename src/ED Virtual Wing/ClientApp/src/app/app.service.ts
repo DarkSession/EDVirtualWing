@@ -12,7 +12,6 @@ export class AppService {
 
   public constructor() {
     const darkMode = localStorage.getItem('darkMode');
-    console.log("darkMode", darkMode);
     this.darkMode = (darkMode === "1");
   }
 

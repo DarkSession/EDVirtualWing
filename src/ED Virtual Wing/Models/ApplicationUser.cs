@@ -31,6 +31,7 @@ namespace ED_Virtual_Wing.Models
                 {
                     User = this,
                     JournalLastEventDate = default,
+                    LastActivity = DateTimeOffset.Now,
                     Name = string.Empty,
                 };
                 applicationDbContext.Commanders.Add(commander);

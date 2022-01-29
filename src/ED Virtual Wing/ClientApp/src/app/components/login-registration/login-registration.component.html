@@ -4,7 +4,7 @@
             <ng-template matStepLabel>Login with username / password.</ng-template>
             <ng-template matStepContent>
                 <div [formGroup]="loginForm" class="content-large-box-content">
-                    <h2>Login</h2>
+                    <app-h2>Login</app-h2>
                     <span *ngFor="let error of errors" class="error-msg">{{ error }}</span>
                     <mat-form-field>
                         <mat-label>Username</mat-label>
@@ -23,7 +23,7 @@
             <ng-template matStepLabel>Register new account (without Frontier authentication)</ng-template>
             <ng-template matStepContent>
                 <div [formGroup]="registrationForm" class="content-large-box-content">
-                    <h2>Registration</h2>
+                    <app-h2>Registration</app-h2>
                     <span *ngFor="let error of errors" class="error-msg">{{ error }}</span>
                     <mat-form-field>
                         <mat-label>Username</mat-label>

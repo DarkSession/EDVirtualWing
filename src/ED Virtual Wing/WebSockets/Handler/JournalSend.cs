@@ -38,6 +38,7 @@ namespace ED_Virtual_Wing.WebSockets.Handler
                     await JournalProcessor.ProcessUserJournalEntry(userJournalEntry, commander, applicationDbContext);
                 }
                 commander.LastEventDate = DateTimeOffset.Now;
+                commander.LastActivity = DateTimeOffset.Now;
                 await applicationDbContext.SaveChangesAsync();
                 await commander.DistributeCommanderData(WebSocketServer, applicationDbContext);
                 return new WebSocketHandlerResultSuccess();

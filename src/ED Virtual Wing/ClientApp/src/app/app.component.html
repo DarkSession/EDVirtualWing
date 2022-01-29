@@ -4,7 +4,7 @@
       <mat-icon [ngClass]="{'menu-open': isMenuOpen, 'menu-closed': !isMenuOpen}">menu</mat-icon>
     </button>
     <img src="assets/images/EliteDangerous.svg" style="width: 45px; height: 45px;" />
-    <span routerLink="/" class="clickable">Elite Dangerous Virtual Wing</span>
+    <span routerLink="/" class="clickable">Elite Dangerous - Virtual Team / Wing</span>
     <span class="toolbar-spacer"></span>
     <div class="top-right-action">
       <mat-slide-toggle [(ngModel)]="appService.darkMode" (ngModelChange)="darkModeChanged($event)">
@@ -34,9 +34,9 @@
   <mat-sidenav-container class="container-content">
     <mat-sidenav #sidenav mode="side" class="edvw-sidenav" [opened]="isMenuOpen">
       <div *ngIf="isLoggedIn">
-        <div><b>Wings / Teams</b></div>
-        <div routerLink="wing/list" class="clickable">My wings</div>
-        <div routerLink="wing/create" class="clickable">Create</div>
+        <div><b>Teams</b></div>
+        <div routerLink="team/list" class="clickable">My teams</div>
+        <div routerLink="team/create" class="clickable">Create</div>
       </div>
       <div *ngIf="!isLoggedIn">
         <div routerLink="login" class="clickable">Login</div>

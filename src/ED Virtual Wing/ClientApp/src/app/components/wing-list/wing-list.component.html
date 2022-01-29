@@ -1,15 +1,14 @@
 <div class="container">
-    <h2>My Virtual Wings/Teams</h2>
-    <div *ngFor="let wing of wings">
-        <h3>
-            <span class="clickable" [routerLink]="['/wing', wing.WingId]">{{ wing.Name }}</span>
-        </h3>
+    <app-h2>My Virtual Teams</app-h2>
+    <div *ngFor="let wing of wings" class="wing div-box clickable" [routerLink]="['/team', wing.WingId]">
+        <app-h3>
+            <span>{{ wing.Name }}</span>
+        </app-h3>
         <div>
             <span>{{ wing.MemberCount }}</span> members, <span class="online">{{ wing.MemberOnline }}</span> online
         </div>
-        <br>
     </div>
     <div *ngIf="wings.length == 0">
-        You are not in any wings/teams.
+        You are not in any teams.
     </div>
 </div>

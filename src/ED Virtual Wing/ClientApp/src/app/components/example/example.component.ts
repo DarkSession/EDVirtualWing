@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import * as dayjs from 'dayjs';
-import { Commander, GameActivity, GameExtraFlags, GameMode, GameVersion, Ship, VehicleStatusFlags } from 'src/app/interfaces/commander';
+import { CombatRank, Commander, GameActivity, GameExtraFlags, GameMode, GameVersion, LegalStatus, Ship, VehicleStatusFlags } from 'src/app/interfaces/commander';
 import { StationType } from 'src/app/interfaces/station';
 
 @Component({
@@ -12,7 +12,8 @@ export class ExampleComponent {
   public commander1: Commander = {
     CommanderId: "1",
     Name: "Test1",
-    LastEventDate: dayjs.utc().toISOString(),
+    LastEventDate: dayjs.utc(),
+    LastActivity: dayjs.utc(),
     GameActivity: GameActivity.Dead,
     ExtraFlags: GameExtraFlags.InCombat,
     GameVersion: GameVersion.Horizons,
@@ -69,6 +70,8 @@ export class ExampleComponent {
       Name: "Fsd Target",
       ShipTarget: Ship.ImperialCutter,
       ShipTargetName: "Target name",
+      ShipTargetLegalStatus: LegalStatus.Wanted,
+      ShipTargetCombatRank: CombatRank.Elite,
     },
     ShipHullHealth: 0.3456,
     ShipName: "TestShip 1",
@@ -76,7 +79,8 @@ export class ExampleComponent {
   public commander2: Commander = {
     CommanderId: "2",
     Name: "Test2",
-    LastEventDate: dayjs.utc().toISOString(),
+    LastEventDate: dayjs.utc(),
+    LastActivity: dayjs.utc(),
     GameActivity: GameActivity.Hyperspace,
     ExtraFlags: GameExtraFlags.None,
     GameVersion: GameVersion.Horizons,
@@ -119,7 +123,8 @@ export class ExampleComponent {
   public commander3: Commander = {
     CommanderId: "3",
     Name: "Test3",
-    LastEventDate: dayjs.utc().toISOString(),
+    LastEventDate: dayjs.utc(),
+    LastActivity: dayjs.utc(),
     GameActivity: GameActivity.Supercruise,
     ExtraFlags: GameExtraFlags.InCombat,
     GameVersion: GameVersion.Horizons,
@@ -154,7 +159,8 @@ export class ExampleComponent {
   public commander4: Commander = {
     CommanderId: "4",
     Name: "Test4",
-    LastEventDate: dayjs.utc().toISOString(),
+    LastEventDate: dayjs.utc(),
+    LastActivity: dayjs.utc(),
     GameActivity: GameActivity.Docked,
     ExtraFlags: GameExtraFlags.None,
     GameVersion: GameVersion.Odyssey,
@@ -200,7 +206,8 @@ export class ExampleComponent {
   public commander5: Commander = {
     CommanderId: "5",
     Name: "Test5",
-    LastEventDate: dayjs.utc().toISOString(),
+    LastEventDate: dayjs.utc(),
+    LastActivity: dayjs.utc(),
     GameActivity: GameActivity.OnFoot,
     ExtraFlags: GameExtraFlags.None,
     GameVersion: GameVersion.Odyssey,
@@ -249,7 +256,8 @@ export class ExampleComponent {
   public commander6: Commander = {
     CommanderId: "6",
     Name: "Test6",
-    LastEventDate: dayjs.utc().toISOString(),
+    LastEventDate: dayjs.utc(),
+    LastActivity: dayjs.utc(),
     GameActivity: GameActivity.Supercruise,
     ExtraFlags: GameExtraFlags.None,
     GameVersion: GameVersion.Odyssey,
@@ -284,7 +292,8 @@ export class ExampleComponent {
   public commander7: Commander = {
     CommanderId: "7",
     Name: "Test7",
-    LastEventDate: dayjs.utc().toISOString(),
+    LastEventDate: dayjs.utc(),
+    LastActivity: dayjs.utc(),
     GameActivity: GameActivity.Docked,
     ExtraFlags: GameExtraFlags.None,
     GameVersion: GameVersion.Base,
@@ -330,8 +339,8 @@ export class ExampleComponent {
   public commander8: Commander = {
     CommanderId: "8",
     Name: "Test8",
-    LastEventDate: dayjs.utc().toISOString(),
-
+    LastEventDate: dayjs.utc(),
+    LastActivity: dayjs.utc(),
     GameActivity: GameActivity.None,
     ExtraFlags: GameExtraFlags.None,
     GameVersion: GameVersion.Horizons,
@@ -382,7 +391,8 @@ export class ExampleComponent {
   public commander9: Commander = {
     CommanderId: "9",
     Name: "Test9",
-    LastEventDate: dayjs.utc().toISOString(),
+    LastEventDate: dayjs.utc(),
+    LastActivity: dayjs.utc(),
     GameActivity: GameActivity.Supercruise,
     ExtraFlags: GameExtraFlags.None,
     GameVersion: GameVersion.Horizons,
@@ -417,7 +427,8 @@ export class ExampleComponent {
   public commander10: Commander = {
     CommanderId: "10",
     Name: "Test10",
-    LastEventDate: dayjs.utc().toISOString(),
+    LastEventDate: dayjs.utc(),
+    LastActivity: dayjs.utc(),
     GameActivity: GameActivity.InSrv,
     ExtraFlags: GameExtraFlags.None,
     GameVersion: GameVersion.Horizons,

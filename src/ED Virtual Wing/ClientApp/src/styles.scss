@@ -2,50 +2,6 @@
 
 @include mat.core();
 
-$angular-primary: mat.define-palette(mat.$indigo-palette, 500, 100, 900);
-$angular-primary-darkMode: mat.define-palette(mat.$amber-palette, 500, 100, 900);
-$angular-accent: mat.define-palette(mat.$orange-palette, A200, A100, A400);
-
-$angular-warn: mat.define-palette(mat.$red-palette);
-
-$angular-default-theme: mat.define-light-theme(
-  (
-    color: (
-      primary: $angular-primary,
-      accent: $angular-accent,
-      warn: $angular-warn,
-    ),
-  )
-);
-
-@include mat.all-component-themes($angular-default-theme);
-
-$angular-dark-theme: mat.define-dark-theme(
-  (
-    color: (
-      primary: $angular-primary-darkMode,
-      accent: $angular-accent,
-      warn: $angular-warn,
-    ),
-  )
-);
-
-.darkMode {
-  @include mat.all-component-colors($angular-dark-theme);
-
-  a {
-    color: #FF8A65;
-  }
-
-  .icon-darkMode-correction {
-    filter: invert(92%) sepia(100%) saturate(0%) hue-rotate(202deg) brightness(106%) contrast(106%);
-  }
-
-  .content-large-box {
-    background-color: rgb(80, 80, 80);
-  }
-}
-
 @import 'material-icons/iconfont/material-icons.css';
 
 body {
@@ -94,6 +50,7 @@ html, body {
   flex: 0 1 auto;
   display: flex;
   flex-flow: column;
+  margin-top: 24px;
 }
 
 *:focus {
@@ -104,6 +61,97 @@ html, body {
   color: #d30000;
 }
 
-.online {
-  color: rgb(0, 163, 0);
+.nav-back {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px;
+  width: 90px;
 }
+
+.div-box {
+  background-color: rgb(173, 173, 173);
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+tr:hover {
+  background-color: #ddd;
+}
+
+th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #ff7100;
+  color: white;
+}
+
+$angular-primary: mat.define-palette(mat.$indigo-palette, 500, 100, 900);
+$angular-primary-darkMode: mat.define-palette(mat.$amber-palette, 500, 100, 900);
+$angular-accent: mat.define-palette(mat.$orange-palette, A200, A100, A400);
+
+$angular-warn: mat.define-palette(mat.$red-palette);
+
+$angular-default-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $angular-primary,
+      accent: $angular-accent,
+      warn: $angular-warn,
+    ),
+  )
+);
+
+@include mat.all-component-themes($angular-default-theme);
+
+$angular-dark-theme: mat.define-dark-theme(
+  (
+    color: (
+      primary: $angular-primary-darkMode,
+      accent: $angular-accent,
+      warn: $angular-warn,
+    ),
+  )
+);
+
+.darkMode {
+  @include mat.all-component-colors($angular-dark-theme);
+
+  a {
+    color: #FF8A65;
+  }
+
+  .icon-darkMode-correction {
+    filter: invert(92%) sepia(100%) saturate(0%) hue-rotate(202deg) brightness(106%) contrast(106%);
+  }
+
+  .content-large-box, .div-box {
+    background-color: rgb(80, 80, 80);
+  }
+
+  tr:nth-child(even) {
+    background-color: #474747;
+  }
+
+  tr:hover {
+    background-color: #414141;
+  }
+
+  td, th {
+    border: 1px solid rgba(0, 0, 0, 0.5);
+  }
+}
+

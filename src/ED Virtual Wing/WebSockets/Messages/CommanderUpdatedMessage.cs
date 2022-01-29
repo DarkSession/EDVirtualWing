@@ -18,12 +18,12 @@ namespace ED_Virtual_Wing.WebSockets.Messages
     {
         public static async Task DistributeCommanderData(this Commander commander, WebSocketServer webSocketServer, ApplicationDbContext applicationDbContext)
         {
-            List<Wing> wings = await commander.User.GetWings(applicationDbContext);
-            IEnumerable<WebSocketSession> sessions = webSocketServer.ActiveSessions
-                .Where(a => wings.Any(w => w.Id == a.ActiveWing?.Id));
-            foreach (WebSocketSession session in sessions)
+            if (!string.IsNullOrEmpty(commander.Name))
             {
-                if (!string.IsNullOrEmpty(commander.Name))
+                List<Wing> wings = await commander.User.GetWings(applicationDbContext);
+                IEnumerable<WebSocketSession> sessions = webSocketServer.ActiveSessions
+                    .Where(a => wings.Any(w => w.Id == a.ActiveWing?.Id));
+                foreach (WebSocketSession session in sessions)
                 {
                     WebSocketMessage updateMessage = new("CommanderUpdated", new CommanderUpdatedMessage(commander, session.ActiveWing!));
                     await updateMessage.Send(session);

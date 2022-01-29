@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace ED_Virtual_Wing.Controllers
 {
@@ -135,13 +136,18 @@ namespace ED_Virtual_Wing.Controllers
             if (fdevApiAuthCode != null)
             {
                 ApplicationDbContext.FDevApiAuthCodes.Remove(fdevApiAuthCode);
-                FDevApiResult? fdevApiResult = await FDevApi.AuthenticateUser(requestData.Code, fdevApiAuthCode);
+                FDevAuthenticationResult? fdevApiResult = await FDevApi.AuthenticateUser(requestData.Code, fdevApiAuthCode);
                 if (fdevApiResult != null)
                 {
                     ApplicationUser? user = await ApplicationDbContext.Users.FirstOrDefaultAsync(u => u.FDevCustomerId == fdevApiResult.CustomerId);
                     if (user == null)
                     {
                         string userName = $"{Functions.GenerateString(8)}-{fdevApiResult.CustomerId}";
+                        Profile? profile = await FDevApi.GetProfile(fdevApiResult.Credentials);
+                        if (!string.IsNullOrEmpty(profile?.Commander?.Name))
+                        {
+                            userName = Regex.Replace(profile!.Commander!.Name, "[^0-9a-z]", "_", RegexOptions.IgnoreCase);
+                        }
                         user = new()
                         {
                             UserName = userName,

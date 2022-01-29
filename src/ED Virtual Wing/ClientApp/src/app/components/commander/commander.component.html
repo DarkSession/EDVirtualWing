@@ -2,8 +2,13 @@
     <div class="cmdr-basic-info">
         <div class="flex-center">
             <span class="cmdr-title">CMDR {{ commander.Name }}</span>
-            <mat-icon *ngIf="isOnline" class="online" matTooltip="Online, in-game">circle
-            </mat-icon>
+            <ng-container [ngSwitch]="onlineStatus">
+                <span *ngSwitchCase="CommanderOnlineStatus.Online" class="dot online"
+                    matTooltip="Online, in-game"></span>
+                <span *ngSwitchCase="CommanderOnlineStatus.Offline" class="dot offline" matTooltip="Offline"></span>
+                <span *ngSwitchCase="CommanderOnlineStatus.Inactive" class="dot inactive"
+                    matTooltip="Online, inactive"></span>
+            </ng-container>
             <img *ngIf="inTeam" src="assets/images/Wing.svg" matTooltip="In team" class="svg-icon-small" />
             <img *ngIf="inCombat" src="assets/images/Combat.svg" matTooltip="In combat"
                 class="svg-icon-small icon-darkMode-correction" />
@@ -102,11 +107,17 @@
             </div>
         </div>
     </div>
-    <div *ngIf="targetShip" class="ship-data-row" matTooltip="Target">
+    <div *ngIf="targetShip" class="ship-data-row">
         <mat-icon class="ship-data-row-icon" [inline]="true">gps_fixed</mat-icon>
         <div class="ship-data-row-value">
             <div class="flex-center">
-                {{ targetShip }}
+                <span matTooltip="Target">
+                    {{ targetShip }}
+                </span>
+                <img *ngIf="targetShipLegalStatus == LegalStatus.Wanted" src="assets/images/Wanted.svg"
+                    matTooltip="Wanted" class="svg-icon" />
+                <img *ngIf="targetShipCombatRank" matTooltip="Combat rank"
+                    src="assets/images/combat-ranks/rank-{{targetShipCombatRank}}-combat.svg" class="svg-icon" />
             </div>
         </div>
     </div>

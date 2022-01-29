@@ -29,8 +29,8 @@ namespace ED_Virtual_Wing.WebSockets.Handler
                 WingMember? wingMember = await applicationDbContext.WingMembers
                     .Include(w => w.User)
                     .Include(w => w.Wing)
-                    .FirstOrDefaultAsync(w => w.Wing!.WingId == wingId && w.User!.Id == data.UserId);
-                if (wingMember != null && wingMember.Status == WingMembershipStatus.Joined && wingMember.User != user)
+                    .FirstOrDefaultAsync(w => w.Wing!.WingId == wingId && w.User!.Id == data.UserId && w.Status == WingMembershipStatus.Joined);
+                if (wingMember != null && wingMember.User != user)
                 {
                     wingMember.Status = WingMembershipStatus.Banned;
                     IEnumerable<WebSocketSession> webSocketSessionsWithWingActive = WebSocketServer.ActiveSessions

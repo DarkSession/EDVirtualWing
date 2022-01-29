@@ -1,15 +1,18 @@
 <div class="container">
-    <h2>Join Virtual Wing/Team</h2>
+    <app-h2>Join Virtual Team</app-h2>
     <div *ngIf="errors.length > 0" class="error-msg">
-        <p>Could not join wing/team:</p>
+        <p>Could not join team:</p>
         <div *ngFor="let error of errors">
             {{ error }}
         </div>
     </div>
     <div *ngIf="wing">
         <div>
-            You have been invited to join the virtual wing/team <b>{{ wing.Name }}</b> from <b>{{ wing.OwnerName }}</b>.
+            You have been invited to join the virtual team <b>{{ wing.Name }}</b> from <b>{{ wing.OwnerName }}</b>.
+            <br>
+            If you accept this invite, you will be able to see the shared game information of all members of this team and you will share your game information with any member of this team.
         </div>
+        <br>
         <div>
             <button mat-raised-button color="primary" (click)="join()">Join</button>
         </div>

@@ -392,6 +392,9 @@ namespace ED_Virtual_Wing.Models
         KraitPhantom = 128839281,
         Mamba = 128915979,
 
+        [EnumMember(Value = "TestBuggy")]
+        SRV = 999999900,
+
         [EnumMember(Value = "independent_fighter")]
         IndepdenentFighter = 999999990,
         [EnumMember(Value = "empire_fighter")]

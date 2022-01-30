@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DoCheck, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DoCheck, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
 import * as dayjs from 'dayjs';
 import { CombatRank, Commander, GameActivity, GameExtraFlags, GameMode, GameVersion, LegalStatus, Ship, VehicleStatusFlags } from 'src/app/interfaces/commander';
 import { StationType } from 'src/app/interfaces/station';
@@ -37,7 +37,9 @@ export class CommanderComponent implements OnInit, OnDestroy, OnChanges, DoCheck
   public onlineStatus: CommanderOnlineStatus = CommanderOnlineStatus.Offline;
   private refreshInterval: any = null;
 
-  public constructor() { }
+  public constructor(
+    private readonly changeDetectorRef: ChangeDetectorRef
+  ) { }
 
   public ngOnInit(): void {
     if (this.refreshInterval !== null) {
@@ -46,6 +48,7 @@ export class CommanderComponent implements OnInit, OnDestroy, OnChanges, DoCheck
     }
     this.refreshInterval = setInterval(() => {
       this.ngDoCheck();
+      this.changeDetectorRef.markForCheck();
     }, 300000);
   }
 

@@ -35,7 +35,7 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Combat
                         LegalStatus = Models.LegalStatus.Wanted;
                     }
                     commander.Target.ShipTargetLegalStatus = LegalStatus;
-                    if (ScanStage >= 2)
+                    if (ScanStage >= 1)
                     {
                         if (!string.IsNullOrEmpty(PilotRank))
                         {

@@ -419,6 +419,7 @@ namespace ED_Virtual_Wing.Models
         Wanted,
         Lawless,
         WantedEnemy,
+        Unknown,
     }
 
     public enum CombatRank : short

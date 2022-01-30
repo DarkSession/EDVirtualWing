@@ -55,6 +55,7 @@ export enum GameActivity {
 export enum GameExtraFlags {
     None = 0,
     InCombat = 1,
+    Hyperdicted = 2,
 }
 
 export enum GameVersion {

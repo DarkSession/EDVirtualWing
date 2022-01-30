@@ -116,7 +116,7 @@
                 </span>
                 <img *ngIf="targetShipLegalStatus == LegalStatus.Wanted" src="assets/images/Wanted.svg"
                     matTooltip="Wanted" class="svg-icon" />
-                <img *ngIf="targetShipCombatRank" matTooltip="Combat rank"
+                <img *ngIf="targetShipCombatRank" [matTooltip]="targetShipCombatRankText"
                     src="assets/images/combat-ranks/rank-{{targetShipCombatRank}}-combat.svg" class="svg-icon" />
             </div>
         </div>
@@ -124,8 +124,6 @@
     <ng-container [ngSwitch]="commander.GameActivity">
         <div *ngSwitchCase="GameActivity.Dead" class="cmdr-status-picture">
             <img src="assets/images/Dead.svg" class="img-large icon-darkMode-correction" matTooltip="Dead / Destroyed">
-            <br>
-            Dead / Destroyed
         </div>
         <ng-container *ngSwitchCase="GameActivity.None">
             <ng-container *ngTemplateOutlet="shipStatus"></ng-container>
@@ -152,7 +150,7 @@
     </ng-container>
     <ng-template #shipStatus>
         <div *ngIf="commander.Ship" style="position: relative;" class="cmdr-status-picture">
-            <div *ngIf="commander.ShipName" style="position: absolute;" class="ship-name">
+            <div *ngIf="commander.ShipName && commander.ShipName !== ''" style="position: absolute;" class="ship-name">
                 {{ commander.ShipName }}
             </div>
             <div [ngClass]="{'shield-up': shieldsUp}" class="shield-circle shield-circle3">
@@ -179,6 +177,10 @@
                     <img src="assets/images/Heat.svg" class="ship-status-icon icon-darkMode-correction"
                         matTooltip="Overheating" />
                 </div>
+                <span *ngIf="hyperdicted">
+                    <img src="assets/images/Hyperdicted.svg" class="ship-status-icon icon-darkMode-correction"
+                        matTooltip="Hyperdicted" />
+                </span>
             </div>
         </div>
     </ng-template>

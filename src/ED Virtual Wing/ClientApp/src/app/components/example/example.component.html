@@ -1,32 +1,8 @@
-<div style="display: flex; flex-wrap: wrap;">
-    <div style="padding: 8px">
-        <app-commander [commander]="commander1"></app-commander>
-    </div>
-    <div style="padding: 8px">
-        <app-commander [commander]="commander2"></app-commander>
-    </div>
-    <div style="padding: 8px">
-        <app-commander [commander]="commander3"></app-commander>
-    </div>
-    <div style="padding: 8px">
-        <app-commander [commander]="commander4"></app-commander>
-    </div>
-    <div style="padding: 8px">
-        <app-commander [commander]="commander5"></app-commander>
-    </div>
-    <div style="padding: 8px">
-        <app-commander [commander]="commander6"></app-commander>
-    </div>
-    <div style="padding: 8px">
-        <app-commander [commander]="commander7"></app-commander>
-    </div>
-    <div style="padding: 8px">
-        <app-commander [commander]="commander8"></app-commander>
-    </div>
-    <div style="padding: 8px">
-        <app-commander [commander]="commander9"></app-commander>
-    </div>
-    <div style="padding: 8px">
-        <app-commander [commander]="commander10"></app-commander>
+<div class="content-large-box content-large-box-content" *ngIf="commanders.length == 0">
+    <p>No commanders in this wing.</p>
+</div>
+<div style="display: flex; flex-wrap: wrap;" *ngIf="commanders.length > 0">
+    <div style="padding: 8px" *ngFor="let commander of commanders">
+        <app-commander [commander]="commander"></app-commander>
     </div>
 </div>

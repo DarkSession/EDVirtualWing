@@ -236,6 +236,7 @@ namespace ED_Virtual_Wing.Models
     {
         None = 0,
         InCombat = 1,
+        Hyperdicted = 2,
     }
 
     public enum GameVersion : short
@@ -400,9 +401,9 @@ namespace ED_Virtual_Wing.Models
         [EnumMember(Value = "gdn_hybrid_fighter_v1")]
         GuardianFighterV1 = 999999993,
         [EnumMember(Value = "gdn_hybrid_fighter_v2")]
-        GuardianFighterV2 = 999999993,
+        GuardianFighterV2 = 999999994,
         [EnumMember(Value = "gdn_hybrid_fighter_v3")]
-        GuardianFighterV3 = 999999994,
+        GuardianFighterV3 = 999999995,
     }
 
     public enum Suit : short

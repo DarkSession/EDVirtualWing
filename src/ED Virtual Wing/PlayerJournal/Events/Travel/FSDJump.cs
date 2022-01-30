@@ -3,7 +3,7 @@ using ED_Virtual_Wing.Models;
 
 namespace ED_Virtual_Wing.PlayerJournal.Events.Travel
 {
-    class FSDJump : JournalEventHandler
+    public class FSDJump : JournalEventHandler
     {
         public string StarSystem { get; set; } = string.Empty;
         public long SystemAddress { get; set; }
@@ -31,7 +31,7 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Travel
                 if (commander.Location.StarSystem?.SystemAddress == starSystem.SystemAddress)
                 {
                     // This means the the CMDR probably got hyperdicted by Thargoids
-
+                    commander.ExtraFlags |= GameExtraFlags.Hyperdicted;
                 }
                 commander.Location.SetLocationSystem(starSystem);
             }

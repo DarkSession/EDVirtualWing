@@ -27,9 +27,11 @@ export class CommanderComponent implements OnInit, OnDestroy, OnChanges, DoCheck
   public weaponsDeployed: boolean = false;
   public showLatLong: boolean = false;
   public overHeating: boolean = false;
+  public hyperdicted: boolean = false;
   public targetShip: string = "";
   public targetShipLegalStatus: LegalStatus | null = null;
   public targetShipCombatRank: CombatRank | null = null;
+  public targetShipCombatRankText: string = "";
   public targetSystem: string = "";
   public gameMode: string = "";
   public gameVersion: string = "";
@@ -87,6 +89,7 @@ export class CommanderComponent implements OnInit, OnDestroy, OnChanges, DoCheck
       this.weaponsDeployed = this.hasFlag(VehicleStatusFlags.HardpointsDeployed);
       this.overHeating = this.hasFlag(VehicleStatusFlags.OverHeating);
       this.inCombat = this.hasExtraFlag(GameExtraFlags.InCombat);
+      this.hyperdicted = this.hasExtraFlag(GameExtraFlags.Hyperdicted);
       const shieldHullPercentage = (this.commander.ShipHullHealth * 100);
       if (shieldHullPercentage > 90) {
         this.shipHealthSVG = 100;
@@ -267,6 +270,64 @@ export class CommanderComponent implements OnInit, OnDestroy, OnChanges, DoCheck
       this.targetShip = targetShip;
       this.targetShipLegalStatus = this.commander?.Target?.ShipTargetLegalStatus ?? null;
       this.targetShipCombatRank = this.commander?.Target?.ShipTargetCombatRank ?? null;
+      switch (this.targetShipCombatRank) {
+        case CombatRank.Harmless: {
+          this.targetShipCombatRankText = "Harmless";
+          break;
+        }
+        case CombatRank.MostlyHarmless: {
+          this.targetShipCombatRankText = "Mostly Harmless";
+          break;
+        }
+        case CombatRank.Novice: {
+          this.targetShipCombatRankText = "Novice";
+          break;
+        }
+        case CombatRank.Competent: {
+          this.targetShipCombatRankText = "Competent";
+          break;
+        }
+        case CombatRank.Expert: {
+          this.targetShipCombatRankText = "Expert";
+          break;
+        }
+        case CombatRank.Master: {
+          this.targetShipCombatRankText = "Master";
+          break;
+        }
+        case CombatRank.Dangerous: {
+          this.targetShipCombatRankText = "Dangerous";
+          break;
+        }
+        case CombatRank.Deadly: {
+          this.targetShipCombatRankText = "Deadly";
+          break;
+        }
+        case CombatRank.Elite: {
+          this.targetShipCombatRankText = "Elite";
+          break;
+        }
+        case CombatRank.EliteI: {
+          this.targetShipCombatRankText = "Elite I";
+          break;
+        }
+        case CombatRank.EliteII: {
+          this.targetShipCombatRankText = "Elite II";
+          break;
+        }
+        case CombatRank.EliteIII: {
+          this.targetShipCombatRankText = "Elite III";
+          break;
+        }
+        case CombatRank.EliteIV: {
+          this.targetShipCombatRankText = "Elite IV";
+          break;
+        }
+        case CombatRank.EliteV: {
+          this.targetShipCombatRankText = "Elite V";
+          break;
+        }
+      }
       let targetSystem: string = "";
       if (this.commander.Target) {
         if (this.commander.Target.StarSystem && this.commander.Target.StarSystem.Name !== this.commander.Location.StarSystem?.Name) {

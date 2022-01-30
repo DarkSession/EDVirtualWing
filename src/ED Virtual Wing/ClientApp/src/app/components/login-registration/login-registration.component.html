@@ -16,6 +16,8 @@
                     </mat-form-field>
                     <button mat-raised-button [disabled]="!loginForm.valid" color="primary"
                         (click)="login()">Login</button>
+                    <br>
+                    <a routerLink="/password-reset">Password forgotten?</a>
                 </div>
             </ng-template>
         </mat-step>
@@ -37,7 +39,7 @@
                         <mat-label>Password</mat-label>
                         <input matInput id="password" formControlName="password" type="password" required>
                     </mat-form-field>
-                    <mat-checkbox id="confirmTos" formControlName="confirmTos">I accepted the <a routerLink="/tos">terms
+                    <mat-checkbox id="confirmTos" formControlName="confirmTos">I accept the <a routerLink="/tos">terms
                             of service</a>.</mat-checkbox>
                     <button mat-raised-button color="primary" [disabled]="!registrationForm.valid"
                         (click)="register()">Register</button>
@@ -49,7 +51,7 @@
             <ng-template matStepLabel>Frontier Authentication: Login or register new account</ng-template>
             <ng-template matStepContent>
                 <div class="content-large-box-content">
-                    <mat-checkbox [(ngModel)]="fDevAuthConfirmTos">I accepted the <a routerLink="/tos">terms of
+                    <mat-checkbox [(ngModel)]="fDevAuthConfirmTos">I accept the <a routerLink="/tos">terms of
                             service</a>.</mat-checkbox>
                     <button mat-raised-button color="primary" [disabled]="!fDevAuthConfirmTos"
                         (click)="loginViaFdev()">Continue</button>

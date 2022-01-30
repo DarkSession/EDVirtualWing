@@ -51,4 +51,12 @@ export class JournalWorkerSetupHelpComponent implements OnInit {
       this.interval = null;
     }
   }
+
+  public selectIndex(index: number): void {
+    this.showIndex = index;
+    if (this.interval !== null) {
+      clearInterval(this.interval);
+      this.interval = null;
+    }
+  }
 }

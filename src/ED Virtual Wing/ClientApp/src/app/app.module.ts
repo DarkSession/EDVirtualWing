@@ -41,6 +41,7 @@ import { WingLeaveDisbandComponent } from './components/wing-leave-disband/wing-
 import { WingAdminMembersComponent } from './components/wing-admin-members/wing-admin-members.component';
 import { H3Component } from './components/h3/h3.component';
 import { H2Component } from './components/h2/h2.component';
+import { LoginResetPasswordComponent } from './login-reset-password/login-reset-password.component';
 
 @NgModule({
   declarations: [
@@ -66,6 +67,7 @@ import { H2Component } from './components/h2/h2.component';
     WingAdminMembersComponent,
     H3Component,
     H2Component,
+    LoginResetPasswordComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -110,6 +112,11 @@ import { H2Component } from './components/h2/h2.component';
         {
           path: 'login',
           component: LoginRegistrationComponent,
+          canActivate: [NotAuthenticatedGuard],
+        },
+        {
+          path: 'password-reset',
+          component: LoginResetPasswordComponent,
           canActivate: [NotAuthenticatedGuard],
         },
         {

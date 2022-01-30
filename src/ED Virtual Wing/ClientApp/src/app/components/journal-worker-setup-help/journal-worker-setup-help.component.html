@@ -5,6 +5,7 @@
             <div class="img-holder">
                 <img src="assets/images/JWHelp01.png">
             </div>
+            <br>
             <p>First, open the main directory of your current user, as shown in the screenshot above. In this case, the
                 user name is <b>Admin</b>.</p>
             <br><br>
@@ -13,6 +14,7 @@
             <div class="img-holder">
                 <img src="assets/images/JWHelp02.png">
             </div>
+            <br>
             <p>Select the folder <b>Saved Games</b>.</p>
             <br><br>
         </div>
@@ -20,6 +22,7 @@
             <div class="img-holder">
                 <img src="assets/images/JWHelp03.png">
             </div>
+            <br>
             <p>Select the folder <b>Frontier Developments</b>.</p>
             <br><br>
         </div>
@@ -27,6 +30,7 @@
             <div class="img-holder">
                 <img src="assets/images/JWHelp04.png">
             </div>
+            <br>
             <p>Select the folder <b>Elite Dangerous</b>.</p>
             <br><br>
         </div>
@@ -34,6 +38,7 @@
             <div class="img-holder">
                 <img src="assets/images/JWHelp05.png">
             </div>
+            <br>
             <p>Click on the button <b>Select Folder</b>.</p>
             <br><br>
         </div>
@@ -41,6 +46,7 @@
             <div class="img-holder">
                 <img src="assets/images/JWHelp06.png">
             </div>
+            <br>
             <p>
                 <span *ngIf="!onlyShowFinalStep">The setup is now complete.&nbsp;</span>Every time when you start
                 sharing your game logs, a prompt from your browser will appear.
@@ -51,7 +57,8 @@
         </div>
     </div>
     <div class="dots">
-        <div *ngFor="let step of steps" class="dot" [ngClass]="{'dot-active': step == showIndex}"></div>
+        <div *ngFor="let step of steps" class="dot" (click)="selectIndex(step)"
+            [ngClass]="{'dot-active': step == showIndex}"></div>
     </div>
     <div class="btns" *ngIf="!onlyShowFinalStep">
         <div>

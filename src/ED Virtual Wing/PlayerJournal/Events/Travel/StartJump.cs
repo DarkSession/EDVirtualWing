@@ -18,6 +18,7 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Travel
             {
                 commander.Location.SetLocationStation(null);
             }
+            commander.ExtraFlags &= ~GameExtraFlags.Hyperdicted;
             commander.Target?.ResetShipTarget();
             return ValueTask.CompletedTask;
         }

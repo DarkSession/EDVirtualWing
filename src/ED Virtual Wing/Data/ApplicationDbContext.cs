@@ -18,31 +18,13 @@ namespace ED_Virtual_Wing.Data
         public DbSet<WingMember> WingMembers { get; set; }
         public DbSet<WingInvite> WingInvites { get; set; }
 
-        private IConfiguration Configuration { get; }
-
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        public ApplicationDbContext(DbContextOptions options, IOptions<OperationalStoreOptions> operationalStoreOptions, IConfiguration configuration)
+        public ApplicationDbContext(DbContextOptions options, IOptions<OperationalStoreOptions> operationalStoreOptions)
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
             : base(options, operationalStoreOptions)
         {
-            Configuration = configuration;
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseMySql(Configuration["EDVW:ConnectionString"],
-                new MariaDbServerVersion(new Version(10, 6, 0)),
-                options =>
-                {
-                    options.EnableRetryOnFailure();
-                    options.CommandTimeout(60 * 10 * 1000);
-                })
-#if DEBUG
-                .EnableSensitiveDataLogging()
-                .LogTo(Console.WriteLine)
-#endif
-                ;
-        }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

@@ -22,10 +22,12 @@ export class AppComponent implements OnInit, OnDestroy {
     public readonly websocketService: WebsocketService,
     private readonly overlay: Overlay,
     public readonly appService: AppService
-  ) {
-  }
+  ) { }
 
   public ngOnInit(): void {
+    if (localStorage.getItem("menuOpen") === "0") {
+      this.isMenuOpen = false;
+    }
     this.websocketService.onConnectionStatusChanged.pipe(untilDestroyed(this)).subscribe((connectionStatus: ConnectionStatus) => {
       this.isLoggedIn = (connectionStatus == ConnectionStatus.Authenticated);
     });
@@ -59,11 +61,11 @@ export class AppComponent implements OnInit, OnDestroy {
 
   public toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;
+    localStorage.setItem("menuOpen", this.isMenuOpen ? "1" : "0");
   }
 
   public darkModeChanged(value: boolean): void {
     localStorage.setItem("darkMode", value ? "1" : "0");
-    console.log(value, value ? "1" : "0");
   }
 }
 

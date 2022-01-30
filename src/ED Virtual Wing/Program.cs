@@ -3,14 +3,31 @@ using ED_Virtual_Wing.FDevApi;
 using ED_Virtual_Wing.Models;
 using ED_Virtual_Wing.PlayerJournal;
 using ED_Virtual_Wing.WebSockets;
+using Microsoft.EntityFrameworkCore;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
 
+builder.Configuration.AddEnvironmentVariables();
+
 // Add services to the container.
-builder.Services.AddDbContext<ApplicationDbContext>();
+builder.Services.AddDbContext<ApplicationDbContext>(optionsBuilder =>
+{
+    optionsBuilder.UseMySql(builder.Configuration["EDVW:ConnectionString"],
+    new MariaDbServerVersion(new Version(10, 6, 0)),
+    options =>
+    {
+        options.EnableRetryOnFailure();
+        options.CommandTimeout(60 * 10 * 1000);
+    })
+#if DEBUG
+                .EnableSensitiveDataLogging()
+    .LogTo(Console.WriteLine)
+#endif
+    ;
+});
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {
@@ -32,8 +49,6 @@ builder.Services.AddRazorPages();
 builder.Services.AddSingleton<WebSocketServer>();
 builder.Services.AddSingleton<JournalProcessor>();
 builder.Services.AddSingleton<FDevApi>();
-
-builder.Configuration.AddEnvironmentVariables();
 
 string httpOrigin = builder.Configuration["EDVW:HttpOrigin"];
 Uri httpOriginUri = new(httpOrigin);

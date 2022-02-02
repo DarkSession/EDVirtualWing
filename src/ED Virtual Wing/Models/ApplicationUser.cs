@@ -7,10 +7,13 @@ namespace ED_Virtual_Wing.Models
 {
     [Table("ApplicationUser")]
     [Index(nameof(FDevCustomerId))]
+    // [Index(nameof(ApiKey), IsUnique = true)]
     public class ApplicationUser : IdentityUser
     {
         [Column]
         public long FDevCustomerId { get; set; }
+        //[Column]
+        //public Guid ApiKey { get; set; } = Guid.NewGuid();
         public Commander? Commander { get; set; }
         public List<WingMember>? WingMemberships { get; set; }
 

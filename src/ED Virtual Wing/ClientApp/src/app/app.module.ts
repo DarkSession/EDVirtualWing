@@ -42,6 +42,7 @@ import { WingAdminMembersComponent } from './components/wing-admin-members/wing-
 import { H3Component } from './components/h3/h3.component';
 import { H2Component } from './components/h2/h2.component';
 import { LoginResetPasswordComponent } from './login-reset-password/login-reset-password.component';
+import { UserProfileComponent } from './components/user-profile/user-profile.component';
 
 @NgModule({
   declarations: [
@@ -68,6 +69,7 @@ import { LoginResetPasswordComponent } from './login-reset-password/login-reset-
     H3Component,
     H2Component,
     LoginResetPasswordComponent,
+    UserProfileComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -122,6 +124,11 @@ import { LoginResetPasswordComponent } from './login-reset-password/login-reset-
         {
           path: 'logout',
           component: LogoutComponent,
+          canActivate: [AuthenticationGuard],
+        },
+        {
+          path: 'profile',
+          component: UserProfileComponent,
           canActivate: [AuthenticationGuard],
         },
         {

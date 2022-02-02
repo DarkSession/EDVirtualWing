@@ -392,6 +392,8 @@ namespace ED_Virtual_Wing.Models
         KraitPhantom = 128839281,
         Mamba = 128915979,
 
+        NotShipsAbove = 900000000,
+
         [EnumMember(Value = "TestBuggy")]
         SRV = 999999900,
 
@@ -424,6 +426,7 @@ namespace ED_Virtual_Wing.Models
         Lawless,
         WantedEnemy,
         Unknown,
+        Enemy,
     }
 
     public enum CombatRank : short

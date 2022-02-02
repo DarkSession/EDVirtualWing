@@ -1,6 +1,5 @@
 ﻿using ED_Virtual_Wing.Data;
 using ED_Virtual_Wing.Models;
-using ED_Virtual_Wing.WebSockets.Messages;
 using Newtonsoft.Json.Linq;
 using NJsonSchema;
 using NJsonSchema.Validation;

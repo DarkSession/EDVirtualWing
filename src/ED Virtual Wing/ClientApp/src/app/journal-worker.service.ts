@@ -288,10 +288,10 @@ export class JournalWorkerService {
         const diff = now.diff(this.journalLastDate, "second");
         if (diff > 120 && now.isAfter(this.journalInactivityNextCheck)) {
           this.journalInactivityNextCheck = now.add(2, "minute");
-          const res = await this.getJournalAndStatusFileFromDirectoryHandle(directoryHandle);
-          if (res.journalFile !== null && res.journalFile.handle.name != journalFile.handle.name) {
-            console.log("Journal rotation detected. Switchting to new journal", res.journalFile.handle.name);
-            journalFile.handle = res.journalFile.handle;
+          const result = await this.getJournalAndStatusFileFromDirectoryHandle(directoryHandle);
+          if (result.journalFile !== null && result.journalFile.handle.name !== journalFile.handle.name) {
+            console.log("Journal rotation detected. Switchting to new journal", result.journalFile.handle.name);
+            journalFile.handle = result.journalFile.handle;
             journalFile.lastModified = 0;
             journalFile.lastPosition = 0;
           }

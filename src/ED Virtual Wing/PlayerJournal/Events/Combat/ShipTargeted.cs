@@ -1,6 +1,5 @@
 ﻿using ED_Virtual_Wing.Data;
 using ED_Virtual_Wing.Models;
-using Newtonsoft.Json;
 
 namespace ED_Virtual_Wing.PlayerJournal.Events.Combat
 {
@@ -23,7 +22,7 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Combat
                     string shipTargetName = (await EDTranslatedString.Translate(PilotName, PilotName_Localised, applicationDbContext)) ?? string.Empty;
                     try
                     {
-                        commander.Target.ShipTarget = ToEnum<Ship>(Ship);
+                        commander.Target.ShipTarget = Functions.ToEnum<Ship>(Ship);
                     }
                     catch
                     {
@@ -39,7 +38,7 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Combat
                     {
                         if (!string.IsNullOrEmpty(PilotRank))
                         {
-                            commander.Target.ShipTargetCombatRank = ToEnum<CombatRank>(PilotRank);
+                            commander.Target.ShipTargetCombatRank = Functions.ToEnum<CombatRank>(PilotRank);
                         }
                         else
                         {
@@ -56,11 +55,6 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Combat
                     commander.Target.ResetShipTarget();
                 }
             }
-        }
-
-        public static T? ToEnum<T>(string value)
-        {
-            return JsonConvert.DeserializeObject<T>($"\"{value}\"");
         }
     }
 }

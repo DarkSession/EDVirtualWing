@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using Newtonsoft.Json;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace ED_Virtual_Wing
@@ -20,6 +21,11 @@ namespace ED_Virtual_Wing
                 result.Append(chars[idx]);
             }
             return result.ToString();
+        }
+
+        public static T? ToEnum<T>(string value)
+        {
+            return JsonConvert.DeserializeObject<T>($"\"{value}\"");
         }
     }
 }

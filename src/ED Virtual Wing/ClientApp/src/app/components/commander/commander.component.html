@@ -75,7 +75,8 @@
                     <span *ngIf="commander.GameActivity == GameActivity.Docked" class="badge">Docked</span>
                     <span *ngIf="commander.GameActivity == GameActivity.OnFoot" class="badge">On foot</span>
                 </span>
-                <span *ngIf="commander.Location?.Name" class="flex-center" matTooltip="Station/Signal">
+                <span *ngIf="commander.Location?.Name && commander.Location?.Name != commander.Location?.SystemBody"
+                    class="flex-center" matTooltip="Station/Signal">
                     <img src="assets/images/Marker.svg" class="svg-icon icon-darkMode-correction"> {{
                     commander.Location.Name }}
                 </span>

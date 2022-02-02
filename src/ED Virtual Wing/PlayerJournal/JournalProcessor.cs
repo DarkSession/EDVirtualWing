@@ -28,7 +28,10 @@ namespace ED_Virtual_Wing.PlayerJournal
             JournalEntryBase? journalEntry = userJournalEntry.ToObject<JournalEntryBase>();
             if (journalEntry != null && journalEntry.Timestamp >= commander.JournalLastEventDate)
             {
-                commander.JournalLastEventDate = journalEntry.Timestamp;
+                if (journalEntry.Event != "Status")
+                {
+                    commander.JournalLastEventDate = journalEntry.Timestamp;
+                }
                 if (JournalEntryProcessors.TryGetValue(journalEntry.Event, out Type? eventHandlerType))
                 {
                     JournalEventHandler? journalEventHandler = (JournalEventHandler?)userJournalEntry.ToObject(eventHandlerType);

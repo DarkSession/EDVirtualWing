@@ -15,7 +15,7 @@ namespace ED_Virtual_Wing.WebSockets.Handler
         protected override Type? MessageDataType { get; } = typeof(WinLeaveDisbandData);
         private WebSocketServer WebSocketServer { get; }
 
-        public WingLeaveDisband (WebSocketServer webSocketServer)
+        public WingLeaveDisband(WebSocketServer webSocketServer)
         {
             WebSocketServer = webSocketServer;
         }

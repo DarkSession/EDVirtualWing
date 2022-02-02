@@ -38,10 +38,8 @@ export class WingAdminMembersComponent implements OnInit {
         const response = await this.webSocketService.sendMessageAndWaitForResponse<WingMembersGetResponseData>("WingMembersGet", {
           WingId: this.wingId,
         });
-        console.log(response);
         if (response?.Success) {
           this.wingMembers = response.Data.WingMembers;
-          console.log(this.wingMembers);
         }
       }
       catch (e) {

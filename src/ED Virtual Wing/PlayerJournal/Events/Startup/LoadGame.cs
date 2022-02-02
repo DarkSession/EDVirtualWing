@@ -60,16 +60,22 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Startup
             }
             else
             {
-                commander.Ship = ToEnum<Ship>(Ship);
+                try
+                {
+                    Ship ship = Functions.ToEnum<Ship>(Ship);
+                    if (ship < Models.Ship.NotShipsAbove)
+                    {
+                        commander.Ship = ship;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
             }
             commander.ShipName = ShipName;
             commander.Target?.ResetShipTarget();
             return ValueTask.CompletedTask;
-        }
-
-        public static T? ToEnum<T>(string value)
-        {
-            return JsonConvert.DeserializeObject<T>($"\"{value}\"");
         }
     }
 }

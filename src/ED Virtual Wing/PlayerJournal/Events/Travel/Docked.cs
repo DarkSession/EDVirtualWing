@@ -24,7 +24,9 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Travel
             StarSystem? starSystem = await applicationDbContext.StarSystems.FirstOrDefaultAsync(s => s.SystemAddress == SystemAddress);
             if (starSystem != null)
             {
-                Station? station = await applicationDbContext.Stations.FirstOrDefaultAsync(s => s.MarketId == MarketID);
+                Station? station = await applicationDbContext.Stations
+                    .Include(s => s.StarSystem)
+                    .FirstOrDefaultAsync(s => s.MarketId == MarketID);
                 if (station == null)
                 {
                     station = new()
@@ -37,6 +39,11 @@ namespace ED_Virtual_Wing.PlayerJournal.Events.Travel
                     };
                     applicationDbContext.Stations.Add(station);
                     await applicationDbContext.SaveChangesAsync();
+                }
+                else
+                {
+                    station.DistanceFromStarLS = DistFromStarLS;
+                    station.StarSystem = starSystem;
                 }
                 commander.Location.SetLocationStation(starSystem, station);
                 commander.GameActivity = GameActivity.Docked;

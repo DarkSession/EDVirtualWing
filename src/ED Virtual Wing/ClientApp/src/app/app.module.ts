@@ -41,7 +41,7 @@ import { WingLeaveDisbandComponent } from './components/wing-leave-disband/wing-
 import { WingAdminMembersComponent } from './components/wing-admin-members/wing-admin-members.component';
 import { H3Component } from './components/h3/h3.component';
 import { H2Component } from './components/h2/h2.component';
-import { LoginResetPasswordComponent } from './login-reset-password/login-reset-password.component';
+import { LoginResetPasswordComponent } from './components/login-reset-password/login-reset-password.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 
 @NgModule({

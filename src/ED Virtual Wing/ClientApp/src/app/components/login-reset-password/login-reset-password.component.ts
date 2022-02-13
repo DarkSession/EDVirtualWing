@@ -7,9 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LoginResetPasswordComponent implements OnInit {
 
-  constructor() { }
+  public constructor() { }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
   }
-
 }

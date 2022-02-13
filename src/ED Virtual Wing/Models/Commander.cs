@@ -394,6 +394,9 @@ namespace ED_Virtual_Wing.Models
 
         NotShipsAbove = 900000000,
 
+        [EnumMember(Value = "vulture_taxi")]
+        VultureTaxi = 999999800,
+
         [EnumMember(Value = "TestBuggy")]
         SRV = 999999900,
 

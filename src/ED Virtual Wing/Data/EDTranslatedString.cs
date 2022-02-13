@@ -101,12 +101,18 @@ namespace ED_Virtual_Wing.Data
             { "npc_name_decorate", "{name}" },
 
             { "POIScenario_Watson_Damaged_Eagle_01_Salvage_Medium", "Distress Beacon" },
+            { "POIScenario_Watson_Damaged_Eagle_01_Assassination_Easy", "ENCRYPTED SIGNAL" },
+            { "POIScenario_Watson_Smugglers_Cache_02_Heist_Easy", "Irregular Markers" },
             { "POIScenario_Watson_Smugglers_Cache_02_Heist_Medium", "Irregular Markers" },
+            { "POIScenario_Watson_Wreckage_Probe_01_Medium", "Impact Site" },
+            { "POIScenario_Watson_Wreckage_Probe_01_Salvage_Medium", "Impact Site" },
 
+            { "ShipName_AX_Military_Independent", "System AX Force" },
             { "ShipName_Military_Independent", "System Defence Force" },
             { "ShipName_Military_Federation", "Federal Navy Ship" },
             { "ShipName_PassengerLiner_Cruise", "Cruise Ship" },
             { "ShipName_Police_Alliance", "Allied Police Forces" },
+            { "ShipName_Police_Empire", "Internal Security Service" },
             { "ShipName_Police_Federation", "Federal Security Service" },
             { "ShipName_Police_Independent", "System Authority Vessel" },
             { "ShipName_SearchAndRescue", "Search And Rescue Patrol" },
@@ -123,6 +129,7 @@ namespace ED_Virtual_Wing.Data
             { "Warzone_PointRace_Low", "Conflict Zone [Low Intensity]" },
             { "Warzone_PointRace_Med", "Conflict Zone [Medium Intensity]" },
             { "Warzone_PointRace_High", "Conflict Zone [High Intensity]" },
+            { "Warzone_TG", "AX Conflict Zone" },
         };
 
         public string LocalisationKey { get; }

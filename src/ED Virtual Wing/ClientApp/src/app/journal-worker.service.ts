@@ -215,7 +215,7 @@ export class JournalWorkerService {
         // We are only interested in some files
         if (entry.kind === "file") {
           // Check if the file name matches the format of a game journal.
-          if (entry.name.match(/Journal.(\d{12}).(\d{2}).log/)) {
+          if (entry.name.match(/Journal\.\d{4}\-\d{2}\-\d{2}T\d{6}\.\d{2}\.log/) || entry.name.match(/Journal\.\d{12}.\d{2}\.log/)) {
             // If it matches, we request the detail for this file
             const journalFileEntry = await entry.getFile();
             // Now we check if it was modified in the last 10 minutes (10 * 60 * 1000). If it was, it's a recent journal

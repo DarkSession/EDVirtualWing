@@ -24,6 +24,7 @@ namespace ED_Virtual_Wing.Models
         [Column(TypeName = "decimal(14,6)")]
         public decimal LocationZ { get; set; }
 
+        [JsonIgnore]
         public IEnumerable<StarSystemBody>? Bodies { get; set; }
     }
 }
